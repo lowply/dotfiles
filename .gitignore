@@ -2,6 +2,7 @@
 /*.
 !/.gvimrc
 !/.vim
+/.vim/.netrwhist
 !/.vimrc
 !/.tmux.conf
 !/.gitignore
