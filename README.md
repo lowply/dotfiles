@@ -4,6 +4,9 @@
 - MacVim
 - tmux
 
-## clone
-    # cd /some/dir
+## how to use
+    # cd
     # git clone git://github.com/lowply/dotfiles.git
+    # sh dotfiles/symlink.sh
+
+enjoy :)
