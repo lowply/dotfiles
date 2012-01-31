@@ -1,8 +1,8 @@
-*
-*.
-!.gvimrc
-!.vim
-!.vimrc
-!.tmux.conf
-!.gitignore
-!README.md
+/*
+/*.
+!/.gvimrc
+!/.vim
+!/.vimrc
+!/.tmux.conf
+!/.gitignore
+!/README.md

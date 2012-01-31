@@ -1,0 +1,1 @@
+/Users/sho/.vim/bundle/pathogen.vim
