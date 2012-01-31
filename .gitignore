@@ -1,0 +1,8 @@
+*
+*.
+!.gvimrc
+!.vim
+!.vimrc
+!.tmux.conf
+!.gitignore
+!README.md
