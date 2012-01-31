@@ -2,8 +2,9 @@
 /*.
 !/.gvimrc
 !/.vim
-/.vim/.netrwhist
 !/.vimrc
 !/.tmux.conf
 !/.gitignore
+!/symlink.sh
 !/README.md
+/.vim/.netrwhist
