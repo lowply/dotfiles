@@ -1,4 +1,5 @@
 set background=dark
+set nobackup
 
 if has('gui_macvim')
     set transparency=0

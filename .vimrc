@@ -1,33 +1,80 @@
+
+"----------------------------------------
+" pathogen
+"----------------------------------------
+
 call pathogen#runtime_append_all_bundles()
-set t_Co=256
-syntax enable
-colorscheme molokai
+
+"----------------------------------------
+" nocompatible
+"----------------------------------------
 
 set nocompatible
-set tabstop=4 shiftwidth=4 softtabstop=0
+
+"----------------------------------------
+" syntax color
+"----------------------------------------
+
+set t_Co=256
+syntax on 
+colorscheme molokai
+
+"----------------------------------------
+" display
+"----------------------------------------
+
+set scrolloff=10
+set laststatus=2
+set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
+set notitle
+set number
+
+"----------------------------------------
+" tab
+"----------------------------------------
+
+set tabstop=4
 set expandtab
+set shiftwidth=4
+set softtabstop=0
+set smarttab
+set shiftround
+set nowrap
+
+"----------------------------------------
+" edit
+"----------------------------------------
+
+set whichwrap=b,s,h,l,<,>,[,]
 set autoindent
 set smartindent
+set backspace=indent,eol,start
 set showmatch
-set showcmd
-set wrap
-set notitle
-set scrolloff=5
-set laststatus=2
-set smarttab
-set nowrapscan
-set nu
-set number
-set history=50
 
-set termencoding=utf-8
-set encoding=japan
-set fileencodings=utf-8,latin1
-set fenc=utf-8
-set enc=utf-8
+"----------------------------------------
+" search
+"----------------------------------------
 
 set hlsearch
+nmap <Esc><Esc> :nohlsearch<CR><Esc>
 set incsearch
 set ignorecase
+set wrapscan
 set smartcase
+
+"----------------------------------------
+" backup
+"----------------------------------------
+
+set backup
+set backupdir=~/.vim_backup
+set swapfile
+set directory=~/.vim_swap
+
+"----------------------------------------
+" encoding
+"----------------------------------------
+
+set termencoding=utf-8
+set encoding=utf-8
 
