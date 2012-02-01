@@ -6,5 +6,6 @@
 !/.tmux.conf
 !/.gitignore
 !/symlink.sh
+!/Fixture.terminal
 !/README.md
 /.vim/.netrwhist
