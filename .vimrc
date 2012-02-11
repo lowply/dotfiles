@@ -1,15 +1,28 @@
-
-"----------------------------------------
-" pathogen
-"----------------------------------------
-
-call pathogen#runtime_append_all_bundles()
-
 "----------------------------------------
 " nocompatible
 "----------------------------------------
 
 set nocompatible
+
+"----------------------------------------
+" vundle
+"----------------------------------------
+
+filetype off
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Bundle 'gmarik/vundle'
+Bundle 'Shougo/neocomplcache'
+Bundle 'tomasr/molokai'
+
+filetype plugin indent on
+
+"----------------------------------------
+" enable neocomplcache
+"----------------------------------------
+
+let g:neocomplcache_enable_at_startup = 1
 
 "----------------------------------------
 " syntax color
