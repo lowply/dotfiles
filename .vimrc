@@ -14,7 +14,7 @@ call vundle#rc()
 
 Bundle 'gmarik/vundle'
 Bundle 'Shougo/neocomplcache'
-Bundle 'tomasr/molokai'
+Bundle 'molokai'
 
 filetype plugin indent on
 
