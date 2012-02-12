@@ -5,7 +5,9 @@
 !/.vimrc
 !/.tmux.conf
 !/.gitignore
+!/.gitmodules
 !/symlink.sh
 !/Fixture.terminal
 !/README.md
 /.vim/.netrwhist
+/.vim/bundle/.vundle
