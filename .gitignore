@@ -1,7 +1,9 @@
 /*
 /*.
+/.vim/bundle/*
 !/.gvimrc
 !/.vim
+!/.vim/bundle/neobundle.vim
 !/.vimrc
 !/.tmux.conf
 !/.gitignore
@@ -9,5 +11,3 @@
 !/symlink.sh
 !/Fixture.terminal
 !/README.md
-/.vim/.netrwhist
-/.vim/bundle/.vundle
