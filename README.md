@@ -8,7 +8,7 @@
 
 ## how to use
     # cd
-    # git clone git://github.com/lowply/dotfiles.git
+    # git clone --recursive git://github.com/lowply/dotfiles.git
     # sh dotfiles/symlink.sh
 
 **This shellscript overrides the same name dotfiles in your $HOME.**

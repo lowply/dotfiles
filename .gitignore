@@ -1,13 +1,10 @@
 /*
 /*.
-/.vim/bundle/*
 !/.gvimrc
 !/.vim
-!/.vim/bundle/neobundle.vim
 !/.vimrc
 !/.tmux.conf
 !/.gitignore
-!/.gitmodules
 !/symlink.sh
 !/Fixture.terminal
 !/README.md
