@@ -21,6 +21,7 @@ NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'tomasr/molokai'
+NeoBundle 'tpope/vim-surround'
 
 filetype plugin indent on
 
@@ -46,7 +47,7 @@ set scrolloff=10
 set laststatus=2
 set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
 set notitle
-set number
+"set number
 
 "----------------------------------------
 " tab
@@ -68,7 +69,8 @@ set whichwrap=b,s,h,l,<,>,[,]
 set autoindent
 set smartindent
 set backspace=indent,eol,start
-set showmatch
+"set showmatch
+let loaded_matchparen = 1
 
 "----------------------------------------
 " search
@@ -96,4 +98,26 @@ set directory=/tmp/vim
 
 set termencoding=utf-8
 set encoding=utf-8
+
+"----------------------------------------
+" neocomplecache setting
+"----------------------------------------
+
+function InsertTabWrapper()
+    if pumvisible()
+        return "\<c-n>"
+    endif
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k\|<\|/'
+        return "\<tab>"
+    elseif exists('&omnifunc') && &omnifunc == ''
+        return "\<c-n>"
+    else
+        return "\<c-x>\<c-o>"
+    endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+
+
+
 
