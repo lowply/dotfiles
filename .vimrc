@@ -88,9 +88,9 @@ set smartcase
 "----------------------------------------
 
 set backup
-set backupdir=/tmp/vim
+set backupdir=/tmp
 set swapfile
-set directory=/tmp/vim
+set directory=/tmp
 
 "----------------------------------------
 " encoding
