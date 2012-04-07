@@ -7,3 +7,6 @@ do
         ln -Fis "$PWD/$dotfile" $HOME
     fi
 done
+if [ ! -d ~/.vim_swap ]; then
+    mkdir ~/.vim_swap
+fi
