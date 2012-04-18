@@ -22,6 +22,7 @@ NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'tomasr/molokai'
 NeoBundle 'tpope/vim-surround'
+NeoBundle 'vim-scripts/gtags.vim'
 
 filetype plugin indent on
 
@@ -118,6 +119,14 @@ function InsertTabWrapper()
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
+"----------------------------------------
+" global gtags
+"----------------------------------------
 
+map <C-g> :Gtags
+map <C-h> :Gtags -f %<CR>
+map <C-j> :GtagsCursor<CR>
+map <C-n> :cn<CR>
+map <C-p> :cp<CR>
 
 
