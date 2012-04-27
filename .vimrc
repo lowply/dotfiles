@@ -32,6 +32,23 @@ filetype plugin indent on
 
 let g:neocomplcache_enable_at_startup = 1
 
+" use tab to select (http://masterka.seesaa.net/article/161781923.html)
+
+function InsertTabWrapper()
+    if pumvisible()
+        return "\<c-n>"
+    endif
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k\|<\|/'
+        return "\<tab>"
+    elseif exists('&omnifunc') && &omnifunc == ''
+        return "\<c-n>"
+    else
+        return "\<c-x>\<c-o>"
+    endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+
 "----------------------------------------
 " syntax color
 "----------------------------------------
@@ -39,6 +56,9 @@ let g:neocomplcache_enable_at_startup = 1
 set t_Co=256
 syntax on 
 colorscheme molokai
+
+" use this command to fix molokai bg issue :
+" # sed -e 's/ctermbg=233/ctermbg=none/g' ~/.vim/bundle/molokai/colors/molokai.vim
 
 "----------------------------------------
 " display
@@ -48,16 +68,17 @@ set scrolloff=10
 set laststatus=2
 set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
 set notitle
+set cursorline
 "set number
 
 "----------------------------------------
 " tab
 "----------------------------------------
 
-set tabstop=4
 set expandtab
-set shiftwidth=4
-set softtabstop=0
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 set smarttab
 set shiftround
 set nowrap
@@ -89,9 +110,9 @@ set smartcase
 "----------------------------------------
 
 set backup
-set backupdir=~/.vim_swap
+set backupdir=~/.vim_tmp
 set swapfile
-set directory=~/.vim_swap
+set directory=~/.vim_tmp
 
 "----------------------------------------
 " encoding
@@ -99,25 +120,6 @@ set directory=~/.vim_swap
 
 set termencoding=utf-8
 set encoding=utf-8
-
-"----------------------------------------
-" neocomplecache setting
-"----------------------------------------
-
-function InsertTabWrapper()
-    if pumvisible()
-        return "\<c-n>"
-    endif
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k\|<\|/'
-        return "\<tab>"
-    elseif exists('&omnifunc') && &omnifunc == ''
-        return "\<c-n>"
-    else
-        return "\<c-x>\<c-o>"
-    endif
-endfunction
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
 "----------------------------------------
 " global gtags
@@ -128,5 +130,4 @@ map <C-h> :Gtags -f %<CR>
 map <C-j> :GtagsCursor<CR>
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
-
 
