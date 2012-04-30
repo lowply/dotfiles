@@ -23,6 +23,8 @@ NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'tomasr/molokai'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'vim-scripts/gtags.vim'
+NeoBundle 'mattn/zencoding-vim'
+NeoBundle 'wavded/vim-stylus'
 
 filetype plugin indent on
 
@@ -130,4 +132,10 @@ map <C-h> :Gtags -f %<CR>
 map <C-j> :GtagsCursor<CR>
 map <C-n> :cn<CR>
 map <C-p> :cp<CR>
+
+"----------------------------------------
+" zen-coding
+"----------------------------------------
+
+let g:user_zen_settings = { 'indentation':'  ' }
 
