@@ -95,6 +95,8 @@ set smartindent
 set backspace=indent,eol,start
 "set showmatch
 let loaded_matchparen = 1
+vnoremap < <gv
+vnoremap > >gv
 
 "----------------------------------------
 " search
