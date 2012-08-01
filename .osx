@@ -1,14 +1,20 @@
-#!/bin/sh
-
 #
 # ~/.osx
 #
 
 # disable dashboard
-defaults write com.apple.dashboard mcx-disabled -boolean YES; killall Dock
+defaults write com.apple.dashboard mcx-disabled -boolean YES
 
 # I like overlay scrollbars
 defaults write NSGlobalDomain AppleShowScrollBars -string "WhenScrolling"
 
 # make ~/Library visible
 chflags nohidden ~/Library
+
+#
+# Killall Apps
+#
+for app in Finder Dock SystemUIServer
+do
+  killall "$app" > /dev/null 2>&1
+done
