@@ -8,4 +8,5 @@
 !/.gitignore
 !/symlink.sh
 !/Fixture.terminal
+!/molokai.patch
 !/README.md
