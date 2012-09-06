@@ -5,7 +5,7 @@
 set nocompatible
 
 "----------------------------------------
-" vundle
+" neobundle
 "----------------------------------------
 
 filetype off
@@ -51,16 +51,13 @@ function InsertTabWrapper()
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
-"----------------------------------------
+" ---------------------------------------
 " syntax color
-"----------------------------------------
+" ---------------------------------------
 
 set t_Co=256
 syntax on 
 colorscheme molokai
-
-" use this command to fix molokai bg issue :
-" # sed -e 's/ctermbg=233/ctermbg=none/g' ~/.vim/bundle/molokai/colors/molokai.vim
 
 "----------------------------------------
 " display
@@ -70,8 +67,8 @@ set scrolloff=10
 set laststatus=2
 set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
 set notitle
-set cursorline
-"set number
+" set cursorline " <-- this makes cursor slow
+" set number
 
 "----------------------------------------
 " tab
