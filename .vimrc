@@ -20,7 +20,7 @@ NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'tomasr/molokai'
+NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'vim-scripts/gtags.vim'
 NeoBundle 'mattn/zencoding-vim'
@@ -57,7 +57,14 @@ inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 
 set t_Co=256
 syntax on 
-colorscheme molokai
+let g:solarized_termcolors=256
+
+" I use xterm-256color as my terminfo on Terminal.app so enable solarized_termtrans by manually.
+" see https://github.com/altercation/vim-colors-solarized
+let g:solarized_termtrans=1
+
+set background=dark
+colorscheme solarized
 
 "----------------------------------------
 " display
