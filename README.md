@@ -20,6 +20,4 @@
 - don't forget to make [vimproc](https://github.com/Shougo/vimproc) on your system
 - Fixture.terminal is a theme for Terminal.app. Just double click in Finder.
 It uses [Ricty](http://save.sys.t.u-tokyo.ac.jp/~yusa/fonts/ricty.html) font.
-- to patch molokai.vim, use this oneliner after install.
-    $ patch -u ~/dotfiles/.vim/bundle/molokai/colors/molokai.vim < ~/dotfiles/molokai.patch
 enjoy :)
