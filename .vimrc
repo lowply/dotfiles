@@ -59,7 +59,7 @@ set t_Co=256
 syntax on 
 let g:solarized_termcolors=256
 
-" I use xterm-256color as my terminfo on Terminal.app so enable solarized_termtrans by manually.
+" I use xterm-256color as my terminfo on tmux 1.7 & Terminal.app on OS X Lion, so enable termtrans by manually.
 " see https://github.com/altercation/vim-colors-solarized
 let g:solarized_termtrans=1
 

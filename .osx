@@ -2,9 +2,21 @@
 # ~/.osx
 #
 
-echo "alias ls='gls --color=auto'" >> ~/.bash_profile
-echo "alias tm='tmux -2 a || tmux -2'" >> ~/.bash_profile
-echo "alias man='LANG=ja_JP.utf8 man'" >> ~/.bash_profile
+if [ -x /usr/local/bin/brew ]; then
+  echo ""
+else
+  echo "install homebrew and run"
+  echo "'brew install coreutils tmux '"
+  echo "then hit .osx again!"
+  exit 1;
+fi
+
+gecho -ne "
+# added `date +%y%m%d`
+alias ls='gls --color=auto'
+alias tm='tmux -2 a || tmux -2'
+alias man='LANG=ja_JP.utf8 man'
+" >> ~/.bash_profile
 
 # disable dashboard
 defaults write com.apple.dashboard mcx-disabled -boolean YES
