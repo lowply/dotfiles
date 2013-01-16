@@ -23,7 +23,6 @@ NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'vim-scripts/gtags.vim'
-NeoBundle 'mattn/zencoding-vim'
 NeoBundle 'wavded/vim-stylus'
 
 filetype plugin indent on

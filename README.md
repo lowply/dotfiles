@@ -2,10 +2,8 @@
 
 - .vimrc for vim
 - .vim for vim plugins/colorscheme (with [neobundle](https://github.com/Shougo/neobundle.vim) as a git submodule)
-- .gvimrc for [MacVim](http://code.google.com/p/macvim/)
 - .tmux.conf for [tmux](http://tmux.sourceforge.net/)
 - Fixture.terminal for [Terminal.app](http://www.apple.com/macosx/apps/all.html#terminal) Theme
-- molokai.patch is a tiny patch to disable molokai's bgcolor
 - symlink.sh as post-install script
 - .gitignore, README
 

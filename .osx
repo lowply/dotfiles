@@ -3,11 +3,9 @@
 #
 
 if [ -x /usr/local/bin/brew ]; then
-  echo ""
+  brew install coreutils tmux gettext gnu-sed gnu-tar htop-osx wget nkf pidof
 else
-  echo "install homebrew and run"
-  echo "'brew install coreutils tmux '"
-  echo "then hit .osx again!"
+  echo "install xcode, command line tools, homebrew and hit .osx again!"
   exit 1;
 fi
 
