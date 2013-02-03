@@ -12,7 +12,7 @@ fi
 gecho -ne "
 # added `date +%y%m%d`
 alias ls='gls --color=auto'
-alias tm='tmux -2 a || tmux -2'
+alias tm='tmux -2u a || tmux -2u'
 alias man='LANG=ja_JP.utf8 man'
 " >> ~/.bash_profile
 
