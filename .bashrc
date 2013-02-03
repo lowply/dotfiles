@@ -24,7 +24,7 @@ alias egrep='egrep --color=auto'
 #
 # Keychain
 #
-/usr/bin/keychain $HOME/.ssh/id_rsa
+keychain $HOME/.ssh/id_rsa
 source $HOME/.keychain/$HOSTNAME-sh
 
 #
