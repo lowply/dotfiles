@@ -2,19 +2,17 @@
 # ~/.osx
 #
 
+cd $HOME
+cp -a .bash_profile{,.`date +%y%m%d`}
+ln -s dotfiles/.bashrc .
+ln -s dotfiles/.bash_profile .
+
 if [ -x /usr/local/bin/brew ]; then
   brew install coreutils tmux gettext gnu-sed gnu-tar htop-osx wget nkf pidof
 else
   echo "install xcode, command line tools, homebrew and hit .osx again!"
   exit 1;
 fi
-
-gecho -ne "
-# added `date +%y%m%d`
-alias ls='gls --color=auto'
-alias tm='tmux -2u a || tmux -2u'
-alias man='LANG=ja_JP.utf8 man'
-" >> ~/.bash_profile
 
 # disable dashboard
 defaults write com.apple.dashboard mcx-disabled -boolean YES

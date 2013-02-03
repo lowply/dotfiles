@@ -24,6 +24,7 @@ NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'vim-scripts/gtags.vim'
 NeoBundle 'wavded/vim-stylus'
+NeoBundle 'derekwyatt/vim-scala'
 
 filetype plugin indent on
 

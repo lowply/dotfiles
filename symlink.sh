@@ -1,12 +1,17 @@
 #!/bin/sh
-cd $(dirname $0)
-for dotfile in .?*
+
+cd $HOME
+mv .bashrc{,.`date +%y%m%d`}
+mv .bash_profile{,.`date +%y%m%d`}
+
+cd $HOME/dotfiles
+dotfiles=`ls -a | egrep "^\." | egrep -v "git|osx|^\.\.$|^\.$"`
+
+for dotfile in $dotfiles
 do
-    if [ $dotfile != '..' ] && [ $dotfile != '.git' ]
-    then
-        ln -Fis "$PWD/$dotfile" $HOME
-    fi
+    ln -Fis "$PWD/$dotfile" $HOME
 done
+
 if [ ! -d ~/.vim_tmp ]; then
     mkdir ~/.vim_tmp
 fi
