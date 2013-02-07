@@ -64,20 +64,20 @@ export EDITOR=/usr/bin/vim
  
 function color_local {
   BACKGROUND=0
-  UNAME=198
-  SYMBOL=147
-  HOST=173
-  DIRNAME=120
-  PROMPT=129
-}
-
-function color_remote {
-  BACKGROUND=0
   UNAME=112
   SYMBOL=127
   HOST=222
   DIRNAME=39
   PROMPT=109
+}
+
+function color_remote {
+  BACKGROUND=0
+  UNAME=198
+  SYMBOL=147
+  HOST=173
+  DIRNAME=120
+  PROMPT=129
 }
 
 function bgcolor {
