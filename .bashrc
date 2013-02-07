@@ -56,30 +56,30 @@ export LESS='-X -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
 export EDITOR=/usr/bin/vim
 
 #
-# PS1 (from https://gist.github.com/293517)
+# PS1
 #
-function smart_pwd {
-    local pwdmaxlen=25
-    local trunc_symbol=".."
-    local dir=${PWD##*/}
-    local tmp=""
-    pwdmaxlen=$(( ( pwdmaxlen < ${#dir} ) ? ${#dir} : pwdmaxlen ))
-    NEW_PWD=${PWD/#$HOME/\~}
-    local pwdoffset=$(( ${#NEW_PWD} - pwdmaxlen ))
-    if [ ${pwdoffset} -gt "0" ]
-    then
-        tmp=${NEW_PWD:$pwdoffset:$pwdmaxlen}
-        tmp=${trunc_symbol}/${tmp#*/}
-        if [ "${#tmp}" -lt "${#NEW_PWD}" ]; then
-            NEW_PWD=$tmp
-        fi
-    fi
-}
  
-function boldtext {
-    echo "\\[\\033[1m\\]"$1"\\[\\033[0m\\]"
-}
+# use this command to check 256 color:
+# for i in {0..255}; do echo -e "\e[38;05;${i}m${i}"; done | column -c 80 -s '  '; echo -e "\e[m"
  
+function color_local {
+  BACKGROUND=0
+  UNAME=198
+  SYMBOL=147
+  HOST=173
+  DIRNAME=120
+  PROMPT=129
+}
+
+function color_remote {
+  BACKGROUND=0
+  UNAME=112
+  SYMBOL=127
+  HOST=222
+  DIRNAME=39
+  PROMPT=109
+}
+
 function bgcolor {
     echo "\\[\\033[48;5;"$1"m\\]"
 }
@@ -93,23 +93,27 @@ function resetcolor {
 }
  
 function fancyprompt {
-    PROMPT_COMMAND="smart_pwd"
-    PS1="$(bgcolor 0)$(fgcolor 198)\u$(fgcolor 147)@$(fgcolor 172)\h$(fgcolor 147)$(boldtext :)$(bgcolor 232)$(fgcolor 120)\$NEW_PWD$(resetcolor)$(bgcolor 0)$(fgcolor 220)$(resetcolor)$(fgcolor 129)"'\$ '"$(resetcolor)"
+    PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(resetcolor)$(fgcolor $PROMPT)"'\$ '"$(resetcolor)"
 }
 
-# use this command to check 256 color:
-# for i in {0..255}; do echo -e "\e[38;05;${i}m${i}"; done | column -c 80 -s '  '; echo -e "\e[m"
- 
 function dullprompt {
-    PROMPT_COMMAND=""
     PS1="\u@\h:\w\$ "
 }
 
-case "$TERM" in
-xterm-color|xterm-256color|rxvt*|screen-256color)
-        fancyprompt
+case "$TERM_PROGRAM" in
+Apple_Terminal)
+    color_local
     ;;
 *)
-        dullprompt
+    color_remote
+    ;;
+esac
+
+case "$TERM" in
+xterm-color|xterm-256color|rxvt*|screen-256color)
+    fancyprompt
+    ;;
+*)
+    dullprompt
     ;;
 esac
