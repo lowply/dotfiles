@@ -117,3 +117,15 @@ xterm-color|xterm-256color|rxvt*|screen-256color)
     dullprompt
     ;;
 esac
+
+#
+# PATH setting
+#
+
+case "$TERM_PROGRAM" in
+Apple_Terminal)
+    PATH=$PATH:/usr/local/sbin/
+    export PATH
+    ;;
+esac
+
