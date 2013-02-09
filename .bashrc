@@ -129,3 +129,10 @@ Apple_Terminal)
     ;;
 esac
 
+#
+# read OS specific alias settings
+#
+
+if [ -f ~/.bash_aliases ]; then
+	. ~/.bash_aliases
+fi
