@@ -24,8 +24,10 @@ alias egrep='egrep --color=auto'
 #
 # Keychain
 #
-keychain $HOME/.ssh/id_rsa
-source $HOME/.keychain/$HOSTNAME-sh
+if [ -x /usr/bin/keychain ]; then
+  keychain $HOME/.ssh/id_rsa
+  source $HOME/.keychain/$HOSTNAME-sh
+fi
 
 #
 # append to the history file, don't overwrite it
