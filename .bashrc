@@ -126,7 +126,7 @@ esac
 
 case "$TERM_PROGRAM" in
 Apple_Terminal)
-    PATH=$PATH:/usr/local/sbin/
+    PATH=$PATH:/usr/local/sbin
     export PATH
     ;;
 esac
