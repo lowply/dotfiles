@@ -121,17 +121,6 @@ xterm-color|xterm-256color|rxvt*|screen-256color)
 esac
 
 #
-# PATH setting
-#
-
-case "$TERM_PROGRAM" in
-Apple_Terminal)
-    PATH=$PATH:/usr/local/sbin
-    export PATH
-    ;;
-esac
-
-#
 # read OS specific alias settings
 #
 

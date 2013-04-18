@@ -30,3 +30,14 @@ for app in Finder Dock SystemUIServer
 do
   killall "$app" > /dev/null 2>&1
 done
+
+#
+# do this later (2013-04-18)
+#
+# cd /etc
+# mv paths{,.$DATE}
+# touch paths
+# echo "/usr/local/bin" >> /etc/paths
+# echo "/usr/local/sbin" >> /etc/paths
+# perl -pe "s|/usr/local/bin\n||g" paths.$DATE >> paths
+# /usr/libexec/path_helper -s
