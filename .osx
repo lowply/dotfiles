@@ -8,7 +8,7 @@ ln -s dotfiles/.bashrc .
 ln -s dotfiles/.bash_profile .
 
 if [ -x /usr/local/bin/brew ]; then
-  brew install coreutils tmux gettext gnu-sed gnu-tar htop-osx wget nkf pidof keychain
+  brew install coreutils tmux gettext gnu-sed gnu-tar htop-osx wget nkf pidof keychain reattach-to-user-namespace tree watch colordiff pstree the_silver_searcher git tig hub ngrep
 else
   echo "install xcode, command line tools, homebrew and hit .osx again!"
   exit 1;
