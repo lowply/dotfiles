@@ -1,5 +1,6 @@
 #
 # ~/.osx
+# sudo sh .osx
 #
 
 cd $HOME
@@ -31,13 +32,21 @@ do
   killall "$app" > /dev/null 2>&1
 done
 
+DATE=`date +%y%m%d`
+
 #
-# do this later (2013-04-18)
+# path setting
 #
-# cd /etc
-# mv paths{,.$DATE}
-# touch paths
-# echo "/usr/local/bin" >> /etc/paths
-# echo "/usr/local/sbin" >> /etc/paths
-# perl -pe "s|/usr/local/bin\n||g" paths.$DATE >> paths
-# /usr/libexec/path_helper -s
+cd /etc
+cp -a paths{,.$DATE}
+echo "" > paths
+
+echo "
+/usr/local/bin
+/usr/local/sbin
+/usr/local/share/npm/bin
+" >> /etc/paths.d/10-user
+
+cat paths.$DATE >> /etc/paths.d/20-default
+
+/usr/libexec/path_helper -s
