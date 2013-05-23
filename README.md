@@ -5,7 +5,8 @@
 - .vim for vim plugins/colorscheme (with [neobundle](https://github.com/Shougo/neobundle.vim) as git submodule)
 - .zshrc for [zsh](http://www.zsh.org/) (with [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) as git submodule)
 - .bashrc
-- .osx for Mountain Lion (10.8) 
+- .gitconfig
+- osx.sh for Mountain Lion (use like sh osx.sh)
 - Fixture.terminal for [Terminal.app](http://www.apple.com/osx/apps/all.html#terminal) Theme
 - symlink.sh as install script
 - .gitignore, README
