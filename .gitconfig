@@ -1,0 +1,15 @@
+[user]
+	name = Sho Mizutani
+	email = lowply@gmail.com
+[alias]
+  co = checkout
+  st = status -sb # simple status
+  pr = pull --rebase # no merge commit when pulling
+  fo = fetch origin
+  ro = rebase origin # you can rebase to master by fo -> ro in branch
+  rc = rebase --continue
+  wd = diff --word-diff
+  gp = grep -n # grep with line nums
+  lg = log --graph --pretty=oneline --decorate --date=short --abbrev-commit --branches # tree log ( via http://webtech-walker.com/archive/2010/03/04034601.html)
+[color]
+	ui = auto
