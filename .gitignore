@@ -9,4 +9,5 @@
 !/.gitignore
 !/symlink.sh
 !/Fixture.terminal
+!/.oh-my-zsh
 !/README.md

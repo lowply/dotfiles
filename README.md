@@ -1,10 +1,13 @@
 # lowply/dotfiles
 
-- .vimrc for vim
-- .vim for vim plugins/colorscheme (with [neobundle](https://github.com/Shougo/neobundle.vim) as a git submodule)
 - .tmux.conf for [tmux](http://tmux.sourceforge.net/)
-- Fixture.terminal for [Terminal.app](http://www.apple.com/macosx/apps/all.html#terminal) Theme
-- symlink.sh as post-install script
+- .vimrc for [vim](http://www.vim.org/)
+- .vim for vim plugins/colorscheme (with [neobundle](https://github.com/Shougo/neobundle.vim) as git submodule)
+- .zshrc for [zsh](http://www.zsh.org/) (with [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) as git submodule)
+- .bashrc
+- .osx for Mountain Lion (10.8) 
+- Fixture.terminal for [Terminal.app](http://www.apple.com/osx/apps/all.html#terminal) Theme
+- symlink.sh as install script
 - .gitignore, README
 
 ## how to use
