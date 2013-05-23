@@ -5,11 +5,11 @@
 !/.gitignore
 !/.gitmodules
 !/.oh-my-zsh
-!/.osx
 !/.tmux.conf
 !/.vim
 !/.vimrc
 !/.zshrc
 !/Fixture.terminal
 !/README.md
+!/osx
 !/symlink.sh
