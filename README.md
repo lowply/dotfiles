@@ -3,7 +3,6 @@
 - .tmux.conf for [tmux](http://tmux.sourceforge.net/)
 - .vimrc for [vim](http://www.vim.org/)
 - .vim for vim plugins/colorscheme (with [neobundle](https://github.com/Shougo/neobundle.vim) as git submodule)
-- .zshrc for [zsh](http://www.zsh.org/) (with [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) as git submodule)
 - .bashrc
 - .gitconfig
 - osx.sh for Mountain Lion (use like sh osx.sh)
