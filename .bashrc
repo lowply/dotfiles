@@ -22,6 +22,12 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 #
+# golang
+#
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+
+#
 # Keychain
 #
 if [ -x /usr/bin/keychain ]; then
