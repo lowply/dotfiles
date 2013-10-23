@@ -22,9 +22,9 @@ NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
-NeoBundle 'vim-scripts/gtags.vim'
 NeoBundle 'wavded/vim-stylus'
-NeoBundle 'derekwyatt/vim-scala'
+
+NeoBundleLazy 'Blackrush/vim-gocode', {"autoload": {"filetypes": ['go']}}
 
 filetype plugin indent on
 
@@ -128,16 +128,6 @@ set directory=~/.vim_tmp
 
 set termencoding=utf-8
 set encoding=utf-8
-
-"----------------------------------------
-" global gtags
-"----------------------------------------
-
-map <C-g> :Gtags
-map <C-h> :Gtags -f %<CR>
-map <C-j> :GtagsCursor<CR>
-map <C-n> :cn<CR>
-map <C-p> :cp<CR>
 
 "----------------------------------------
 " zen-coding
