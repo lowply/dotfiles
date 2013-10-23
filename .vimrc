@@ -24,11 +24,15 @@ NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
 
-"-NeoBundle 'Blackrush/vim-gocode'
-
 "----------------------------------------
 " go
 "----------------------------------------
+" Some Linux distributions set filetype in /etc/vimrc.
+" Clear filetype flags before changing runtimepath to force Vim to reload them.
+
+filetype off
+filetype plugin indent off
+
 " Make sure that you have installed gocode : go get github.com/nsf/gocode
 " http://mattn.kaoriya.net/software/vim/20130531000559.htm
 
@@ -36,15 +40,6 @@ set rtp+=/usr/local/go/misc/vim
 exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
 set completeopt=menu,preview
 
-"----------------------------------------
-" filetype
-"----------------------------------------
-
-" Some Linux distributions set filetype in /etc/vimrc.
-" Clear filetype flags before changing runtimepath to force Vim to reload them.
-filetype off
-filetype plugin indent off
-set runtimepath+=$GOROOT/misc/vim
 filetype plugin indent on
 
 "----------------------------------------
