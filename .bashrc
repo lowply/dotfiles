@@ -125,11 +125,3 @@ xterm-color|xterm-256color|rxvt*|screen-256color)
     dullprompt
     ;;
 esac
-
-#
-# read OS specific alias settings
-#
-
-if [ -f ~/.bash_aliases ]; then
-	. ~/.bash_aliases
-fi
