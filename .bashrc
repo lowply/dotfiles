@@ -22,12 +22,6 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 #
-# golang
-#
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-
-#
 # Keychain
 #
 if [ -x /usr/bin/keychain ]; then
@@ -124,4 +118,56 @@ xterm-color|xterm-256color|rxvt*|screen-256color)
 *)
     dullprompt
     ;;
+esac
+
+#
+# path
+#
+case "${OSTYPE}" in
+darwin*)
+	#
+	# clear path once if tmux
+	#
+	if [ ${TMUX} ]; then
+		PATH=""
+	fi
+
+	#
+	# read default path
+	#
+	if [ -x /usr/libexec/path_helper ]; then
+		eval `/usr/libexec/path_helper -s`
+	fi
+
+	#
+	# for homebrew
+	#
+	if [ -f /usr/local/bin/brew ]; then
+		PATH=/usr/local/bin:/usr/local/sbin:$PATH
+	fi
+	
+	#
+	# coreutils
+	#
+	if [ -d /usr/local/opt/coreutils/libexec/gnubin ]; then
+		PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
+		MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
+		alias ls='ls --color=auto'
+	fi
+	
+	#
+	# golang
+	#
+	if [ -f /usr/local/bin/go ]; then
+		GOPATH=$HOME/go
+		PATH=$PATH:$GOPATH/bin
+	fi
+	
+	export GOPATH
+	export PATH
+	export MANPATH
+	;;
+linux*)
+	echo "linux"
+	;;
 esac
