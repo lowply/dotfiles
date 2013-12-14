@@ -125,7 +125,6 @@ esac
 #
 case "${OSTYPE}" in
 darwin*)
-	echo "mac"
 	#
 	# clear path once if tmux
 	#
@@ -169,6 +168,5 @@ darwin*)
 	export MANPATH
 	;;
 linux*)
-	echo "linux"
 	;;
 esac
