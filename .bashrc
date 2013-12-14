@@ -24,10 +24,10 @@ alias egrep='egrep --color=auto'
 #
 # Keychain
 #
-if [ -x /usr/bin/keychain ]; then
-  keychain $HOME/.ssh/id_rsa
-  source $HOME/.keychain/$HOSTNAME-sh
-fi
+#if [ -x /usr/bin/keychain ]; then
+#  keychain $HOME/.ssh/id_rsa
+#  source $HOME/.keychain/$HOSTNAME-sh
+#fi
 
 #
 # append to the history file, don't overwrite it
@@ -125,6 +125,7 @@ esac
 #
 case "${OSTYPE}" in
 darwin*)
+	echo "mac"
 	#
 	# clear path once if tmux
 	#
