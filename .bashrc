@@ -163,6 +163,13 @@ darwin*)
 		PATH=$PATH:$GOPATH/bin
 	fi
 	
+	#
+	# bash completion (need brew install bash-completion
+	#
+	if [ -f $(brew --prefix)/etc/bash_completion ]; then
+	  . $(brew --prefix)/etc/bash_completion
+	fi
+
 	export GOPATH
 	export PATH
 	export MANPATH
