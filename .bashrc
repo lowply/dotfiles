@@ -164,6 +164,11 @@ darwin*)
 	fi
 	
 	#
+	# LANG
+	#
+	export LANG=en_US.UTF-8
+
+	#
 	# bash completion (need brew install bash-completion
 	#
 	if [ -f $(brew --prefix)/etc/bash_completion ]; then
