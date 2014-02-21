@@ -1,6 +1,8 @@
 /*
 /*.
 !/.bashrc
+!/.bashrc_osx
+!/.bashrc_linux
 !/.bash_profile
 !/.gitconfig
 !/.gitignore
