@@ -12,9 +12,11 @@ filetype off
 
 if has('vim_starting')
     set runtimepath+=~/.vim/bundle/neobundle.vim/
-    call neobundle#rc(expand('~/.vim/bundle/'))
 endif
 
+call neobundle#rc(expand('~/.vim/bundle/'))
+
+NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/vimshell'
@@ -23,19 +25,18 @@ NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
+if (isdirectory(expand('$GOROOT')))
+	NeoBundle 'go', {'type' : 'nosync'}
+endif
+
+filetype plugin indent on
+NeoBundleCheck
 
 "----------------------------------------
 " go
 "----------------------------------------
 
-" Some Linux distributions set filetype in /etc/vimrc.
-" Clear filetype flags before changing runtimepath to force Vim to reload them.
-filetype off
-filetype plugin indent off
-set runtimepath+=$GOROOT/misc/vim
-filetype plugin indent on
-syntax on
-
+" auto format when the file saved
 autocmd FileType go autocmd BufWritePre <buffer> Fmt
 
 "----------------------------------------
@@ -138,61 +139,4 @@ set directory=~/.vim_tmp
 
 set termencoding=utf-8
 set encoding=utf-8
-
-"----------------------------------------
-" zen-coding
-"----------------------------------------
-
-let g:user_zen_settings = { 'indentation':'  ' }
-
-" Anywhere SID.
-function! s:SID_PREFIX()
-  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
-endfunction
-
-"----------------------------------------
-" tab editing (http://qiita.com/wadako111@github/items/755e753677dd72d8036d)
-"----------------------------------------
-
-" Set tabline.
-function! s:my_tabline()  "{{{
-  let s = ''
-  for i in range(1, tabpagenr('$'))
-    let bufnrs = tabpagebuflist(i)
-    let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
-    let no = i  " display 0-origin tabpagenr.
-    let mod = getbufvar(bufnr, '&modified') ? '!' : ' '
-    let title = fnamemodify(bufname(bufnr), ':t')
-    let title = '[' . title . ']'
-    let s .= '%'.i.'T'
-    let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
-    let s .= no . ':' . title
-    let s .= mod
-    let s .= '%#TabLineFill# '
-  endfor
-  let s .= '%#TabLineFill#%T%=%#TabLine#'
-  return s
-endfunction "}}}
-let &tabline = '%!'. s:SID_PREFIX() . 'my_tabline()'
-set showtabline=2 " 常にタブラインを表示
-
-" The prefix key.
-nnoremap    [Tag]   <Nop>
-nmap    t [Tag]
-" Tab jump
-for n in range(1, 9)
-  execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
-endfor
-" t1 で1番左のタブ、t2 で1番左から2番目のタブにジャンプ
-
-map <silent> [Tag]c :tablast <bar> tabnew<CR>
-" tc 新しいタブを一番右に作る
-map <silent> [Tag]x :tabclose<CR>
-" tx タブを閉じる
-"
-" DISABLED - USE gt/gT
-" map <silent> [Tag]n :tabnext<CR>
-" tn 次のタブ
-" map <silent> [Tag]p :tabprevious<CR>
-" tp 前のタブ
 
