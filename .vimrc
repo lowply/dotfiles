@@ -17,7 +17,7 @@ endif
 call neobundle#rc(expand('~/.vim/bundle/'))
 
 NeoBundleFetch 'Shougo/neobundle.vim'
-NeoBundle 'Shougo/neobundle.vim'
+
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/unite.vim'
@@ -25,9 +25,9 @@ NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
-if (isdirectory(expand('$GOROOT')))
-	NeoBundle 'go', {'type' : 'nosync'}
-endif
+NeoBundleLazy 'Blackrush/vim-gocode', {"autoload": {"filetypes": ['go']}}
+NeoBundle 'golint', {'type' : 'nosync'}
+NeoBundle 'go', {'type' : 'nosync'}
 
 filetype plugin indent on
 NeoBundleCheck
@@ -36,8 +36,12 @@ NeoBundleCheck
 " go
 "----------------------------------------
 
+" https://github.com/golang/lint
+" set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
+
 " auto format when the file saved
 autocmd FileType go autocmd BufWritePre <buffer> Fmt
+autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
 
 "----------------------------------------
 " enable neocomplcache
