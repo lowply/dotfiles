@@ -10,6 +10,7 @@
 !/.tmux.conf
 !/.vim
 !/.vimrc
+!/.vimrc_neocomplete
 !/Fixture.terminal
 !/README.md
 !/osx.sh

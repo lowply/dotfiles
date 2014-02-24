@@ -21,13 +21,12 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'Shougo/vimproc'
 NeoBundle 'Shougo/vimshell'
 NeoBundle 'Shougo/unite.vim'
-NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
-NeoBundleLazy 'Blackrush/vim-gocode', {"autoload": {"filetypes": ['go']}}
-NeoBundle 'golint', {'type' : 'nosync'}
 NeoBundle 'go', {'type' : 'nosync'}
+NeoBundle 'gocode', {'type' : 'nosync'}
 
 filetype plugin indent on
 NeoBundleCheck
@@ -36,35 +35,30 @@ NeoBundleCheck
 " go
 "----------------------------------------
 
-" https://github.com/golang/lint
-" set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
-
 " auto format when the file saved
 autocmd FileType go autocmd BufWritePre <buffer> Fmt
-autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
 
 "----------------------------------------
-" enable neocomplcache
+" neocomplete.vim
 "----------------------------------------
 
-let g:neocomplcache_enable_at_startup = 1
+" https://github.com/Shougo/neocomplete.vim
+source ~/.vimrc_neocomplete
 
-" use tab to select (http://masterka.seesaa.net/article/161781923.html)
+"----------------------------------------
+" brackets
+"----------------------------------------
 
-function InsertTabWrapper()
-    if pumvisible()
-        return "\<c-n>"
-    endif
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k\|<\|/'
-        return "\<tab>"
-    elseif exists('&omnifunc') && &omnifunc == ''
-        return "\<c-n>"
-    else
-        return "\<c-x>\<c-o>"
-    endif
-endfunction
-inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+inoremap { {}<LEFT>
+inoremap [ []<LEFT>
+inoremap ( ()<LEFT>
+inoremap " ""<LEFT>
+inoremap ' ''<LEFT>
+vnoremap { "zdi^V{<C-R>z}<ESC>
+vnoremap [ "zdi^V[<C-R>z]<ESC>
+vnoremap ( "zdi^V(<C-R>z)<ESC>
+vnoremap " "zdi^V"<C-R>z^V"<ESC>
+vnoremap ' "zdi'<C-R>z'<ESC>
 
 " ---------------------------------------
 " syntax color
