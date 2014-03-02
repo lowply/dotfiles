@@ -53,9 +53,13 @@ HISTTIMEFORMAT="%y/%m/%d %H:%M:%S : "
 export LESS='-X -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
 
 #
-# EDITOR
+# set EDITOR to vim
 #
-export EDITOR=/usr/bin/vim
+if [ -f /usr/local/bin/vim ]; then
+    export EDITOR=/usr/local/bin/vim
+else
+    export EDITOR=/usr/bin/vim
+fi
 
 #
 # PS1
