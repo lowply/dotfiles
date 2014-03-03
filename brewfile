@@ -1,8 +1,11 @@
+tap phinze/homebrew-cask || true
+tap homebrew/versions || true
 update || true
 upgrade || true
 
 install bash-completion || true
 install boot2docker || true
+install brew-cask || true
 install cdrtools || true
 install colordiff || true
 install coreutils || true
@@ -46,5 +49,12 @@ install readline || true
 install nginx ||  true
 install sqlite || true
 install memcached || true
+install nkf || true
+install gettext || true
+install pidof || true
+install keychain || true
+install ngrep || true
 
-clean
+cask install keyremap4macbook || true
+cask install vagrant || true
+cask install virtualbox || true
