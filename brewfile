@@ -1,0 +1,50 @@
+update || true
+upgrade || true
+
+install bash-completion || true
+install boot2docker || true
+install cdrtools || true
+install colordiff || true
+install coreutils || true
+install dnsmasq || true
+install docker || true
+install dvdbackup || true
+install ffmpeg || true
+install fontforge || true
+install git || true
+install gnu-getopt || true
+install gnu-sed || true
+install gnu-tar || true
+install go || true
+install htop-osx || true
+install jpeg || true
+install lua || true
+install mercurial || true
+install mobile-shell || true
+install mysql || true
+install openssl || true
+install pcre || true
+install pstree || true
+install rename || true
+install source-highlight || true
+install texi2html || true
+install tig || true
+install tmux || true
+install unrar || true
+install 'vim --with-lua' || true
+install watch || true
+install wdiff || true
+install wget || true
+install x264 || true
+install hg || true
+install ag || true
+install gist || true
+install gibo || true
+install hub || true
+install tree || true
+install readline || true
+install nginx ||  true
+install sqlite || true
+install memcached || true
+
+clean

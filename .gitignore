@@ -13,5 +13,6 @@
 !/.vimrc_neocomplete
 !/Fixture.terminal
 !/README.md
+!/brewfile
 !/osx.sh
 !/symlink.sh

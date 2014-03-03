@@ -52,7 +52,7 @@ HISTTIMEFORMAT="%y/%m/%d %H:%M:%S : "
 # http://kazmax.zpp.jp/cmd/l/less.1.html
 # http://qiita.com/hatchinee/items/586fb1c4915e2bb5c03b
 #
-export LESS='-X -F -R -g -j10 -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
+export LESS='-X -R -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
 
 #
 # http://blog.elliptium.net/2011/11/less-homebrew
