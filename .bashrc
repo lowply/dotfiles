@@ -57,8 +57,9 @@ export LESS='-X -F -R -g -j10 -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\
 #
 # http://blog.elliptium.net/2011/11/less-homebrew
 #
-if [ -f /usr/local/bin/src-hilite-lesspipe.sh ];then
-	export LESSOPEN="| /usr/local/bin/src-hilite-lesspipe.sh %s"
+if type src-hilite-lesspipe.sh > /dev/null 2>&1;then
+	LESSPIPE=`which src-hilite-lesspipe.sh`
+	export LESSOPEN="| $LESSPIPE %s"
 fi
 
 #
