@@ -24,10 +24,10 @@ alias egrep='egrep --color=auto'
 #
 # Keychain
 #
-#if [ -x /usr/bin/keychain ]; then
-#  keychain $HOME/.ssh/id_rsa
-#  source $HOME/.keychain/$HOSTNAME-sh
-#fi
+if [ -x /usr/bin/keychain ]; then
+  keychain $HOME/.ssh/id_rsa
+  source $HOME/.keychain/$HOSTNAME-sh
+fi
 
 #
 # append to the history file, don't overwrite it
@@ -48,9 +48,18 @@ HISTSIZE=10000
 HISTTIMEFORMAT="%y/%m/%d %H:%M:%S : "
 
 #
-# less prompt customize. see details for http://kazmax.zpp.jp/cmd/l/less.1.html
+# less prompt customize. See details for
+# http://kazmax.zpp.jp/cmd/l/less.1.html
+# http://qiita.com/hatchinee/items/586fb1c4915e2bb5c03b
 #
-export LESS='-X -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
+export LESS='-X -F -R -g -j10 -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
+
+#
+# http://blog.elliptium.net/2011/11/less-homebrew
+#
+if [ -f /usr/local/bin/src-hilite-lesspipe.sh ];then
+	export LESSOPEN="| /usr/local/bin/src-hilite-lesspipe.sh %s"
+fi
 
 #
 # set EDITOR to vim
