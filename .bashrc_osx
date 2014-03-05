@@ -38,7 +38,7 @@ fi
 # http://qiita.com/methane/items/4905f40e4772afec3e60
 #
 if [ -d /usr/local/opt/go/libexec/bin ]; then
-	PATH=$PATH:/usr/local/opt/go/libexec/bin
+    PATH=$PATH:/usr/local/opt/go/libexec/bin
 fi
 
 #
