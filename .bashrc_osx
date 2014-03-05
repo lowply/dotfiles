@@ -34,6 +34,14 @@ if [ -d /usr/local/opt/coreutils/libexec/gnubin ]; then
 fi
 
 #
+# $GOROOT/bin for godoc, vet, etc. /usr/local/opt/go is symlink to $GOROOT
+# http://qiita.com/methane/items/4905f40e4772afec3e60
+#
+if [ -d /usr/local/opt/go/libexec/bin ]; then
+	PATH=$PATH:/usr/local/opt/go/libexec/bin
+fi
+
+#
 # bash completion (need brew install bash-completion
 #
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
