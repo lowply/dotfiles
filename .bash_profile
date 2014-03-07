@@ -8,6 +8,11 @@ if [ -f ~/.bashrc ]; then
 fi
 
 #
+# rbenv
+#
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+#
 # read OS specific alias settings
 #
 

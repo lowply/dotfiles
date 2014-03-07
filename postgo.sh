@@ -6,7 +6,7 @@ if [ -x "$GOINSTALLPATH" ]; then
 	#
 	# gopath dir
 	#
-	if [ -d $HOME/go ]; then
+	if [ ! -d $HOME/go ]; then
 		mkdir $HOME/go
 	fi
 
