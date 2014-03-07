@@ -1,11 +1,3 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =9
-let g:netrw_dirhist_1='/root/.vim'
-let g:netrw_dirhist_2='/tmp/test'
-let g:netrw_dirhist_3='/tmp/test/htdocs'
-let g:netrw_dirhist_4='/root/dotfiles/.vim'
-let g:netrw_dirhist_5='/Users/sho/dotfiles'
-let g:netrw_dirhist_6='/Users/sho/.vim'
-let g:netrw_dirhist_7='/Users/sho/dotfiles/.vim/bundle/neocomplete.vim/autoload/neocomplete'
-let g:netrw_dirhist_8='/Users/sho/dotfiles/.vim/bundle/neocomplete.vim/autoload/neocomplete/sources'
-let g:netrw_dirhist_9='/Users/sho/Dropbox/FixtureDesignworks/Website/lowply.com/htdocs'
+let g:netrw_dirhist_cnt =1
+let g:netrw_dirhist_1='/Users/sho/.gem'

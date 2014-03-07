@@ -34,6 +34,12 @@ if [ -d /usr/local/opt/coreutils/libexec/gnubin ]; then
 fi
 
 #
+# rbenv
+#
+export RBENV_ROOT=/usr/local/var/rbenv
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+#
 # $GOROOT/bin for godoc, vet, etc. /usr/local/opt/go is symlink to $GOROOT
 # http://qiita.com/methane/items/4905f40e4772afec3e60
 #

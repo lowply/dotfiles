@@ -54,6 +54,8 @@ install gettext || true
 install pidof || true
 install keychain || true
 install ngrep || true
+install rbenv || true
+install ruby-build || true
 
 cask install keyremap4macbook || true
 cask install vagrant || true

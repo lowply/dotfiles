@@ -17,3 +17,5 @@
 !/osx.sh
 !/symlink.sh
 !/postgo.sh
+/.vim/.netrwhist
+

@@ -1,3 +1,14 @@
 #
-# bashrc for linux
+# Keychain
 #
+if [ -x /usr/bin/keychain ]; then
+  keychain $HOME/.ssh/id_rsa
+  source $HOME/.keychain/$HOSTNAME-sh
+fi
+
+#
+# rbenv
+#
+export PATH="$HOME/.rbenv/bin:$PATH"
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
