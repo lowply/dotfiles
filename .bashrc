@@ -71,22 +71,34 @@ fi
 # for i in {0..255}; do echo -e "\e[38;05;${i}m${i}"; done | column -c 80 -s '  '; echo -e "\e[m"
  
 function color_local {
-  BACKGROUND=0
-  UNAME=112
-  SYMBOL=127
-  HOST=222
-  DIRNAME=39
-  PROMPT=109
+	BACKGROUND=0
+	UNAME=112
+	SYMBOL=127
+	HOST=222
+	DIRNAME=39
+	PROMPT=109
 }
 
-function color_remote {
-  BACKGROUND=0
-  UNAME=198
-  SYMBOL=147
-  HOST=173
-  DIRNAME=120
-  PROMPT=129
+function color {
+	BACKGROUND=0
+	UNAME=198
+	SYMBOL=147
+	HOST=173
+	DIRNAME=120
+	PROMPT=129
 }
+
+case "$TERM_PROGRAM" in
+Apple_Terminal)
+    color_local
+    ;;
+*)
+	if [ -f $HOME/.bash_color ]; then
+		. $HOME/.bash_color
+	fi
+    color
+    ;;
+esac
 
 function bgcolor {
     echo "\\[\\033[48;5;"$1"m\\]"
@@ -100,31 +112,7 @@ function resetcolor {
     echo "\\[\\e[0m\\]"
 }
  
-function fancyprompt {
-    PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(resetcolor)$(fgcolor $PROMPT)"'\$ '"$(resetcolor)"
-}
-
-function dullprompt {
-    PS1="\u@\h:\w\$ "
-}
-
-case "$TERM_PROGRAM" in
-Apple_Terminal)
-    color_local
-    ;;
-*)
-    color_remote
-    ;;
-esac
-
-case "$TERM" in
-xterm-color|xterm-256color|rxvt*|screen-256color)
-    fancyprompt
-    ;;
-*)
-    dullprompt
-    ;;
-esac
+PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(resetcolor)$(fgcolor $PROMPT)"'\$ '"$(resetcolor)"
 
 #
 # path
