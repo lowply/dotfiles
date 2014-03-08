@@ -10,7 +10,7 @@ fi
 #
 # rbenv
 #
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+if type rbenv > /dev/null 2>&1; then eval "$(rbenv init -)"; fi
 
 #
 # read OS specific alias settings

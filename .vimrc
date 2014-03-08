@@ -33,8 +33,11 @@ NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
-NeoBundle 'go', {'type' : 'nosync'}
-NeoBundle 'gocode', {'type' : 'nosync'}
+
+if executable('go')
+	NeoBundle 'go', {'type' : 'nosync'}
+	NeoBundle 'gocode', {'type' : 'nosync'}
+endif
 
 filetype plugin indent on
 NeoBundleCheck

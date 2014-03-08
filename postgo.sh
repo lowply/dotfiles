@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GOINSTALLPATH=$(which go)
+if type go > /dev/null 2>&1; then GOINSTALLPATH=$(which go); fi
 
 if [ -x "$GOINSTALLPATH" ]; then
 	#
@@ -27,5 +27,6 @@ if [ -x "$GOINSTALLPATH" ]; then
 	linux*)
 		ln -Fis /usr/local/go/misc/vim go
 	;;
+	esac
 	ln -Fis $HOME/go/src/github.com/nsf/gocode/vim gocode
 fi
