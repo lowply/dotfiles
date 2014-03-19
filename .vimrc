@@ -134,3 +134,10 @@ set directory=~/.vim_tmp
 set termencoding=utf-8
 set encoding=utf-8
 
+
+inoremap jk <esc>
+let mapleader = ","
+nnoremap Q <Nop>
+nnoremap ZZ <Nop>
+nnoremap ZQ <Nop>
+nnoremap <Leader>vv :<C-u>VimShell<CR>
