@@ -141,3 +141,12 @@ nnoremap Q <Nop>
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
 nnoremap <Leader>vv :<C-u>VimShell<CR>
+
+
+nnoremap s <Nop>
+nnoremap sq :<C-u>q<CR>
+nnoremap sw :<C-u>wq<CR>
+nnoremap st :<C-u>tabnew<CR>
+nnoremap sT :<C-u>Unite tab<CR>
+nnoremap sn gt
+nnoremap sp gT
