@@ -107,7 +107,7 @@ PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST
 #
 case "${OSTYPE}" in
 darwin*)
-	. ~/.bashrc_osx
+	. ~/.bashrc_darwin
 	;;
 linux*)
 	. ~/.bashrc_linux
