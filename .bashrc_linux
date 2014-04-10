@@ -2,8 +2,8 @@
 # Keychain
 #
 if [ -x /usr/bin/keychain ]; then
-  keychain $HOME/.ssh/id_rsa
-  source $HOME/.keychain/$HOSTNAME-sh
+	keychain $HOME/.ssh/id_rsa
+	source $HOME/.keychain/$HOSTNAME-sh
 fi
 
 #

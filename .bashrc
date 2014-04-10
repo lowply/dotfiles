@@ -70,15 +70,6 @@ fi
 # use this command to check 256 color:
 # for i in {0..255}; do echo -e "\e[38;05;${i}m${i}"; done | column -c 80 -s '  '; echo -e "\e[m"
  
-function color_local {
-	BACKGROUND=0
-	UNAME=112
-	SYMBOL=127
-	HOST=222
-	DIRNAME=39
-	PROMPT=109
-}
-
 function color {
 	BACKGROUND=0
 	UNAME=198
@@ -88,17 +79,12 @@ function color {
 	PROMPT=129
 }
 
-case "$TERM_PROGRAM" in
-Apple_Terminal)
-    color_local
-    ;;
-*)
-	if [ -f $HOME/.bash_color ]; then
-		. $HOME/.bash_color
-	fi
-    color
-    ;;
-esac
+#
+# override color() if configured
+#
+if [ -f $HOME/.bash_color ]; then
+	. $HOME/.bash_color
+fi
 
 function bgcolor {
     echo "\\[\\033[48;5;"$1"m\\]"
@@ -111,7 +97,9 @@ function fgcolor {
 function resetcolor {
     echo "\\[\\e[0m\\]"
 }
- 
+
+color
+
 PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(resetcolor)$(fgcolor $PROMPT)"'\$ '"$(resetcolor)"
 
 #

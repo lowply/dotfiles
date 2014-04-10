@@ -41,9 +41,6 @@ export RBENV_ROOT=/usr/local/var/rbenv
 #
 # golang
 #
-# $GOROOT/bin for godoc, vet, etc. /usr/local/opt/go is symlink to $GOROOT
-# http://qiita.com/methane/items/4905f40e4772afec3e60
-#
 if [ -d /usr/local/opt/go/libexec/bin ]; then
 	GOPATH=$HOME/go
 	PATH=$GOPATH/bin:$PATH
@@ -53,11 +50,10 @@ fi
 # bash completion (need brew install bash-completion
 #
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
+	. $(brew --prefix)/etc/bash_completion
 fi
 
 export GOPATH
-export GOROOT
 export PATH
 export MANPATH
 
