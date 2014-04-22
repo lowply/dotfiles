@@ -1,5 +1,6 @@
 tap phinze/homebrew-cask || true
 tap homebrew/versions || true
+tap homebrew/completions || true
 update || true
 upgrade || true
 
@@ -56,6 +57,7 @@ install keychain || true
 install ngrep || true
 install rbenv || true
 install ruby-build || true
+install vagrant-completion || true
 
 cask install keyremap4macbook || true
 cask install vagrant || true
