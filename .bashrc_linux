@@ -9,16 +9,15 @@ fi
 #
 # rbenv
 #
-PATH=$HOME/.rbenv/bin:$PATH
+if [ -d $HOME/.rbenv ]; then
+	addpath $HOME/.rbenv/bin
+	eval "$(rbenv init -)"
+fi
 
 #
 # golang
 #
 if [ -d /usr/local/go/bin ]; then
-	GOPATH=$HOME/go
-	PATH=$GOPATH/bin:$PATH
+	export GOPATH=$HOME/go
+	addpath $GOPATH/bin
 fi
-
-export GOPATH
-export PATH
-export MANPATH
