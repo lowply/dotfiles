@@ -3,10 +3,17 @@
 #
 
 addpath(){
-	local GREP=`echo $PATH | grep $1`
-	if [ "${GREP}" = "" ]; then
-		export PATH=$1:$PATH
+	if [ ! -d $1 ]; then
+		echo "[addpath] \"$1\" does not exist."
+		exit 1
 	fi
+
+	if [ ! -z "`echo $PATH | grep $1`" ]; then
+		echo "[addpath] \"$1\" is already included in PATH"
+		exit 1
+	fi
+
+	export PATH=$1:$PATH
 }
 
 #
