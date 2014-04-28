@@ -1,3 +1,18 @@
+#
+# functions
+#
+
+addpath(){
+	if [ ! -d $1 ]; then
+		echo "[addpath] \"$1\" does not exist."
+	fi
+
+	if [ ! -z "`echo $PATH | grep $1`" ]; then
+		echo "[addpath] \"$1\" is already included in PATH"
+	fi
+
+	export PATH=$1:$PATH
+}
 
 #
 # read common bash settings
@@ -6,11 +21,6 @@
 if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
 fi
-
-#
-# rbenv
-#
-if type rbenv > /dev/null 2>&1; then eval "$(rbenv init -)"; fi
 
 #
 # read OS specific alias settings

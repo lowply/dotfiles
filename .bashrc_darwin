@@ -4,13 +4,6 @@
 export LANG=en_US.UTF-8
 
 #
-# clear path once if tmux
-#
-if [ ${TMUX} ]; then
-	PATH=""
-fi
-
-#
 # read default path
 #
 if [ -x /usr/libexec/path_helper ]; then
@@ -21,7 +14,8 @@ fi
 # for homebrew
 #
 if [ -f /usr/local/bin/brew ]; then
-	PATH=/usr/local/bin:/usr/local/sbin:$PATH
+	addpath /usr/local/bin
+	addpath /usr/local/sbin
 fi
 
 #
@@ -29,21 +23,21 @@ fi
 #
 if [ -d /usr/local/opt/coreutils/libexec/gnubin ]; then
 	PATH=/usr/local/opt/coreutils/libexec/gnubin:$PATH
-	MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
-	alias ls='ls --color=auto'
+	addpath /usr/local/opt/coreutils/libexec/gnubin
+	export MANPATH=/usr/local/opt/coreutils/libexec/gnuman:$MANPATH
 fi
 
 #
 # rbenv
 #
-export RBENV_ROOT=/usr/local/var/rbenv
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 #
 # golang
 #
 if [ -d /usr/local/opt/go/libexec/bin ]; then
-	GOPATH=$HOME/go
-	PATH=$GOPATH/bin:$PATH
+	export GOPATH=$HOME/go
+	addpath $GOPATH/bin
 fi
 
 #
@@ -52,8 +46,4 @@ fi
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
 	. $(brew --prefix)/etc/bash_completion
 fi
-
-export GOPATH
-export PATH
-export MANPATH
 
