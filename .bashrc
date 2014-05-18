@@ -15,6 +15,26 @@ fi
 # Original Setting
 # ---------------------------------------------------------------
 
+#
+# functions
+#
+
+addpath(){
+	if [ ! -d $1 ]; then
+		echo "[addpath] \"$1\" does not exist."
+	fi
+
+	if [ ! -z "`echo $PATH | grep $1`" ]; then
+		echo "[addpath] \"$1\" is already included in PATH"
+	fi
+
+	export PATH=$1:$PATH
+}
+
+#
+# aliases
+#
+
 alias tm='tmux -2u a || tmux -2u'
 alias man='LANG=ja_JP.utf8 man'
 alias grep='grep --color=auto'
