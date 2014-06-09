@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/Users/sho/.vmail'
+let g:netrw_dirhist_2='/Users/sho/Dropbox/bin'
+let g:netrw_dirhist_3='/Users/sho/.gemrc'
+let g:netrw_dirhist_4='/Users/sho/dotfiles/bash'
+let g:netrw_dirhist_5='/Users/sho/dotfiles'

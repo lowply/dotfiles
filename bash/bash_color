@@ -1,0 +1,11 @@
+#
+# bash color config
+# type "psone" to take effect immediately
+#
+
+local BACKGROUND=0
+local UNAME=188
+local SYMBOL=117
+local HOST=45
+local DIRNAME=140
+local PROMPT=34

@@ -1,0 +1,216 @@
+# .bashrc
+
+# User specific aliases and functions
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# ---------------------------------------------------------------
+# Original Setting
+# ---------------------------------------------------------------
+
+#
+# LANG
+#
+export LANG=en_US.UTF-8
+
+#
+# functions
+#
+addpath(){
+	if [ ! -d ${1} ]; then
+		echo "[addpath] ${1} does not exist."
+	else
+		if [ "${2}" == "man" ]; then
+			# for MANPATH
+			export MANPATH=${1}:${MANPATH//$1:/}
+		else
+			# for PATH
+			export PATH=${1}:${PATH//$1:/}
+		fi
+	fi
+}
+
+backup(){
+	local D=`date +%y%m%d_%H%M%S`
+	cp -a $1{,.${D}}
+}
+
+#
+# aliases
+#
+alias tm='tmux -2u a || tmux -2u'
+alias man='LANG=ja_JP.utf8 man'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias ls='ls --color=auto'
+
+#
+# append to the history file, don't overwrite it
+#
+shopt -s histappend
+
+#
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+#
+shopt -s checkwinsize
+
+#
+# History size & format
+#
+HISTCONTROL=ignoredups:ignorespace
+HISTSIZE=10000
+HISTTIMEFORMAT="%y/%m/%d %H:%M:%S : "
+
+#
+# less prompt customize. See details for
+# http://kazmax.zpp.jp/cmd/l/less.1.html
+# http://qiita.com/hatchinee/items/586fb1c4915e2bb5c03b
+#
+export LESS='-X -R -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
+
+#
+# http://blog.elliptium.net/2011/11/less-homebrew
+#
+if type src-hilite-lesspipe.sh > /dev/null 2>&1;then
+	LESSPIPE=`which src-hilite-lesspipe.sh`
+	export LESSOPEN="| $LESSPIPE %s"
+fi
+
+#
+# set EDITOR to vim
+#
+if [ -f /usr/local/bin/vim ]; then
+    export EDITOR=/usr/local/bin/vim
+else
+    export EDITOR=/usr/bin/vim
+fi
+
+#
+# PS1
+#
+psone(){
+	bgcolor(){
+		echo "\\[\\033[48;5;"$1"m\\]"
+	}
+	
+	fgcolor(){
+		echo "\\[\\033[38;5;"$1"m\\]"
+	}
+	
+	resetcolor(){
+		echo "\\[\\e[0m\\]"
+	}
+	
+	# just for fun
+	case "${OSTYPE}" in
+	darwin*)
+		local EMO_EYES="\xf0\x9f\x91\x80"
+		local EMO_BURG="\xf0\x9f\x8d\x94"
+		local EMO=`echo -e "${EMO_EYES}  "`
+	esac
+	
+	# default coloring
+	local BACKGROUND=0
+	local UNAME=198
+	local SYMBOL=147
+	local HOST=173
+	local DIRNAME=120
+	local PROMPT=129
+	
+	# load color config if exists
+	if [ -f $HOME/.bash_color ]; then
+		. $HOME/.bash_color
+	fi
+	
+	# set PS1
+	PS1="${EMO}$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(resetcolor)$(fgcolor $PROMPT)"'\$ '"$(resetcolor)"
+	
+	unset bgcolor
+	unset fgcolor
+	unset resetcolor
+}
+
+psone
+
+#
+# path
+#
+case "${OSTYPE}" in
+darwin*)
+	#
+	# default osx path sucks. adding /usr/local/bin and /usr/local/sbin at proper position
+	#
+	export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+	
+	#
+	# coreutils
+	#
+	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnubin
+	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnuman man
+	
+	#
+	# rbenv
+	#
+	if [ -d $HOME/.rbenv ]; then
+		#if [ -z "`echo $PATH | grep rbenv`" ]; then
+		if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+		#fi
+	fi
+	
+	#
+	# bash completion (need brew install bash-completion
+	#
+	if [ -f $(brew --prefix)/etc/bash_completion ]; then
+		. $(brew --prefix)/etc/bash_completion
+	fi
+	
+	#
+	# aws cli completion
+	#
+	if [ -x $(brew --prefix)/bin/aws ]; then
+		complete -C aws_completer aws
+	fi
+
+	;;
+linux*)
+	#
+	# Keychain
+	#
+	if [ -x /usr/bin/keychain ]; then
+		keychain $HOME/.ssh/id_rsa
+		source $HOME/.keychain/$HOSTNAME-sh
+	fi
+
+	#
+	# rbenv
+	#
+	if [ -d $HOME/.rbenv ]; then
+		addpath $HOME/.rbenv/bin
+		eval "$(rbenv init -)"
+	fi
+	;;
+esac
+
+#
+# golang
+#
+if type go > /dev/null 2>&1; then
+	export GOPATH=$HOME/go
+	addpath $GOPATH/bin
+fi
+
+#
+# $HOME/bin
+#
+if [ -d $HOME/bin ]; then
+	addpath $HOME/bin
+fi
