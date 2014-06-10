@@ -76,6 +76,21 @@ namespace :git do
 end
 
 namespace :go do
+	desc "create symlink in .vim"
+	task :link do
+		VIM_BUNDLE = File.join(DIR_VIM, "vim/bundle")
+		case OS
+		when /^Darwin/
+			VIM_GO_SRC = "/usr/local/opt/go/libexec/misc/vim"
+		when /^Linux/
+			VIM_GO_SRC = "/usr/local/go/misc/vim"
+		end
+		symlink_ VIM_GO_SRC, File.join(VIM_BUNDLE, "go")
+		
+		GOCODE_SRC = File.join(HOME, "go/src/github.com/nsf/gocode/vim")
+		symlink_ GOCODE_SRC, File.join(VIM_BUNDLE, "gocode")
+	end
+
 	desc "Run post install script"
 	task :postinstall do
 		sh "sh go/post_install.sh"
