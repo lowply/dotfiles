@@ -30,3 +30,5 @@ if [ -x "$GOINSTALLPATH" ]; then
 	esac
 	ln -Fis $HOME/go/src/github.com/nsf/gocode/vim gocode
 fi
+
+unset GOINSTALLPATH
