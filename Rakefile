@@ -21,6 +21,9 @@ cleans = [
 	".gitconfig",
 	".gitignore.global",
 	".tmux.conf",
+	".vim",
+	".vimrc",
+	".vimrc_neocomplete",
 	".gemrc"
 ]
 
@@ -30,14 +33,7 @@ task :default do
 	puts "Usage: rake all"
 end
 
-task :all => ["rbenv:install", "bash:link", "atom:link", "tmux:link", "vim:link"]
-
-namespace :rbenv do
-	desc "Install rbenv"
-	task :install do
-		sh "sh ruby/install_rbenv.sh"
-	end
-end
+task :all => ["atom:link", "bash:link", "bash:cp_color", "git:link", "git:cp_config", "tmux:link", "vim:link", "vim:mkdir", "gem:link"]
 
 namespace :atom do
 	desc "Create symlink"
@@ -58,6 +54,8 @@ namespace :bash do
 		same_name_symlinks DIR_BASH, ["bash_profile", "bashrc"]
 	end
 
+	task :cp_color => File.join(HOME, ".bash_color")
+	desc "Create copy of .bash_color"
 	file File.join(HOME, ".bash_color") do
 		cp File.join(DIR_BASH,"bash_color"), File.join(HOME,".bash_color")
 	end
@@ -66,8 +64,14 @@ end
 namespace :git do
 	desc "Create symlink"
 	task :link do
-		same_name_symlinks DIR_GIT, ["gitconfig"]
+		same_name_symlinks DIR_GIT, ["gitconfig", "gitignore.global"]
 		# working here
+	end
+
+	task :cp_config => File.join(HOME,".gitconfig.local")
+	desc "Create copy of .gitconfig.local"
+	file File.join(HOME,".gitconfig.local") do
+		cp File.join(DIR_GIT,"gitconfig.local"), File.join(HOME,".gitconfig.local")
 	end
 end
 
