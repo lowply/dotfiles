@@ -17,4 +17,6 @@
 !/osx.sh
 !/symlink.sh
 !/postgo.sh
+!/vim
+!/vim/vim/bundle/neobundle.vim
 /.vim/.netrwhist
