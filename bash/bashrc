@@ -115,7 +115,8 @@ psone(){
 	darwin*)
 		local EMO_EYES="\xf0\x9f\x91\x80"
 		local EMO_BURG="\xf0\x9f\x8d\x94"
-		local EMO=`echo -e "${EMO_EYES}  "`
+		#local EMO=`echo -e "${EMO_EYES}  "`
+		local EMO=""
 	esac
 	
 	# default coloring
