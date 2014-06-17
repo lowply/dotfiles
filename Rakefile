@@ -1,18 +1,11 @@
 # coding: utf-8
 require 'rake/clean'
 
+#
+# vars
+#
 HOME = ENV["HOME"]
 OS = `uname`
-
-
-DIR_ATOM	=	File.join(File.dirname(__FILE__), "atom")
-DIR_BASH	=	File.join(File.dirname(__FILE__), "bash")
-DIR_GIT		=	File.join(File.dirname(__FILE__), "git")
-DIR_GO		=	File.join(File.dirname(__FILE__), "go")
-DIR_MAC		=	File.join(File.dirname(__FILE__), "mac")
-DIR_RUBY	=	File.join(File.dirname(__FILE__), "ruby")
-DIR_TMUX	=	File.join(File.dirname(__FILE__), "tmux")
-DIR_VIM		=	File.join(File.dirname(__FILE__), "vim")
 
 cleans = [
 	".atom",
@@ -29,16 +22,54 @@ cleans = [
 
 CLEAN.concat(cleans.map{|c| File.join(HOME,c)})
 
+#
+# defs
+#
+def symlink_recursive root, files
+	root_dir = File.join(File.dirname(__FILE__), root)
+	files.each do |file|
+		begin
+			symlink File.join(root_dir, file), File.join(HOME, "." + file)
+		rescue => ex
+			puts ex.message
+		end
+	end
+end
+
+def copy_recursive root, files
+	root_dir = File.join(File.dirname(__FILE__), root)
+	files.each do |file|
+		begin
+			cp File.join(root_dir, file), File.join(HOME, "." + file)
+		rescue => ex
+			puts ex.message
+		end
+	end
+end
+
+#
+# tasks
+#
 task :default do
 	puts "Usage: rake all"
 end
 
-task :all => ["atom:link", "bash:link", "bash:cp_color", "git:link", "git:cp_config", "tmux:link", "vim:link", "vim:mkdir", "gem:link"]
+task :all => [
+	"atom:link",
+	"bash:link",
+	"bash:copy",
+	"git:link",
+	"git:copy",
+	"tmux:link",
+	"vim:link",
+	"vim:mkdir",
+	"gem:link"
+]
 
 namespace :atom do
-	desc "Create symlink"
+	desc "Create symlink only for OSX"
 	task :link do
-		symlink_ DIR_ATOM, File.join(HOME, ".atom") if OS =~ /^Darwin/
+		symlink_recursive "atom", ["atom"] if OS =~ /^Darwin/
 	end
 end
 
@@ -51,43 +82,47 @@ namespace :bash do
 		org = File.join(HOME, ".bash_profile")
 		mv org, File.join(HOME, ".bash_profile.org") if File.exist?(org) && !File.symlink?(org)
 
-		same_name_symlinks DIR_BASH, ["bash_profile", "bashrc"]
+		symlink_recursive "bash", ["bash_profile", "bashrc"]
 	end
 
-	task :cp_color => File.join(HOME, ".bash_color")
-	desc "Create copy of .bash_color"
-	file File.join(HOME, ".bash_color") do
-		cp File.join(DIR_BASH,"bash_color"), File.join(HOME,".bash_color")
+	#
+	# todo: how to avoid override copying
+	#
+	task :copy do
+		copy_recursive "bash", ["bash_color"]
 	end
 end
 
 namespace :git do
 	desc "Create symlink"
 	task :link do
-		same_name_symlinks DIR_GIT, ["gitconfig", "gitignore.global"]
-		# working here
+		symlink_recursive "git", ["gitconfig", "gitignore.global"]
 	end
 
-	task :cp_config => File.join(HOME,".gitconfig.local")
-	desc "Create copy of .gitconfig.local"
-	file File.join(HOME,".gitconfig.local") do
-		cp File.join(DIR_GIT,"gitconfig.local"), File.join(HOME,".gitconfig.local")
+	#
+	# todo: how to avoid override copying
+	#
+	task :copy do
+		copy_recursive "git", ["gitconfig.local"]
 	end
 end
 
 namespace :tmux do
 	desc "Create symlink"
 	task :link do
-		same_name_symlinks DIR_TMUX, ["tmux.conf"]
+		symlink_recursive "tmux", ["tmux.conf"]
 	end
 end
 
 namespace :vim do
 	desc "Create symlink"
 	task :link do
-		same_name_symlinks DIR_VIM, ["vim", "vimrc", "vimrc_neocomplete"]
+		symlink_recursive "vim", ["vim", "vimrc", "vimrc_neocomplete"]
 	end
-	
+
+	#
+	# todo: can this be more simple?
+	#
 	desc "Create ~/.vim_tmp"
 	VIMTMP = File.join(HOME, ".vim_tmp")
 	directory VIMTMP
@@ -98,22 +133,6 @@ end
 namespace :gem do
 	desc "Create symlink"
 	task :link do
-		same_name_symlinks DIR_RUBY, ["gemrc"]
-	end
-end
-
-def symlink_ file, dest
-	begin
-		# where is the code overriding FileUtils.symlink ?
-		# FileUtils.symlink file, dest
-		symlink file, dest
-	rescue => ex
-		puts ex.message
-	end
-end
-
-def same_name_symlinks root, files
-	files.each do |file|
-		symlink_ File.join(root, file), File.join(HOME, "." + file)
+		symlink_recursive "ruby", ["gemrc"]
 	end
 end
