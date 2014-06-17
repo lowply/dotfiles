@@ -12,10 +12,10 @@ linux*)
 		wget https://www.kernel.org/pub/software/scm/git/git-2.0.0.tar.gz
 		tar vxzf git-2.0.0.tar.gz
 		cd git-2.0.0
-		yum -y --enablerepo=epel install xmlto asciidoc docbook2x
+		yum -y --enablerepo=epel install xmlto asciidoc docbook2X
 		cd /usr/local/bin
-		ln -s docbook2x-texi /usr/bin/db2x_docbook2texi
-		ln -s docbook2x-man /usr/bin/db2x_docbook2man
+		ln -s /usr/bin/db2x_docbook2texi docbook2x-texi
+		ln -s /usr/bin/db2x_docbook2man docbook2x-man
 		make prefix=/usr/local/git install install-doc install-html install-info
 	else
 		echo "you need to be root"
