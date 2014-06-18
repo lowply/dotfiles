@@ -8,14 +8,15 @@ darwin*)
 	;;
 linux*)
 	if [ "${USER}" = "root" ]; then
+		yum -y --enablerepo=epel install xmlto asciidoc docbook2X curl curl-devel perl perl-devel
+		cd /usr/local/bin
+		ln -s /usr/bin/db2x_docbook2texi docbook2x-texi
+		ln -s /usr/bin/db2x_docbook2man docbook2x-man
+
 		cd /usr/local/src
 		wget https://www.kernel.org/pub/software/scm/git/git-2.0.0.tar.gz
 		tar vxzf git-2.0.0.tar.gz
 		cd git-2.0.0
-		yum -y --enablerepo=epel install xmlto asciidoc docbook2X
-		cd /usr/local/bin
-		ln -s /usr/bin/db2x_docbook2texi docbook2x-texi
-		ln -s /usr/bin/db2x_docbook2man docbook2x-man
 		make prefix=/usr/local/git install install-doc install-html install-info
 
 		mkdir -p /usr/local/git/contrib/completion
