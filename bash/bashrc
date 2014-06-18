@@ -244,4 +244,7 @@ if [ -d $HOME/google-cloud-sdk ]; then
 	source $HOME/google-cloud-sdk/completion.bash.inc
 fi
 
+#
+# execute psone()
+#
 psone

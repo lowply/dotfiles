@@ -28,6 +28,8 @@ else
 			rbenv global ${RUBY_VERSION}
 			rbenv rehash
 		fi
+		unset RUBY_VERSION
+		unset GITINSTALLPATH
 		;;
 	esac
 fi

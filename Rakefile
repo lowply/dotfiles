@@ -28,10 +28,11 @@ CLEAN.concat(cleans.map{|c| File.join(HOME,c)})
 def symlink_recursive root, files
 	root_dir = File.join(File.dirname(__FILE__), root)
 	files.each do |file|
-		begin
-			symlink File.join(root_dir, file), File.join(HOME, "." + file)
-		rescue => ex
-			puts ex.message
+		tgt = File.join(HOME, "." + file)
+		if File.exist?(tgt)
+			puts "Symlink " + tgt + " already exsists."
+		else
+			symlink File.join(root_dir, file), tgt
 		end
 	end
 end
@@ -39,10 +40,11 @@ end
 def copy_recursive root, files
 	root_dir = File.join(File.dirname(__FILE__), root)
 	files.each do |file|
-		begin
-			cp File.join(root_dir, file), File.join(HOME, "." + file)
-		rescue => ex
-			puts ex.message
+		tgt = File.join(HOME, "." + file)
+		if File.exist?(tgt)
+			puts "File " + tgt + " already exsists."
+		else
+			cp File.join(root_dir, file), tgt
 		end
 	end
 end
@@ -85,9 +87,6 @@ namespace :bash do
 		symlink_recursive "bash", ["bash_profile", "bashrc"]
 	end
 
-	#
-	# todo: how to avoid override copying
-	#
 	task :copy do
 		copy_recursive "bash", ["bash_color"]
 	end
@@ -99,9 +98,6 @@ namespace :git do
 		symlink_recursive "git", ["gitconfig", "gitignore.global"]
 	end
 
-	#
-	# todo: how to avoid override copying
-	#
 	task :copy do
 		copy_recursive "git", ["gitconfig.local"]
 	end
