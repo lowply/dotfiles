@@ -215,3 +215,11 @@ fi
 if [ -d $HOME/bin ]; then
 	addpath $HOME/bin
 fi
+
+#
+# GCE
+#
+if [ -d $HOME/google-cloud-sdk ]; then
+	source $HOME/google-cloud-sdk/path.bash.inc
+	source $HOME/google-cloud-sdk/completion.bash.inc
+fi
