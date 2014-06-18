@@ -17,6 +17,11 @@ linux*)
 		ln -s /usr/bin/db2x_docbook2texi docbook2x-texi
 		ln -s /usr/bin/db2x_docbook2man docbook2x-man
 		make prefix=/usr/local/git install install-doc install-html install-info
+
+		mkdir -p /usr/local/git/contrib/completion
+		cd /usr/local/git/contrib/completion
+		wget --no-check-certificate https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+		wget --no-check-certificate https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh
 	else
 		echo "you need to be root"
 		exit 1
