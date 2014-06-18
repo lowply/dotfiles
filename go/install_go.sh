@@ -13,9 +13,9 @@ if [ -z "$GOINSTALLPATH" ]; then
 		echo "brew update && brew install go"
 	;;
 	linux*)
-		DISTLINK_122_64="https://storage.googleapis.com/golang/go1.2.2.linux-amd64.tar.gz"
+		DISTURL="https://storage.googleapis.com/golang/go1.2.2.linux-amd64.tar.gz"
 		cd /usr/local/src
-		wget --no-check-certificate $DISTLINK_122_64
+		wget --no-check-certificate $DISTURL
 		tar vxzf go1.2.2.linux-amd64.tar.gz
 		mv go /usr/local/
 		cd /usr/local/bin
@@ -27,13 +27,6 @@ else
 fi
 
 unset GOINSTALLPATH
-
-#
-# gopath dir
-#
-if [ ! -d $HOME/go ]; then
-	mkdir $HOME/go
-fi
 
 #
 # gocode
@@ -53,5 +46,5 @@ linux*)
 	ln -Fis /usr/local/go/misc/vim go
 ;;
 esac
-ln -Fis $HOME/go/src/github.com/nsf/gocode/vim gocode
+ln -Fis $GOPATH/src/github.com/nsf/gocode/vim gocode
 
