@@ -15,12 +15,18 @@ else
 		;;
 	linux*)
 		echo "linux"
-		if [ ! -x /usr/local/bin/git ]; then
+		RUBY_VERSION="2.1.2"
+
+		if type git > /dev/null 2>&1; then GITINSTALLPATH=$(which git); fi
+		if [ -z "$GITINSTALLPATH" ]; then
 			echo "Please install git first"
 			exit 1
 		else
 			git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
 			git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+			rbenv install ${RUBY_VERSION}
+			rbenv global ${RUBY_VERSION}
+			rbenv rehash
 		fi
 		;;
 	esac

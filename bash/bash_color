@@ -4,8 +4,9 @@
 #
 
 local BACKGROUND=0
-local UNAME=188
-local SYMBOL=117
-local HOST=45
-local DIRNAME=140
-local PROMPT=34
+local UNAME=198
+local SYMBOL=147
+local HOST=173
+local DIRNAME=120
+local PROMPT=129
+local BRANCH=111
