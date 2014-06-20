@@ -164,14 +164,10 @@ darwin*)
 	#
 	# rbenv
 	#
-	if [ -d $HOME/.rbenv ]; then
-		#if [ -z "`echo $PATH | grep rbenv`" ]; then
-		if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-		#fi
-	fi
+	type rbenv >/dev/null 2>&1 && eval "$(rbenv init -)"
 	
 	#
-	# bash completion (need brew install bash-completion
+	# bash completion (need brew install bash-completion)
 	#
 	if [ -f $(brew --prefix)/etc/bash_completion ]; then
 		. $(brew --prefix)/etc/bash_completion
@@ -187,7 +183,7 @@ darwin*)
 	#
 	# git bash completion
 	#
-	if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then	
+	if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
 		source /usr/local/opt/git/etc/bash_completion.d/git-prompt.sh
 		source /usr/local/opt/git/etc/bash_completion.d/git-completion.bash
 	fi
