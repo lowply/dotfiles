@@ -247,6 +247,13 @@ linux*)
 	fi
 	
 	#
+	# nodebrew
+	#
+	if [ -d $HOME/.nodebrew ]; then	
+		addpath $HOME/.nodebrew/current/bin
+	fi
+
+	#
 	# git bash completion
 	#
 	if [ -d /usr/local/git/contrib/completion ]; then	
