@@ -45,12 +45,14 @@ backup(){
 #
 # aliases
 #
-alias tm='tmux -2u a || tmux -2u'
 alias man='LANG=ja_JP.utf8 man'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias ls='ls --color=auto'
+
+type tmux > /dev/null 2>&1 && alias tm='tmux -2u a || tmux -2u'
+type go > /dev/null 2>&1 && type peco > /dev/null 2>&1 && alias ghs='cd $(ghq list -p | peco)'
 
 #
 # append to the history file, don't overwrite it
