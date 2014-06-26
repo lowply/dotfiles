@@ -138,7 +138,7 @@ end
 namespace :peco do
 	desc "Create symlink"
 	task :link do
-		symlink_recursive "peco", ["peco"]
+		symlink_recursive "peco", ["snippets", "peco"]
 	end
 end
 

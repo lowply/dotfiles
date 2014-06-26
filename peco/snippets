@@ -1,0 +1,28 @@
+#
+# date
+#
+date +%Y%m%d
+#
+# dstat 
+#
+dstat -Tclmdrn
+dstat -Tclm
+dstat -Tclr
+dstat -Tclnd
+dstat -Tcldr
+dstat --top-cpu --top-cputime
+dstat --top-io --top-bio
+dstat --top-io-adv --top-bio-adv
+#
+# ps
+#
+ps auxwww --sort=rss
+#
+# dotfiles
+#
+vim /Users/sho/dotfiles/peco/snippets
+#
+# netstat
+#
+netstat -tlnp
+netstat -tanp

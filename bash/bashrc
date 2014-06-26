@@ -80,6 +80,15 @@ peco-history() {
 
 bind '"\C-r":"peco-history\n"'
 
+# http://blog.glidenote.com/blog/2014/06/26/snippets-peco-percol/
+peco-snippets() {
+	local SNIPPETS=$(grep -v "^#" ~/.snippets | peco)
+	${SNIPPETS}
+}
+
+stty quit undef
+bind '"\C-\\":"peco-snippets\n"'
+
 
 #
 # aliases
