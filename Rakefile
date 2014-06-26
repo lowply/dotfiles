@@ -17,7 +17,8 @@ cleans = [
 	".vim",
 	".vimrc",
 	".vimrc_neocomplete",
-	".gemrc"
+	".gemrc",
+	".peco"
 ]
 
 CLEAN.concat(cleans.map{|c| File.join(HOME,c)})
@@ -65,7 +66,8 @@ task :all => [
 	"tmux:link",
 	"vim:link",
 	"vim:mkdir",
-	"gem:link"
+	"gem:link",
+	"peco:link"
 ]
 
 namespace :atom do
@@ -132,3 +134,11 @@ namespace :gem do
 		symlink_recursive "ruby", ["gemrc"]
 	end
 end
+
+namespace :peco do
+	desc "Create symlink"
+	task :link do
+		symlink_recursive "peco", ["peco"]
+	end
+end
+
