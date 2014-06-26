@@ -221,6 +221,14 @@ esac
 # golang
 #
 if type go > /dev/null 2>&1; then
+	case "${OSTYPE}" in
+	darwin*)
+		addpath "/usr/local/opt/go/libexec/bin"
+		;;
+	linux*)
+		addpath "/usr/local/go/bin"
+		;;
+	esac
 	export GOPATH=$HOME
 	addpath $GOPATH/bin
 fi
