@@ -33,6 +33,7 @@ NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
+NeoBundle 'scrooloose/nerdtree'
 
 if executable('go')
 	NeoBundle 'go', {'type' : 'nosync'}
@@ -134,14 +135,9 @@ set directory=~/.vim_tmp
 set termencoding=utf-8
 set encoding=utf-8
 
-
-inoremap jk <esc>
-let mapleader = ","
-nnoremap Q <Nop>
-nnoremap ZZ <Nop>
-nnoremap ZQ <Nop>
-nnoremap <Leader>vv :<C-u>VimShell<CR>
-
+"----------------------------------------
+" tab editing
+"----------------------------------------
 
 nnoremap s <Nop>
 nnoremap sq :<C-u>q<CR>
@@ -150,3 +146,17 @@ nnoremap st :<C-u>tabnew<CR>
 nnoremap sT :<C-u>Unite tab<CR>
 nnoremap sn gt
 nnoremap sp gT
+
+"----------------------------------------
+" some utils
+"----------------------------------------
+
+nnoremap ; :
+inoremap jk <esc>
+nnoremap Q <Nop>
+nnoremap ZZ <Nop>
+nnoremap ZQ <Nop>
+let mapleader = ","
+nnoremap <Leader>vv :<C-u>VimShell<CR>
+
+
