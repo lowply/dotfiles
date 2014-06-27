@@ -13,9 +13,11 @@ dstat -Tcldr
 dstat --top-cpu --top-cputime
 dstat --top-io --top-bio
 dstat --top-io-adv --top-bio-adv
+
 #
 # ps
 #
+
 ps auxwww --sort=rss
 #
 # dotfiles

@@ -52,38 +52,46 @@ function peco-src () {
 
 bind '"\C-]":"peco-src\n"'
 
+peco-run-cmd(){
+	if [ -n "$1" ] ; then
+		# Replace the last entry, "peco-history", with $1
+		history -s $1
+		echo $1 >&2
+		# Uncomment below to execute it here directly
+		eval $1
+	else
+		# Remove the last entry, "peco-history"
+		history -d $((HISTCMD-1))
+	fi
+}
+
 # http://qiita.com/yungsang/items/09890a06d204bf398eea
 peco-history() {
-  local NUM=$(history | wc -l)
-  local FIRST=$((-1*(NUM-1)))
+	local NUM=$(history | wc -l)
+	local FIRST=$((-1*(NUM-1)))
 
-  if [ $FIRST -eq 0 ] ; then
-    # Remove the last entry, "peco-history"
-    history -d $((HISTCMD-1))
-    echo "No history" >&2
-    return
-  fi
+	if [ $FIRST -eq 0 ] ; then
+		# Remove the last entry, "peco-history"
+		history -d $((HISTCMD-1))
+		echo "No history" >&2
+		return
+	fi
 
-  local CMD=$(fc -l $FIRST | sort -k 2 -k 1nr | uniq -f 1 | sort -nr | sed -E 's/^[0-9]+//' | peco | head -n 1)
+	local CMD=$(fc -l $FIRST | sort -k 2 -k 1nr | uniq -f 1 | sort -nr | sed -E 's/^[0-9]+//' | peco | head -n 1)
 
-  if [ -n "$CMD" ] ; then
-    # Replace the last entry, "peco-history", with $CMD
-    history -s $CMD
-    echo $CMD >&2
-    # Uncomment below to execute it here directly
-    eval $CMD
-  else
-    # Remove the last entry, "peco-history"
-    history -d $((HISTCMD-1))
-  fi
+	peco-run-cmd "$CMD"
 }
 
 bind '"\C-r":"peco-history\n"'
 
 # http://blog.glidenote.com/blog/2014/06/26/snippets-peco-percol/
 peco-snippets() {
-	local SNIPPETS=$(grep -v "^#" ~/.snippets | peco)
-	${SNIPPETS}
+	if [ ! -f $HOME/.snippets ]; then
+		echo "Couldn't find ~/.snippets"
+	else
+		local CMD=$(grep -v "^#" ~/.snippets | peco)
+		peco-run-cmd "$CMD"
+	fi
 }
 
 stty quit undef
