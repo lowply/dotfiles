@@ -23,7 +23,7 @@ export LANG=en_US.UTF-8
 #
 # functions
 #
-addpath(){
+function addpath(){
 	if [ ! -d ${1} ]; then
 		echo "[addpath] ${1} does not exist."
 	else
@@ -37,17 +37,24 @@ addpath(){
 	fi
 }
 
-backup(){
+function backup(){
 	local D=`date +%y%m%d_%H%M%S`
 	cp -a $1{,.${D}}
 }
 
+function check_cmd(){
+	type ${1} > /dev/null 2>&1 || { echo "${1} is not installed"; return 1; }
+}
+
 #http://weblog.bulknews.net/post/89635306479/ghq-peco-percol
 function peco-src () {
-    local selected_dir=$(ghq list -p | peco)
-    if [ -n "$selected_dir" ]; then
-        cd ${selected_dir}
-    fi
+	check_cmd "peco" || return
+	check_cmd "ghq" || return
+
+	local selected_dir=$(ghq list -p | peco)
+	if [ -n "$selected_dir" ]; then
+		cd ${selected_dir}
+	fi
 }
 
 bind '"\C-]":"peco-src\n"'
@@ -67,6 +74,8 @@ peco-run-cmd(){
 
 # http://qiita.com/yungsang/items/09890a06d204bf398eea
 peco-history() {
+	check_cmd "peco" || return
+
 	local NUM=$(history | wc -l)
 	local FIRST=$((-1*(NUM-1)))
 
@@ -86,12 +95,10 @@ bind '"\C-r":"peco-history\n"'
 
 # http://blog.glidenote.com/blog/2014/06/26/snippets-peco-percol/
 peco-snippets() {
-	if [ ! -f $HOME/.snippets ]; then
-		echo "Couldn't find ~/.snippets"
-	else
-		local CMD=$(grep -v "^#" ~/.snippets | peco)
-		peco-run-cmd "$CMD"
-	fi
+	check_cmd "peco" || return
+	[ ! -f $HOME/.snippets ] && { echo "Couldn't find ~/.snippets"; return; }
+	local CMD=$(grep -v "^#" ~/.snippets | peco)
+	peco-run-cmd "$CMD"
 }
 
 stty quit undef
