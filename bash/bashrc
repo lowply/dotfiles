@@ -58,8 +58,8 @@ function peco-run-cmd(){
 	if [ -n "$1" ] ; then
 		# Replace the last entry, with $1
 		history -s $1
+		# Execute it
 		echo $1 >&2
-		# Uncomment below to execute it here directly
 		eval $1
 	else
 		# Remove the last entry
@@ -76,6 +76,7 @@ function peco-src () {
 
 bind '"\C-]":"peco-src\n"'
 
+# http://qiita.com/yungsang/items/09890a06d204bf398eea
 function peco-history() {
 	check_cmd "peco" || return
 	local NUM=$(history | wc -l)
@@ -87,7 +88,7 @@ function peco-history() {
 		echo "No history" >&2
 		return
 	fi
-	local CMD=$(fc -l $FIRST | sort -k 2 -k 1nr | uniq -f 1 | sort -nr | sed -E 's/^[0-9]+//' | peco | head -n 1)
+	local CMD=$(fc -l $FIRST | sort -k 2 -k 1nr | uniq -f 1 | sort -nr | sed -r 's/^[0-9]+//' | peco | head -n 1)
 	peco-run-cmd "$CMD"
 }
 
