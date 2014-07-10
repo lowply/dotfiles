@@ -202,7 +202,7 @@ psone(){
 #
 # reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 #
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$HOME/bin"
 
 case "${OSTYPE}" in
 darwin*)
@@ -288,14 +288,6 @@ if type go > /dev/null 2>&1; then
 		;;
 	esac
 	export GOPATH=$HOME
-	addpath $GOPATH/bin
-fi
-
-#
-# $HOME/bin
-#
-if [ -d $HOME/bin ]; then
-	addpath $HOME/bin
 fi
 
 #
