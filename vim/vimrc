@@ -50,6 +50,10 @@ NeoBundleCheck
 " auto format when the file saved
 autocmd FileType go autocmd BufWritePre <buffer> Fmt
 
+" http://yuroyoro.hatenablog.com/entry/2014/08/12/144157
+autocmd FileType go :highlight goErr ctermfg=210
+autocmd FileType go :match goErr /\<err\>/
+
 "----------------------------------------
 " neocomplete.vim
 "----------------------------------------
