@@ -45,11 +45,6 @@ function addpath(){
 	fi
 }
 
-function backup(){
-	local D=`date +%y%m%d_%H%M%S`
-	cp -a $1{,.${D}}
-}
-
 function check_cmd(){
 	type ${1} > /dev/null 2>&1 || { echo "${1} is not installed"; return 1; }
 }
