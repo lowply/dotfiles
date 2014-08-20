@@ -37,7 +37,7 @@ NeoBundle 'scrooloose/nerdtree'
 
 if executable('go')
 	NeoBundle 'go', {'type' : 'nosync'}
-	NeoBundle 'gocode', {'type' : 'nosync'}
+	NeoBundle 'nsf/gocode'
 endif
 
 filetype plugin indent on
