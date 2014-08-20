@@ -262,9 +262,9 @@ linux*)
 	#
 	# git bash completion
 	#
-	if [ -d /usr/local/git/contrib/completion ]; then	
-		source /usr/local/git/contrib/completion/git-prompt.sh
-		source /usr/local/git/contrib/completion/git-completion.bash
+	if [ -d /usr/share/git-core/contrib/completion ]; then	
+		source /usr/share/git-core/contrib/completion/git-prompt.sh
+		# for bash completion, /etc/bash_completion.d/git is loaded 
 	fi
 
 	;;
