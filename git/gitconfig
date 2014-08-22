@@ -14,8 +14,8 @@
 [pull]
 	rebase = true
 
-[push]
-	default = simple
+#[push]
+#	default = simple
 
 [grep]
 	lineNumber = true
