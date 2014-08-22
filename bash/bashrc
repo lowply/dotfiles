@@ -253,13 +253,6 @@ linux*)
 	fi
 	
 	#
-	# nodebrew
-	#
-	if [ -d $HOME/.nodebrew ]; then	
-		addpath $HOME/.nodebrew/current/bin
-	fi
-
-	#
 	# git bash completion
 	#
 	if [ -d /usr/share/git-core/contrib/completion ]; then	
@@ -269,6 +262,13 @@ linux*)
 
 	;;
 esac
+
+#
+# nodebrew
+#
+if [ -d $HOME/.nodebrew ]; then	
+	addpath $HOME/.nodebrew/current/bin
+fi
 
 #
 # golang
