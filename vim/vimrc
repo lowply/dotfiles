@@ -34,6 +34,7 @@ NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'terryma/vim-multiple-cursors'
 
 if executable('go')
 	NeoBundle 'go', {'type' : 'nosync'}
