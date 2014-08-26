@@ -118,35 +118,25 @@ HISTCONTROL=ignoredups:ignorespace
 HISTSIZE=10000
 HISTTIMEFORMAT="%y/%m/%d %H:%M:%S : "
 
-#### --- disabled while testing vim's less.sh ---
-####
-####
-####    #
-####    # less prompt customize. See details for
-####    # http://kazmax.zpp.jp/cmd/l/less.1.html
-####    # http://qiita.com/hatchinee/items/586fb1c4915e2bb5c03b
-####    #
-####    export LESS='-X -R -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
-####    
-####    #
-####    # http://blog.elliptium.net/2011/11/less-homebrew
-####    #
-####    if type src-hilite-lesspipe.sh > /dev/null 2>&1;then
-####    	LESSPIPE=`which src-hilite-lesspipe.sh`
-####    	export LESSOPEN="| $LESSPIPE %s"
-####    fi
-####
-####
-#### --- disabled while testing vim's less.sh ---
+# less prompt customize. See details for
+# http://kazmax.zpp.jp/cmd/l/less.1.html
+# http://qiita.com/hatchinee/items/586fb1c4915e2bb5c03b
+#
+export LESS='-X -R -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
 
 #
-# set EDITOR to vim
+# http://blog.elliptium.net/2011/11/less-homebrew
 #
-if [ -f /usr/local/bin/vim ]; then
-    export EDITOR=/usr/local/bin/vim
-else
-    export EDITOR=/usr/bin/vim
+if type src-hilite-lesspipe.sh > /dev/null 2>&1;then
+	LESSPIPE=`which src-hilite-lesspipe.sh`
+	export LESSOPEN="| $LESSPIPE %s"
 fi
+
+#
+# set EDITOR, PAGER
+#
+type vim > /dev/null 2>&1 &&  export EDITOR=/usr/local/bin/vim
+type less > /dev/null 2>&1 &&  export PAGER=/usr/bin/less
 
 #
 # PS1
@@ -243,13 +233,6 @@ darwin*)
 	if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
 		source /usr/local/opt/git/etc/bash_completion.d/git-prompt.sh
 		source /usr/local/opt/git/etc/bash_completion.d/git-completion.bash
-	fi
-
-	#
-	# set PAGER to less.sh
-	#
-	if [ -f /usr/local/opt/vim/share/vim/vim74/macros/less.sh ]; then
-		export PAGER=/usr/local/opt/vim/share/vim/vim74/macros/less.sh
 	fi
 
 	;;
