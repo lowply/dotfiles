@@ -266,13 +266,6 @@ linux*)
 		# for bash completion, /etc/bash_completion.d/git is loaded 
 	fi
 
-	#
-	# set PAGER to less.sh
-	#
-	if [ -f /usr/local/vim/share/vim/vim74/macros/less.sh ]; then
-		export PAGER=/usr/local/vim/share/vim/vim74/macros/less.sh
-	fi
-
 	;;
 esac
 
