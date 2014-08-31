@@ -282,13 +282,14 @@ fi
 if type go > /dev/null 2>&1; then
 	case "${OSTYPE}" in
 	darwin*)
-		addpath "/usr/local/opt/go/libexec/bin"
+		export GOROOT=/usr/local/opt/go/libexec
 		;;
 	linux*)
-		addpath "/usr/local/go/bin"
+		export GOROOT=/usr/local/go
 		;;
 	esac
 	export GOPATH=$HOME
+	addpath "${GOPATH}/bin"
 fi
 
 #

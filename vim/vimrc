@@ -49,7 +49,8 @@ NeoBundle 'altercation/vim-colors-solarized'
 
 "" Go Lang Bundle
 NeoBundle "majutsushi/tagbar"
-NeoBundle "fatih/vim-go"
+set rtp+=$GOROOT/misc/vim
+exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
 
 "------------------------------------------------------
 "" My additions
@@ -72,12 +73,18 @@ NeoBundleCheck
 "======================================================
 " Go
 "======================================================
+	autocmd FileType go autocmd BufWritePre <buffer> Fmt
 
 "------------------------------------------------------
 " http://yuroyoro.hatenablog.com/entry/2014/08/12/144157
 "------------------------------------------------------
 	autocmd FileType go :highlight goErr ctermfg=210
 	autocmd FileType go :match goErr /\<err\>/
+
+"------------------------------------------------------
+" http://mattn.kaoriya.net/software/vim/20130531000559.htm
+"------------------------------------------------------
+	set completeopt=menu,preview
 
 
 "------------------------------------------------------
@@ -138,12 +145,8 @@ set titlestring=%F
 
 set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\ %{fugitive#statusline()}
 
-" let g:airline_theme = 'powerlineish'
-" let g:airline_enable_branch = 1
-" let g:airline#extensions#tabline#enabled = 1
-" let g:airline#extensions#tabline#left_sep = ' '
-" let g:airline#extensions#tabline#left_alt_sep = '|'
-
+let g:airline_theme = 'powerlineish'
+let g:airline_enable_branch = 1
 
 "----------------------------------------
 " tab
