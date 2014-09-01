@@ -221,10 +221,28 @@ inoremap jk <esc>
 nnoremap Q <Nop>
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
-nnoremap ; :
+
+" hlsearch cannot be disabled because of this
+" nnoremap ; :
+" nnoremap : ;
+
 let mapleader = ","
 noremap \ ,
 
 nnoremap <Leader>vv :<C-u>VimShell<CR>
 
 
+" http://monmon.hateblo.jp/entry/20100902/1283388287
+set pastetoggle=<C-E>
+
+
+nnoremap [unite] <Nop>
+nmap <Space>f [unite]
+
+let g:unite_enable_start_insert=1
+let g:unite_source_history_yank_enable =1
+nnoremap [unite]u  :<C-u>Unite -no-split<Space>
+nnoremap <silent> [unite]f :<C-u>Unite<Space>buffer<CR>
+nnoremap <silent> [unite]b :<C-u>Unite<Space>bookmark<CR>
+nnoremap <silent> [unite]m :<C-u>Unite<Space>file_mru<CR>
+nnoremap <silent> [unite]r :<C-u>UniteWithBufferDir file<CR>
