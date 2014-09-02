@@ -177,7 +177,7 @@ vnoremap > >gv
 "----------------------------------------
 
 set hlsearch
-nmap <Esc><Esc> :nohlsearch<CR><Esc>
+nnoremap <Esc><Esc> :nohlsearch<CR><Esc>
 set incsearch
 set ignorecase
 set wrapscan
@@ -222,9 +222,8 @@ nnoremap Q <Nop>
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
 
-" hlsearch cannot be disabled because of this
-" nnoremap ; :
-" nnoremap : ;
+nnoremap ; :
+nnoremap : ;
 
 let mapleader = ","
 noremap \ ,
