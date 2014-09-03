@@ -27,7 +27,6 @@ NeoBundle 'bling/vim-airline'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'sheerun/vim-polyglot'
 NeoBundle 'vim-scripts/grep.vim'
-NeoBundle 'vim-scripts/CSApprox'
 NeoBundle 'Shougo/vimproc.vim', {
       \ 'build' : {
       \     'windows' : 'tools\\update-dll-mingw',
@@ -49,8 +48,28 @@ NeoBundle 'altercation/vim-colors-solarized'
 
 "" Go Lang Bundle
 NeoBundle "majutsushi/tagbar"
-set rtp+=$GOROOT/misc/vim
+
+"
+" since 7.4.414, vim merged go support. if vim is lower than that, use vim-gt-go
+"
+if !has('patch-7.4.414')
+	NeoBundle "google/vim-ft-go"
+endif
+
+"
+" extra go supports
+"
+NeoBundle "vim-jp/vim-go-extra"
+
+"
+" gocode, not necessary to be in ~/.vim/bundle/
+"
 exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
+
+"
+" not using vim-go because some functions are duplicated after vim7.4.414
+"
+" NeoBundle "fatih/vim-go"
 
 "------------------------------------------------------
 "" My additions
