@@ -114,9 +114,9 @@ shopt -s checkwinsize
 #
 # History size & format
 #
-HISTCONTROL=ignoredups:ignorespace
-HISTSIZE=10000
-HISTTIMEFORMAT="%y/%m/%d %H:%M:%S : "
+export HISTCONTROL=ignoredups:ignorespace
+export HISTSIZE=10000
+export HISTTIMEFORMAT="%F %T : "
 
 # less prompt customize. See details for
 # http://kazmax.zpp.jp/cmd/l/less.1.html
