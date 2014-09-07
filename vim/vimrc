@@ -71,6 +71,8 @@ exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
 "
 " NeoBundle "fatih/vim-go"
 
+autocmd FileType go nnoremap <F9> :! go run %<CR>
+
 "------------------------------------------------------
 "" My additions
 "------------------------------------------------------
