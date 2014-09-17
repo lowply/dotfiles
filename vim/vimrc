@@ -19,7 +19,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " NeoBundle install packages
 "======================================================
 
-NeoBundle 'scrooloose/nerdtree'
+" NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'tpope/vim-commentary'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'kien/ctrlp.vim'
@@ -36,6 +36,7 @@ NeoBundle 'Shougo/vimproc.vim', {
       \    },
       \ }
 NeoBundle 'Shougo/vimshell.vim'
+NeoBundle 'Shougo/vimfiler'
 
 "" Snippets
 " NeoBundle 'SirVer/ultisnips'
@@ -71,8 +72,6 @@ exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
 "
 " NeoBundle "fatih/vim-go"
 
-autocmd FileType go nnoremap <F9> :! go run %<CR>
-
 "------------------------------------------------------
 "" My additions
 "------------------------------------------------------
@@ -95,6 +94,7 @@ NeoBundleCheck
 " Go
 "======================================================
 	autocmd FileType go autocmd BufWritePre <buffer> Fmt
+	autocmd FileType go nnoremap <Leader>r :! go run %<CR>
 
 "------------------------------------------------------
 " http://yuroyoro.hatenablog.com/entry/2014/08/12/144157
@@ -106,18 +106,6 @@ NeoBundleCheck
 " http://mattn.kaoriya.net/software/vim/20130531000559.htm
 "------------------------------------------------------
 	set completeopt=menu,preview
-
-
-"------------------------------------------------------
-" https://github.com/fatih/vim-go
-"------------------------------------------------------
-	au FileType go nmap <Leader>i <Plug>(go-info)
-	au FileType go nmap <Leader>gd <Plug>(go-doc)
-	au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
-	au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
-	au FileType go nmap <leader>r <Plug>(go-run)
-	au FileType go nmap <leader>b <Plug>(go-build)
-	au FileType go nmap <leader>t <Plug>(go-test)
 
 "======================================================
 " https://github.com/Shougo/neocomplete.vim
@@ -255,6 +243,10 @@ nnoremap <Leader>vv :<C-u>VimShell<CR>
 " http://monmon.hateblo.jp/entry/20100902/1283388287
 set pastetoggle=<C-E>
 
+"======================================================
+" Unite
+" ref: http://deris.hatenablog.jp/entry/2013/05/02/192415
+"======================================================
 
 nnoremap [unite] <Nop>
 nmap <Space>f [unite]
@@ -266,3 +258,13 @@ nnoremap <silent> [unite]f :<C-u>Unite<Space>buffer<CR>
 nnoremap <silent> [unite]b :<C-u>Unite<Space>bookmark<CR>
 nnoremap <silent> [unite]m :<C-u>Unite<Space>file_mru<CR>
 nnoremap <silent> [unite]r :<C-u>UniteWithBufferDir file<CR>
+
+"======================================================
+" VimFiler
+" ref: http://www.karakaram.com/vimfiler
+"======================================================
+
+let g:vimfiler_as_default_explorer = 1
+nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
+nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
+
