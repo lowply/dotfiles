@@ -198,6 +198,11 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$HOME/
 case "${OSTYPE}" in
 darwin*)
 	#
+	# for homebrew cask
+	#
+	export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=/usr/local/Caskroom"
+
+	#
 	# use less.sh for less alias
 	#
 	alias less='/usr/local/opt/vim/share/vim/vim74/macros/less.sh'
@@ -281,7 +286,7 @@ esac
 #
 # nodebrew
 #
-if [ -d $HOME/.nodebrew ]; then
+if [ -d $HOME/.nodebrew/current/bin ]; then
 	addpath $HOME/.nodebrew/current/bin
 fi
 
@@ -311,6 +316,8 @@ if [ -d $HOME/google-cloud-sdk ]; then
 	source $HOME/google-cloud-sdk/path.bash.inc
 	source $HOME/google-cloud-sdk/completion.bash.inc
 fi
+
+type archey > /dev/null 2>&1 && archey
 
 #
 # execute psone()
