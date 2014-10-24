@@ -203,11 +203,6 @@ darwin*)
 	export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=/usr/local/Caskroom"
 
 	#
-	# use less.sh for less alias
-	#
-	alias less='/usr/local/opt/vim/share/vim/vim74/macros/less.sh'
-
-	#
 	# coreutils
 	#
 	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnubin
