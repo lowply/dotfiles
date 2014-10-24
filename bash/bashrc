@@ -238,11 +238,6 @@ darwin*)
 	;;
 linux*)
 	#
-	# use less.sh for less alias
-	#
-	alias less='/usr/local/vim/share/vim/vim74/macros/less.sh'
-
-	#
 	# Keychain
 	#
 	if [ -x /usr/bin/keychain ]; then
