@@ -27,8 +27,9 @@ alias jman='LANG=ja_JP.utf8 man'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias ls='ls --color=auto'
+alias ls='ls -v --color=auto'
 alias tm='tmux -2u a || tmux -2u'
+alias pullall='git pull origin master && git submodule foreach git pull origin master'
 type gsed > /dev/null 2>&1 && alias sed='gsed'
 
 #
