@@ -30,6 +30,10 @@ alias egrep='egrep --color=auto'
 alias ls='ls -v --color=auto'
 alias tm='tmux -2u a || tmux -2u'
 alias pullall='git pull origin master && git submodule foreach git pull origin master'
+alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
+alias nstanp='lsof -nP -iTCP'
+alias lsdsstr='find . -name .DS_Store -print'
+alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 type gsed > /dev/null 2>&1 && alias sed='gsed'
 
 #
