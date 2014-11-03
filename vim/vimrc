@@ -268,3 +268,11 @@ let g:vimfiler_as_default_explorer = 1
 nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
 nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
 
+
+"======================================================
+" environment specific configuration
+"======================================================
+
+	if filereadable(expand('~/.vimrc'))
+		source ~/.vimrc_
+	endif
