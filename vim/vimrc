@@ -241,7 +241,7 @@ nnoremap <Leader>vv :<C-u>VimShell<CR>
 
 
 " http://monmon.hateblo.jp/entry/20100902/1283388287
-set pastetoggle=<C-E>
+" set pastetoggle=<C-E>
 
 "======================================================
 " Unite
@@ -273,6 +273,6 @@ nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35
 " environment specific configuration
 "======================================================
 
-	if filereadable(expand('~/.vimrc'))
-		source ~/.vimrc_
-	endif
+if filereadable(expand($HOME.'/.vimrc_'))
+	source ~/.vimrc_
+endif
