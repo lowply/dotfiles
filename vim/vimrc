@@ -241,7 +241,7 @@ nnoremap <Leader>vv :<C-u>VimShell<CR>
 
 
 " http://monmon.hateblo.jp/entry/20100902/1283388287
-" set pastetoggle=<C-E>
+set pastetoggle=<C-E>
 
 "======================================================
 " Unite
