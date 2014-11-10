@@ -39,7 +39,7 @@ type gsed > /dev/null 2>&1 && alias sed='gsed'
 #
 # functions
 #
-function addpath(){
+addpath(){
 	[ -d ${1} ] || { echo "[addpath] ${1} does not exist."; return; }
 	if [ "${2}" == "man" ]; then
 		# for MANPATH
@@ -50,11 +50,11 @@ function addpath(){
 	fi
 }
 
-function check_cmd(){
+check_cmd(){
 	type ${1} > /dev/null 2>&1 || { echo "${1} is not installed"; return 1; }
 }
 
-function peco-run-cmd(){
+peco-run-cmd(){
 	if [ -n "$1" ] ; then
 		# Replace the last entry, with $1
 		history -s $1
@@ -67,7 +67,7 @@ function peco-run-cmd(){
 	fi
 }
 
-function peco-src () {
+peco-src () {
 	check_cmd "peco" || return
 	check_cmd "ghq" || return
 	local CMD=$(echo $(ghq list -p | peco) | sed -e 's/^/cd /g')
@@ -77,7 +77,7 @@ function peco-src () {
 bind '"\C-]":"peco-src\n"'
 
 # http://qiita.com/yungsang/items/09890a06d204bf398eea
-function peco-history() {
+peco-history() {
 	check_cmd "peco" || return
 	local NUM=$(history | wc -l)
 	local FIRST=$((-1*(NUM-1)))
@@ -94,9 +94,9 @@ function peco-history() {
 
 bind '"\C-r":"peco-history\n"'
 
-function peco-snippets() {
+peco-snippets() {
 	check_cmd "peco" || return
-	[ -f $HOME/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
+	[ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
 	local CMD=$(grep -v "^#" ~/.snippets | sed '/^$/d' | peco)
 	peco-run-cmd "$CMD"
 }
@@ -178,7 +178,7 @@ psone(){
 	local BRANCH=111
 
 	# load color config if exists
-	[ -f $HOME/.bash_color ] && . $HOME/.bash_color
+	[ -f ${HOME}/.bash_color ] && . ${HOME}/.bash_color
 
 	GIT_PS1_SHOWDIRTYSTATE=true
 
@@ -198,7 +198,7 @@ psone(){
 #
 # reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 #
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:$HOME/bin"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin"
 
 case "${OSTYPE}" in
 darwin*)
@@ -246,15 +246,15 @@ linux*)
 	# Keychain
 	#
 	if [ -x /usr/bin/keychain ]; then
-		keychain $HOME/.ssh/id_rsa
-		source $HOME/.keychain/$HOSTNAME-sh
+		keychain ${HOME}/.ssh/id_rsa
+		source ${HOME}/.keychain/$HOSTNAME-sh
 	fi
 
 	#
 	# rbenv
 	#
-	if [ -d $HOME/.rbenv ]; then
-		addpath $HOME/.rbenv/bin
+	if [ -d ${HOME}/.rbenv ]; then
+		addpath ${HOME}/.rbenv/bin
 		eval "$(rbenv init -)"
 	fi
 
@@ -284,8 +284,8 @@ esac
 #
 # nodebrew
 #
-if [ -d $HOME/.nodebrew/current/bin ]; then
-	addpath $HOME/.nodebrew/current/bin
+if [ -d ${HOME}/.nodebrew/current/bin ]; then
+	addpath ${HOME}/.nodebrew/current/bin
 fi
 
 #
@@ -303,24 +303,26 @@ if type go > /dev/null 2>&1; then
 		export GOROOT=/usr/local/go
 		;;
 	esac
-	export GOPATH=$HOME
+	export GOPATH=${HOME}
 	addpath "${GOPATH}/bin"
 fi
 
 #
 # GCE
 #
-if [ -d $HOME/google-cloud-sdk ]; then
-	source $HOME/google-cloud-sdk/path.bash.inc
-	source $HOME/google-cloud-sdk/completion.bash.inc
+if [ -d ${HOME}/google-cloud-sdk ]; then
+	source ${HOME}/google-cloud-sdk/path.bash.inc
+	source ${HOME}/google-cloud-sdk/completion.bash.inc
 fi
 
 type archey > /dev/null 2>&1 && archey
 
 #
-# apollo
+# env specific additions
 #
-[ -f /apollo/env/envImprovement/var/bashrc ] && source /apollo/env/envImprovement/var/bashrc
+if [ -f ${HOME}/.bashrc.env ]; then
+	source ${HOME}/.bashrc.env
+fi
 
 #
 # execute psone()

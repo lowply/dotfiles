@@ -19,7 +19,6 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 " NeoBundle install packages
 "======================================================
 
-" NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'tpope/vim-commentary'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'kien/ctrlp.vim'
@@ -37,10 +36,6 @@ NeoBundle 'Shougo/vimproc.vim', {
       \ }
 NeoBundle 'Shougo/vimshell.vim'
 NeoBundle 'Shougo/vimfiler'
-
-"" Snippets
-" NeoBundle 'SirVer/ultisnips'
-" NeoBundle 'honza/vim-snippets'
 
 "" Color
 NeoBundle 'altercation/vim-colors-solarized'
@@ -71,6 +66,12 @@ exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
 " not using vim-go because some functions are duplicated after vim7.4.414
 "
 " NeoBundle "fatih/vim-go"
+
+"
+" Vim After 11 Years: http://statico.github.io/vim.html
+"
+NeoBundle "scrooloose/syntastic"
+NeoBundle "vim-scripts/closetag.vim"
 
 "------------------------------------------------------
 "" My additions
