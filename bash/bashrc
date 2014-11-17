@@ -267,9 +267,6 @@ linux*)
 		#
 		source /usr/local/git/contrib/completion/git-completion.bash
 		source /usr/local/git/contrib/completion/git-prompt.sh
-	elif [ -d /apollo/env/SDETools ]; then
-		source /apollo/package/local_1/Linux-2.6c2.5-x86_64/Git/Git-378.0-0/share/git/contrib/completion/git-prompt.sh
-		source /apollo/package/local_1/Linux-2.6c2.5-x86_64/Git/Git-378.0-0/share/git/contrib/completion/git-completion.bash
 	elif [ -d /usr/share/git-core/contrib/completion ]; then
 		#
 		# if installed via yum (mainly for Amazon Linux 2014.03)
