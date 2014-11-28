@@ -63,6 +63,11 @@ NeoBundle "vim-jp/vim-go-extra"
 exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
 
 "
+" use goimports instead of gofmt
+"
+let g:gofmt_command = 'goimports'
+
+"
 " not using vim-go because some functions are duplicated after vim7.4.414
 "
 " NeoBundle "fatih/vim-go"
