@@ -37,6 +37,9 @@ NeoBundle 'Shougo/vimproc.vim', {
 NeoBundle 'Shougo/vimshell.vim'
 NeoBundle 'Shougo/vimfiler'
 
+"" Ruby
+NeoBundle 'vim-ruby/vim-ruby'
+
 "" Color
 NeoBundle 'altercation/vim-colors-solarized'
 
@@ -95,6 +98,12 @@ filetype plugin indent on
 " If there are uninstalled bundles found on startup,
 " this will conveniently prompt you to install them.
 NeoBundleCheck
+
+"======================================================
+" Ruby
+"======================================================
+
+	au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
 "======================================================
 " Go
