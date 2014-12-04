@@ -34,8 +34,8 @@ link_file () {
 	if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
 	then
 		user "File already exists: $dst ($(basename "$src")) \n"
-		# mv "$dst" "${dst}.${date}"
-		# success "moved $dst to ${dst}.${date}"
+		mv "$dst" "${dst}.${date}"
+		success "moved $dst to ${dst}.${date}"
 	else
 		if [ $copy ]; then
 			cp -a "$src" "$dst"
