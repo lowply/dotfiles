@@ -191,8 +191,8 @@ esac
 #
 # dotfiles
 #
-if [ -d ${HOME}/.dotfiles/bin ]; then
-	addpath ${HOME}/.dotfiles/bin
+if [ -d ${HOME}/dotfiles/bin ]; then
+	addpath ${HOME}/dotfiles/bin
 fi
 
 #
