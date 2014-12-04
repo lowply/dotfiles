@@ -126,7 +126,7 @@ NeoBundleCheck
 " https://github.com/Shougo/neocomplete.vim
 "======================================================
 
-	source ~/.vimrc_neocomplete
+	source ~/dotfiles/vim/vimrc_neocomplete
 
 "======================================================
 " syntax color
@@ -289,5 +289,5 @@ nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35
 "======================================================
 
 if filereadable(expand($HOME.'/.vimrc_'))
-	source ~/.vimrc_
+	source ~/.vimrc.local
 endif

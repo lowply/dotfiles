@@ -1,120 +1,16 @@
-# .bashrc
+# .bash_profile
 
-# User specific aliases and functions
-
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
 fi
 
-# ---------------------------------------------------------------
-# Original Setting
-# ---------------------------------------------------------------
+# User specific environment and startup programs
 
 #
 # LANG
 #
 export LANG=en_US.UTF-8
-
-#
-# aliases
-#
-alias jman='LANG=ja_JP.utf8 man'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias ls='ls -v --color=auto'
-alias tm='tmux -2u a || tmux -2u'
-alias pullall='git pull origin master && git submodule foreach git pull origin master'
-alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
-alias nstanp='lsof -nP -iTCP'
-alias lsdsstr='find . -name .DS_Store -print'
-alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
-type gsed > /dev/null 2>&1 && alias sed='gsed'
-
-#
-# functions
-#
-addpath(){
-	[ -d ${1} ] || { echo "[addpath] ${1} does not exist."; return; }
-	if [ "${2}" == "man" ]; then
-		# for MANPATH
-		export MANPATH=${1}:${MANPATH//$1:/}
-	else
-		# for PATH
-		export PATH=${1}:${PATH//$1:/}
-	fi
-}
-
-check_cmd(){
-	type ${1} > /dev/null 2>&1 || { echo "${1} is not installed"; return 1; }
-}
-
-peco-run-cmd(){
-	if [ -n "$1" ] ; then
-		# Replace the last entry, with $1
-		history -s $1
-		# Execute it
-		echo $1 >&2
-		eval $1
-	else
-		# Remove the last entry
-		history -d $((HISTCMD-1))
-	fi
-}
-
-peco-src () {
-	check_cmd "peco" || return
-	check_cmd "ghq" || return
-	local CMD=$(echo $(ghq list -p | peco) | sed -e 's/^/cd /g')
-	peco-run-cmd "$CMD"
-}
-
-bind '"\C-]":"peco-src\n"'
-
-# http://qiita.com/yungsang/items/09890a06d204bf398eea
-peco-history() {
-	check_cmd "peco" || return
-	local NUM=$(history | wc -l)
-	local FIRST=$((-1*(NUM-1)))
-
-	if [ $FIRST -eq 0 ] ; then
-		# Remove the last entry, "peco-history"
-		history -d $((HISTCMD-1))
-		echo "No history" >&2
-		return
-	fi
-	local CMD=$(fc -l $FIRST | sort -k 2 -k 1nr | uniq -f 1 | sort -nr | sed -r 's/^[0-9]+//' | peco | head -n 1)
-	peco-run-cmd "$CMD"
-}
-
-bind '"\C-r":"peco-history\n"'
-
-peco-snippets() {
-	check_cmd "peco" || return
-	[ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
-	local CMD=$(grep -v "^#" ~/.snippets | sed '/^$/d' | peco)
-	peco-run-cmd "$CMD"
-}
-
-stty quit undef
-bind '"\C-\\":"peco-snippets\n"'
-
-
-#
-# append to the history file, don't overwrite it
-#
-shopt -s histappend
-
-#
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-#
-shopt -s checkwinsize
 
 #
 # History size & format
@@ -144,6 +40,22 @@ type vim > /dev/null 2>&1 && export EDITOR=/usr/local/bin/vim
 type less > /dev/null 2>&1 && export PAGER=/usr/bin/less
 
 #
+# avoid screen lock by hitting Ctrl+S
+#
+stty stop undef
+
+#
+# append to the history file, don't overwrite it
+#
+shopt -s histappend
+
+#
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+#
+shopt -s checkwinsize
+
+#
 # PS1
 #
 psone(){
@@ -164,7 +76,7 @@ psone(){
 	darwin*)
 		local EMO_EYES="\xf0\x9f\x91\x80"
 		local EMO_BURG="\xf0\x9f\x8d\x94"
-		#local EMO=`echo -e "${EMO_EYES}  "`
+		local EMO=`echo -e "${EMO_EYES}  "`
 		local EMO=""
 	esac
 
@@ -190,16 +102,14 @@ psone(){
 	unset resetcolor
 }
 
-
-#
-# path
-#
-
 #
 # reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 #
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin"
 
+#
+# path
+#
 case "${OSTYPE}" in
 darwin*)
 	#
@@ -279,6 +189,13 @@ linux*)
 esac
 
 #
+# dotfiles
+#
+if [ -d ${HOME}/.dotfiles/bin ]; then
+	addpath ${HOME}/.dotfiles/bin
+fi
+
+#
 # nodebrew
 #
 if [ -d ${HOME}/.nodebrew/current/bin ]; then
@@ -301,27 +218,22 @@ if type go > /dev/null 2>&1; then
 		;;
 	esac
 	export GOPATH=${HOME}
-	addpath "${GOPATH}/bin"
 fi
 
 #
-# GCE
+# psone
 #
-if [ -d ${HOME}/google-cloud-sdk ]; then
-	source ${HOME}/google-cloud-sdk/path.bash.inc
-	source ${HOME}/google-cloud-sdk/completion.bash.inc
-fi
+psone
 
+#
+# archey
+#
 type archey > /dev/null 2>&1 && archey
 
 #
-# env specific additions
+# cowsay
 #
-if [ -f ${HOME}/.bashrc.env ]; then
-	source ${HOME}/.bashrc.env
+if [ $(type cowsay > /dev/null 2>&1) -a $(type fortune > /dev/null 3>&1) ]; then
+	fortune | cowsay -f small
 fi
 
-#
-# execute psone()
-#
-psone

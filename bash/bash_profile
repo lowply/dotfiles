@@ -1,5 +1,0 @@
-# just read bashrc
-# should I use source instead of . ?
-if [ -f ~/.bashrc ]; then
-     . ~/.bashrc
-fi
