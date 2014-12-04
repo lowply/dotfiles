@@ -36,14 +36,14 @@ link_file () {
 		user "File already exists: $dst ($(basename "$src")) \n"
 		mv "$dst" "${dst}.${date}"
 		success "moved $dst to ${dst}.${date}"
+	fi
+
+	if [ $copy == true ]; then
+		cp -a "$src" "$dst"
+		success "copied $src to $dst"
 	else
-		if [ $copy ]; then
-			cp -a "$src" "$dst"
-			success "copied $src to $dst"
-		else
-			ln -s "$src" "$dst"
-			success "linked $src to $dst"
-		fi
+		ln -s "$src" "$dst"
+		success "linked $src to $dst"
 	fi
 }
 
