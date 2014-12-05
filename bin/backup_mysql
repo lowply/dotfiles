@@ -36,7 +36,7 @@ echo ${OSTYPE} | grep "linux" > /dev/null || { echo "Not a Linux OS"; exit 1; }
 [ -f $HOME/.mysql_access ] && . $HOME/.mysql_access || { echo "~/.mysql_access could not be found"; exit 1; }
 
 # check ~/.mysql_access has enough information
-[ -z "${DBUSER}" -o -z "${DBPASS}" ] || { echo "Not enough information to access mysql"; exit 1; }
+[ -z "${DBUSER}" -o -z "${DBPASS}" ] && { echo "Not enough information to access mysql"; exit 1; }
 
 # ~/.mysql_access should be following format
 # DBUSER=dbuser
