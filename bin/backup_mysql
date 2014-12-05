@@ -2,6 +2,8 @@
 
 #
 # version : 1.60 (2014/12/05 sho@fixture.jp)
+# - Rename to backup_mysql
+# - Date is now date.time format
 # - Separate mysql access information to ~/.mysql_access
 #
 # version : 1.50 (2014/09/02 sho@fixture.jp)
