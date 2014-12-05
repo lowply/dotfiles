@@ -1,6 +1,9 @@
 #!/bin/sh
 
 #
+# version : 1.60 (2014/12/05 sho@fixture.jp)
+# - Separate mysql access information to ~/.mysql_access
+#
 # version : 1.50 (2014/09/02 sho@fixture.jp)
 # - remove _DBPASS
 #
@@ -21,24 +24,27 @@
 # - First edition.
 # 
 
+# check if this host is linux
 echo ${OSTYPE} | grep "linux" > /dev/null || { echo "Not a Linux OS"; exit 1; }
-[ -f $HOME/.mysql_access ] || { echo ""; exit 1; }
 
-. $HOME/.mysql_access
+# check mysqld is running or not
+[ -z "$(/sbin/pidof mysqld)" ] && { echo "mysql is not running"; exit 1; }
+
+# check mysql access file exists
+[ -f $HOME/.mysql_access ] && . $HOME/.mysql_access || { echo "~/.mysql_access could not be found"; exit 1; }
+
+# check ~/.mysql_access has enough information
+[ -z "${DBUSER}" -o -z "${DBPASS}" ] || { echo "Not enough information to access mysql"; exit 1; }
+
+# ~/.mysql_access should be following format
+# DBUSER=dbuser
+# DBPASS=dbpass
 
 # you can change these vars for your server.
 TERM=14
 ENC=binary
 BACKUPDIR=/home/backup/mysql
-
-DATE=$(date +%y%m%d)
-PID=$(/sbin/pidof mysqld)
-
-# check mysql pass is set
-[ -z "${DBPASS}" ] && { echo "DBPASS is not set, aborting."; exit 1; }
-
-# check mysqld is running or not
-[ -z "${PID}" ] && { echo "mysql is not running"; exit 1; }
+DATE=$(date +%y%m%d.%H%M%S)
 
 # make dir if it doesn't exist
 [ -d ${BACKUPDIR} ] || mkdir -p ${BACKUPDIR}
@@ -48,8 +54,9 @@ PID=$(/sbin/pidof mysqld)
 cd ${BACKUPDIR}/${DATE}
 
 # get backup and gzip
-for DBNAME in $(mysql -u${DBUSER} -p${DBPASS} -N -e 'show databases' | grep -v '_schema')
+for DBNAME in $(mysql -u${DBUSER} -p${DBPASS} -N -e 'show databases' | grep -v 'information_schema')
 do
+	echo "mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql"
 	mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql
 	gzip -f ./${DBNAME}.sql
 done
