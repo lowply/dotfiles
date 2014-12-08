@@ -233,7 +233,14 @@ type archey > /dev/null 2>&1 && archey
 #
 # cowsay
 #
-if [ $(type cowsay > /dev/null 2>&1) -a $(type fortune > /dev/null 3>&1) ]; then
+
+# for Ubuntu
+if [ -f /etc/lsb-release ]; then
+	. /etc/lsb-release
+	[ "${DISTRIB_ID}" == "Ubuntu" ] && addpath /usr/games
+fi
+
+if [ $(type cowsay > /dev/null 2>&1) -a $(type fortune > /dev/null 2>&1) ]; then
 	fortune | cowsay -f small
 fi
 

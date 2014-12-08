@@ -3,13 +3,6 @@
 # reference: https://github.com/holman/dotfiles
 #
 
-date=$(date +%y%m%d-%H%M%S)
-
-cd "$(dirname "$0")/.."
-DOTFILES_ROOT=$(pwd)
-
-set -e
-
 info () {
 	printf "	[ \033[00;34m..\033[0m ] $1"
 }
@@ -31,11 +24,11 @@ fail () {
 link_file () {
 	local src=$1 dst=$2 copy=$3
 
-	if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
-	then
+	if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]; then
+		[ -d ${HOME}/dotfiles_backup_${DATE} ] || mkdir ${HOME}/dotfiles_backup_${DATE}
 		user "File already exists: $dst ($(basename "$src")) \n"
-		mv "$dst" "${dst}.${date}"
-		success "moved $dst to ${dst}.${date}"
+		mv "$dst" ${HOME}/dotfiles_backup_${DATE}/
+		success "moved $dst to ~/dotfiles_backup_${DATE}/"
 	fi
 
 	if [ $copy == true ]; then
@@ -48,7 +41,12 @@ link_file () {
 }
 
 install_dotfiles () {
-	info 'installing dotfiles'
+	cd "$(dirname "$0")/.."
+
+	DATE=$(DATE +%y%m%d-%H%M%S)
+	DOTFILES_ROOT=$(pwd)
+
+	info "installing dotfiles..."
 
 	for src in $(find "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink')
 	do
@@ -61,8 +59,12 @@ install_dotfiles () {
 		dst="$HOME/.$(basename "${src%.*}")"
 		link_file "$src" "$dst" true
 	done
+
+	if [ -d $HOME/.vim_tmp ]; then
+		mkdir $HOME/.vim_tmp
+		info "created $HOME/.vim_tmp"
+	fi
 }
 
 install_dotfiles
 
-[ -d $HOME/.vim_tmp ] || mkdir $HOME/.vim_tmp
