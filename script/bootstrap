@@ -43,7 +43,7 @@ link_file () {
 install_dotfiles () {
 	cd "$(dirname "$0")/.."
 
-	DATE=$(DATE +%y%m%d-%H%M%S)
+	DATE=$(date +%y%m%d-%H%M%S)
 	DOTFILES_ROOT=$(pwd)
 
 	info "installing dotfiles..."
@@ -60,7 +60,7 @@ install_dotfiles () {
 		link_file "$src" "$dst" true
 	done
 
-	if [ -d $HOME/.vim_tmp ]; then
+	if [ -d ! $HOME/.vim_tmp ]; then
 		mkdir $HOME/.vim_tmp
 		info "created $HOME/.vim_tmp"
 	fi
