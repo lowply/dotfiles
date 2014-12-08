@@ -240,7 +240,9 @@ if [ -f /etc/lsb-release ]; then
 	[ "${DISTRIB_ID}" == "Ubuntu" ] && addpath /usr/games
 fi
 
-if [ $(type cowsay > /dev/null 2>&1) -a $(type fortune > /dev/null 2>&1) ]; then
+type cowsay > /dev/null 2>&1 && COWSAY=true
+type fortune > /dev/null 2>&1 && FORTUNE=true
+if [ "${COWSAY}" == "true" -a "${FORTUNE}" == "true" ]; then
 	fortune | cowsay -f small
 fi
 
