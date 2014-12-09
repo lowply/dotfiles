@@ -45,9 +45,8 @@ main(){
 	# for multibyte filenames
 	export LANG=en_US.UTF-8
 
-	# check conf
 	WD="$HOME/s3backup"
-
+	CONF="${WD}/backup.conf"
 	CONFFORMAT="
 	----------
 	# Backup enabled
@@ -74,7 +73,7 @@ main(){
 	[ -d ${WD} ] || { mkdir ${WD}; cd ${WD}; mkdir log; mkdir excludes; touch backup.conf; chmod 600 backup.conf; }
 
 	# check conf file permission
-	[ "$(stat --format='%a' ${WD}/backup.conf)" == "600" ] && . ${WD}/backup.conf || { echo "permission of ${CONF} is not 600."; exit 1; }
+	[ "$(stat --format='%a' ${CONF})" == "600" ] && . ${CONF} || { echo "permission of ${CONF} is not 600."; exit 1; }
 
 	# check conf has enough information
 	[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && { echo -e "Not enough information on ${CONF}. Conf should have following variables:\n${CONFFORMAT}"; exit 1; }
