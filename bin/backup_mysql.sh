@@ -46,13 +46,16 @@ main(){
 	echo ${OSTYPE} | grep "linux" > /dev/null || { echo "Not a Linux OS"; exit 1; }
 
 	# check mysqld is running or not
-	[ -z "$(/sbin/pidof mysqld)" ] && { echo "mysql is not running"; exit 1; }
+	[ ! -z "$(/sbin/pidof mysqld)" ] || { echo "mysql is not running"; exit 1; }
+
+	# if conf file exists
+	[ -f ${CONF} ] || { echo "${CONF} could not be found. Conf file should include following variables:\n${CONFFORMAT}"; exit 1; }
 
 	# if conf file exists with permission 600, load it
-	[ "$(stat --format='%a' ${CONF})" == "600" ] && . ${CONF} || { echo "${CONF} could not be found or permission is not 600."; exit 1; }
+	[ "$(stat --format='%a' ${CONF})" == "600" ] && . ${CONF} || { echo "Permission of ${CONF} is not 600."; exit 1; }
 
 	# check conf file has enough information
-	[ -z "${DBUSER}" -o -z "${DBPASS}" ] && { echo "Not enough information on ${CONF}. Conf should have following vatiables:\n${CONFFORMAT}"; exit 1; }
+	[ -z "${DBUSER}" -o -z "${DBPASS}" ] && { echo "Not enough information on ${CONF}. Conf should have following variables:\n${CONFFORMAT}"; exit 1; }
 
 	# make dir if it doesn't exist
 	[ -d ${BACKUPDIR} ] || mkdir -p ${BACKUPDIR}
