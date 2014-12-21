@@ -30,17 +30,18 @@
 # 
 
 main(){
-	TERM=14
-	ENC=binary
-	BACKUPDIR=/home/backup/mysql
 	DATE=$(date +%y%m%d.%H%M%S)
 	CONF="${HOME}/.mysql_access"
 	CONFFORMAT="
 	----------
 	DBUSER=\"dbuser\"
 	DBPASS=\"dbpass\"
+	TERM=14
+	ENC=binary
+	BACKUPDIR=/home/backup/mysql
 	----------
 	"
+
 
 	# check if this host is linux
 	echo ${OSTYPE} | grep "linux" > /dev/null || { echo "Not a Linux OS"; exit 1; }
@@ -64,11 +65,17 @@ main(){
 	mkdir -p ${BACKUPDIR}/${DATE}
 	cd ${BACKUPDIR}/${DATE}
 
+	if mysql --version | grep "Distrib 5.0" > /dev/null ; then
+		EVENTS=""
+	else
+		EVENTS="--events"
+	fi
+
 	# get backup and gzip
 	for DBNAME in $(mysql -u${DBUSER} -p${DBPASS} -N -e 'show databases' | grep -v 'information_schema')
 	do
 		echo "mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql"
-		mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql
+		mysqldump ${EVENTS} --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql
 		gzip -f ./${DBNAME}.sql
 	done
 
