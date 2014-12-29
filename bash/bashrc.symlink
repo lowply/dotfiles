@@ -108,6 +108,244 @@ function peco-pkill() {
 
 alias pk="peco-pkill"
 
+#
+# LANG
+#
+export LANG=en_US.UTF-8
+
+#
+# History size & format
+#
+export HISTCONTROL=ignoredups:ignorespace
+export HISTSIZE=10000
+export HISTTIMEFORMAT="%F %T : "
+
+# less prompt customize. See details for
+# http://kazmax.zpp.jp/cmd/l/less.1.html
+# http://qiita.com/hatchinee/items/586fb1c4915e2bb5c03b
+#
+export LESS='-X -R -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
+
+#
+# http://blog.elliptium.net/2011/11/less-homebrew
+#
+if type src-hilite-lesspipe.sh > /dev/null 2>&1;then
+	LESSPIPE=`which src-hilite-lesspipe.sh`
+	export LESSOPEN="| $LESSPIPE %s"
+fi
+
+#
+# set EDITOR, PAGER
+#
+type vim > /dev/null 2>&1 && export EDITOR=/usr/local/bin/vim
+type less > /dev/null 2>&1 && export PAGER=/usr/bin/less
+
+#
+# avoid screen lock by hitting Ctrl+S
+#
+stty stop undef
+
+#
+# append to the history file, don't overwrite it
+#
+shopt -s histappend
+
+#
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+#
+shopt -s checkwinsize
+
+#
+# PS1
+#
+psone(){
+	bgcolor(){
+		echo "\\[\\033[48;5;"$1"m\\]"
+	}
+
+	fgcolor(){
+		echo "\\[\\033[38;5;"$1"m\\]"
+	}
+
+	resetcolor(){
+		echo "\\[\\e[0m\\]"
+	}
+
+	# just for fun
+	case "${OSTYPE}" in
+	darwin*)
+		local EMO_EYES="\xf0\x9f\x91\x80"
+		local EMO_BURG="\xf0\x9f\x8d\x94"
+		local EMO=`echo -e "${EMO_EYES}  "`
+		local EMO=""
+	esac
+
+	# default coloring
+	local BACKGROUND=0
+	local UNAME=198
+	local SYMBOL=147
+	local HOST=173
+	local DIRNAME=120
+	local PROMPT=129
+	local BRANCH=111
+
+	# load color config if exists
+	[ -f ${HOME}/.bash_color ] && . ${HOME}/.bash_color
+
+	GIT_PS1_SHOWDIRTYSTATE=true
+
+	# set PS1
+	export PS1="${EMO}$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
+
+	unset bgcolor
+	unset fgcolor
+	unset resetcolor
+}
+
+#
+# reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
+#
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin"
+
+#
+# path
+#
+case "${OSTYPE}" in
+darwin*)
+	#
+	# for homebrew cask
+	#
+	export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=/usr/local/Caskroom"
+
+	#
+	# coreutils
+	#
+	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnubin
+	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnuman man
+
+	#
+	# rbenv
+	#
+	type rbenv >/dev/null 2>&1 && eval "$(rbenv init -)"
+
+	#
+	# bash completion (need brew install bash-completion)
+	#
+	if [ -f $(brew --prefix)/etc/bash_completion ]; then
+		. $(brew --prefix)/etc/bash_completion
+	fi
+
+	#
+	# aws cli completion
+	#
+	if [ -x $(brew --prefix)/bin/aws ]; then
+		complete -C aws_completer aws
+	fi
+
+	#
+	# git bash completion
+	#
+	if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
+		source /usr/local/opt/git/etc/bash_completion.d/git-prompt.sh
+		source /usr/local/opt/git/etc/bash_completion.d/git-completion.bash
+	fi
+
+	;;
+linux*)
+	#
+	# Keychain
+	#
+	if [ -x /usr/bin/keychain ]; then
+		keychain ${HOME}/.ssh/id_rsa
+		source ${HOME}/.keychain/$HOSTNAME-sh
+	fi
+
+	#
+	# rbenv
+	#
+	if [ -d ${HOME}/.rbenv ]; then
+		addpath ${HOME}/.rbenv/bin
+		eval "$(rbenv init -)"
+	fi
+
+	#
+	# git bash completion
+	#
+	if [ -d /usr/local/git ]; then
+		#
+		# if compiled from source (mainly for CentOS 6)
+		#
+		source /usr/local/git/contrib/completion/git-completion.bash
+		source /usr/local/git/contrib/completion/git-prompt.sh
+	elif [ -d /usr/share/git-core/contrib/completion ]; then
+		#
+		# if installed via yum (mainly for Amazon Linux 2014.03)
+		# /etc/bash_completion.d/git should be loaded 
+		#
+		source /usr/share/git-core/contrib/completion/git-prompt.sh
+	fi
+
+	;;
+esac
+
+#
+# dotfiles
+#
+if [ -d ${HOME}/dotfiles/bin ]; then
+	addpath ${HOME}/dotfiles/bin
+fi
+
+#
+# nodebrew
+#
+if [ -d ${HOME}/.nodebrew/current/bin ]; then
+	addpath ${HOME}/.nodebrew/current/bin
+fi
+
+#
+# golang
+#
+if type go > /dev/null 2>&1; then
+	#
+	# set GOROOT for .vimrc (adding rtp)
+	#
+	case "${OSTYPE}" in
+	darwin*)
+		export GOROOT=/usr/local/opt/go/libexec
+		;;
+	linux*)
+		export GOROOT=/usr/local/go
+		;;
+	esac
+	export GOPATH=${HOME}
+fi
+
+#
+# psone
+#
+psone
+
+#
+# archey
+#
+type archey > /dev/null 2>&1 && archey
+
+#
+# cowsay
+#
+
+# for Ubuntu
+if [ -f /etc/lsb-release ]; then
+	. /etc/lsb-release
+	[ "${DISTRIB_ID}" == "Ubuntu" ] && addpath /usr/games
+fi
+
+type cowsay > /dev/null 2>&1 && COWSAY=true
+type fortune > /dev/null 2>&1 && FORTUNE=true
+if [ "${COWSAY}" == "true" -a "${FORTUNE}" == "true" ]; then
+	fortune | cowsay -f small
+fi
 
 #
 # env specific additions
