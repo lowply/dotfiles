@@ -3,7 +3,6 @@
 import os.path
 import datetime
 import shutil
-import fnmatch
 import subprocess
 
 home = os.environ["HOME"]
@@ -42,7 +41,7 @@ def link_file(src, dst, copy):
         if not os.path.isdir(backupdir):
             os.mkdir(backupdir)
             success("Created " + backupdir)
-        user ("%s is already exists: %s" % (dst, src))
+        user ("%s is already exists" %dst)
         shutil.move(dst, backupdir)
         success ("Moved" + dst + " to " + backupdir)
 
@@ -53,21 +52,36 @@ def link_file(src, dst, copy):
         os.symlink(src, dst)
         success ("Linked %s to %s" % (src, dst))
 
-def install_dotfiles():
+def call(cmd):
+    #
+    # just a wrapper for subprocess.Popen, returns returncode, stdout, stderr
+    #
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout_data, stderr_data = p.communicate()
+    return p.returncode, stdout_data, stderr_data
+
+def find(ext, tgt):
+    #
+    # search *.ext files in tgt and return result in a list format
+    #
+    arg = "find " + tgt + " -maxdepth 2 -name '*." + ext + "'"
+    return call(arg)[1].splitlines()
+
+def main():
     os.chdir(os.path.abspath(os.path.dirname(__file__)))
     os.chdir(os.pardir)
     dotfiles_root = os.getcwd()
 
     info ("Installing dotfiles...")
 
-    src = dotfiles_root + "/bash/bashrc.symlink"
-    dst = home + "/." + os.path.basename(src).replace(".symlink","")
+    for src in find("symlink", dotfiles_root):
+        dst = home + "/." + os.path.basename(src).replace(".symlink","")
+        link_file(src, dst, False)
+        info("-" * 20)
 
-    # link_file(src, dst, False)
-    for root, dirs, files in os.walk("."):
-        for file in os.listdir(root):
-            if fnmatch.fnmatch(file, '*.symlink'):
-                print file
+    for src in find("copy", dotfiles_root):
+        dst = home + "/." + os.path.basename(src).replace(".copy","")
+        link_file(src, dst, True)
+        info("-" * 20)
 
-
-install_dotfiles()
+main()
