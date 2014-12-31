@@ -283,11 +283,26 @@ let g:vimfiler_as_default_explorer = 1
 nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
 nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
 
+"======================================================
+" useful settings from
+" http://itchyny.hatenablog.com/entry/2014/12/25/090000
+"======================================================
+
+nnoremap Y y$
+set display=lastline
+set pumheight=10
+set showmatch
+set matchtime=1
+augroup swapchoice-readonly
+  autocmd!
+  autocmd SwapExists * let v:swapchoice = 'o'
+augroup END
 
 "======================================================
 " environment specific configuration
 "======================================================
 
-if filereadable(expand($HOME.'/.vimrc_'))
+if filereadable(expand($HOME.'/.vimrc.local'))
 	source ~/.vimrc.local
 endif
+
