@@ -84,4 +84,9 @@ def main():
         link_file(src, dst, True)
         info("-" * 20)
 
+    vim_tmp = home + "/.vim_tmp"
+    if not os.path.isdir(vim_tmp):
+        info ("Create ~/.vim_tmp")
+        os.mkdir(vim_tmp)
+
 main()

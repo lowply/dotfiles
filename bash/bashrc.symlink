@@ -30,6 +30,7 @@ alias nstanp='lsof -nP -iTCP'
 alias lsdsstr='find . -name .DS_Store -print'
 alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 type gsed > /dev/null 2>&1 && alias sed='gsed'
+type colordiff > /dev/null 2>&1 && alias diff='colordiff'
 
 #
 # functions
@@ -327,6 +328,11 @@ fi
 psone
 
 #
+# docker shellinit
+#
+type docker > /dev/null 2>&1 && $(boot2docker shellinit)
+
+#
 # archey
 #
 type archey > /dev/null 2>&1 && archey
@@ -345,6 +351,10 @@ type cowsay > /dev/null 2>&1 && COWSAY=true
 type fortune > /dev/null 2>&1 && FORTUNE=true
 if [ "${COWSAY}" == "true" -a "${FORTUNE}" == "true" ]; then
 	fortune | cowsay -f small
+fi
+
+if [ "${COWSAY}" == "true" ]; then
+	export ANSIBLE_NOCOWS=1
 fi
 
 #

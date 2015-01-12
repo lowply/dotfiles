@@ -89,6 +89,7 @@ NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
+NeoBundle "chase/vim-ansible-yaml"
 
 call neobundle#end()
 
