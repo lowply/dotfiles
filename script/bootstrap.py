@@ -107,7 +107,7 @@ def linkandcopy():
 
     vim_tmp = home + "/.vim_tmp"
     if not os.path.isdir(vim_tmp):
-        # os.mkdir(vim_tmp)
+        os.mkdir(vim_tmp)
         success ("Create ~/.vim_tmp")
 
     print("\nDon't forget to setup your ~/.gitconfig.local below")

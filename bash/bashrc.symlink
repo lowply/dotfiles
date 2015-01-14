@@ -70,7 +70,8 @@ peco-src () {
 	peco-run-cmd "$CMD"
 }
 
-bind '"\C-]":"peco-src\n"'
+# ~/.inputrc
+# "\C-]":"peco-src\n"
 
 # http://qiita.com/yungsang/items/09890a06d204bf398eea
 peco-history() {
@@ -88,7 +89,8 @@ peco-history() {
 	peco-run-cmd "$CMD"
 }
 
-bind '"\C-r":"peco-history\n"'
+# ~/.inputrc
+# "\C-r":"peco-history\n"
 
 peco-snippets() {
 	check_cmd "peco" || return
@@ -97,7 +99,8 @@ peco-snippets() {
 	peco-run-cmd "$CMD"
 }
 
-bind '"\C-\\":"peco-snippets\n"'
+# ~/.inputrc
+# "\C-\\":"peco-snippets\n"
 
 
 # http://k0kubun.hatenablog.com/entry/2014/07/06/033336
