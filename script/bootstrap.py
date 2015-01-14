@@ -73,6 +73,10 @@ def find(ext, tgt):
 
 def unlinkandremove():
     backupdir = home + "/dotfiles_backup_" + d
+    if not os.path.isdir(backupdir):
+        os.mkdir(backupdir)
+        success("Created " + backupdir)
+
     info ("Cleaning up...")
 
     for src in find("symlink", dotfiles_root):
