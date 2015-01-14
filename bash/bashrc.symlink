@@ -252,6 +252,11 @@ darwin*)
 		source /usr/local/opt/git/etc/bash_completion.d/git-completion.bash
 	fi
 
+	#
+	# docker shellinit
+	#
+	type docker > /dev/null 2>&1 && $(boot2docker shellinit)
+
 	;;
 linux*)
 	#
@@ -326,11 +331,6 @@ fi
 # psone
 #
 psone
-
-#
-# docker shellinit
-#
-type docker > /dev/null 2>&1 && $(boot2docker shellinit)
 
 #
 # archey

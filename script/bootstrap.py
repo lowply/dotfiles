@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import os.path
 import datetime
 import shutil
@@ -7,6 +8,9 @@ import subprocess
 
 home = os.environ["HOME"]
 d = datetime.datetime.today().strftime("%y%m%d_%H%M%S")
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
+os.chdir(os.pardir)
+dotfiles_root = os.getcwd()
 
 colors = {
     "black"	:	"\033[30m",
@@ -67,26 +71,54 @@ def find(ext, tgt):
     arg = "find " + tgt + " -maxdepth 2 -name '*." + ext + "'"
     return call(arg)[1].splitlines()
 
-def main():
-    os.chdir(os.path.abspath(os.path.dirname(__file__)))
-    os.chdir(os.pardir)
-    dotfiles_root = os.getcwd()
+def unlinkandremove():
+    backupdir = home + "/dotfiles_backup_" + d
+    info ("Cleaning up...")
 
+    for src in find("symlink", dotfiles_root):
+        src = home + "/." + os.path.basename(src).replace(".symlink","")
+        os.remove(src)
+        success (src + " has been unlinked.")
+
+    for src in find("copy", dotfiles_root):
+        src = home + "/." + os.path.basename(src).replace(".copy","")
+        shutil.move(src, backupdir)
+        success ("Moved " + src + " to " + backupdir)
+
+    vim_tmp = home + "/.vim_tmp"
+    if os.path.isdir(vim_tmp):
+        shutil.rmtree(vim_tmp)
+        success (vim_tmp + " has been removed.")
+
+def linkandcopy():
     info ("Installing dotfiles...")
 
     for src in find("symlink", dotfiles_root):
         dst = home + "/." + os.path.basename(src).replace(".symlink","")
         link_file(src, dst, False)
-        info("-" * 20)
 
     for src in find("copy", dotfiles_root):
         dst = home + "/." + os.path.basename(src).replace(".copy","")
         link_file(src, dst, True)
-        info("-" * 20)
 
     vim_tmp = home + "/.vim_tmp"
     if not os.path.isdir(vim_tmp):
-        info ("Create ~/.vim_tmp")
-        os.mkdir(vim_tmp)
+        # os.mkdir(vim_tmp)
+        success ("Create ~/.vim_tmp")
 
-main()
+    print("\nDon't forget to setup your ~/.gitconfig.local below")
+    print("----------------------------------------")
+    print(call("cat ~/.gitconfig.local")[1])
+
+def main(args):
+    if len(args) == 1:
+        linkandcopy()
+    elif len(args) == 2:
+        if args[1] == "clean":
+            unlinkandremove()
+        else:
+            print ("Unknown argument. Usage: ./bootstrap.py | ./bootstrap.py clean")
+    elif len(args) > 2:
+        print ("Too many arguments. Usage: ./bootstrap.py | ./bootstrap.py clean")
+
+main(sys.argv)
