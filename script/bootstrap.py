@@ -81,13 +81,15 @@ def unlinkandremove():
 
     for src in find("symlink", dotfiles_root):
         src = home + "/." + os.path.basename(src).replace(".symlink","")
-        os.remove(src)
-        success (src + " has been unlinked.")
+        if os.path.islink(src):
+            os.remove(src)
+            success (src + " has been unlinked.")
 
     for src in find("copy", dotfiles_root):
         src = home + "/." + os.path.basename(src).replace(".copy","")
-        shutil.move(src, backupdir)
-        success ("Moved " + src + " to " + backupdir)
+        if os.path.isfile(src):
+            shutil.move(src, backupdir)
+            success ("Moved " + src + " to " + backupdir)
 
     vim_tmp = home + "/.vim_tmp"
     if os.path.isdir(vim_tmp):
