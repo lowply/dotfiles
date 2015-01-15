@@ -1,3 +1,6 @@
-"\C-]": "peco-src\n"
-"\C-r": "peco-history\n"
-"\C-\\" :"peco-snippets\n"
+
+$if Bash
+	"\C-r": "peco-history\n"
+	"\C-]": "peco-src\n"
+	"\C-k": "peco-pkill\n"
+$endif

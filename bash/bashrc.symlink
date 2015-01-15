@@ -66,8 +66,10 @@ peco-run-cmd(){
 peco-src () {
 	check_cmd "peco" || return
 	check_cmd "ghq" || return
-	local CMD=$(echo $(ghq list -p | peco) | sed -e 's/^/cd /g')
-	peco-run-cmd "$CMD"
+	local DIR="$(ghq list -p | peco)"
+	if [ ! -z "${DIR}" ]; then
+		cd "${DIR}"
+	fi
 }
 
 # ~/.inputrc
@@ -102,7 +104,6 @@ peco-snippets() {
 # ~/.inputrc
 # "\C-\\":"peco-snippets\n"
 
-
 # http://k0kubun.hatenablog.com/entry/2014/07/06/033336
 function peco-pkill() {
 	check_cmd "peco" || return
@@ -110,7 +111,8 @@ function peco-pkill() {
 	peco-run-cmd "$CMD"
 }
 
-alias pk="peco-pkill"
+# ~/.inputrc
+# "\C-k":"peco-pkill\n"
 
 #
 # LANG
