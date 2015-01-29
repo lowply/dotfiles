@@ -31,6 +31,7 @@ alias lsdsstr='find . -name .DS_Store -print'
 alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 type gsed > /dev/null 2>&1 && alias sed='gsed'
 type colordiff > /dev/null 2>&1 && alias diff='colordiff'
+type gls > /dev/null 2>&1 && alias ls='ls -v --color=auto'
 
 #
 # functions
