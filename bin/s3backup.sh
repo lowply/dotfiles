@@ -48,19 +48,19 @@ main(){
 	WD="$HOME/s3backup"
 	CONF="${WD}/backup.conf"
 	CONFFORMAT="
-	----------
-	# Backup enabled
-	ENABLED=true|false
+----------
+# Backup enabled
+ENABLED=true|false
 
-	# Bucket name
-	BACKET=\"\"
+# Bucket name
+BACKET=\"\"
 
-	# Backup dir name
-	BACKUPDIR=\"\"
+# Backup dir name
+BACKUPDIR=\"\"
 
-	# Node name
-	NODE=\"\"
-	----------
+# Node name
+NODE=\"\"
+----------
 	"
 
 	# check aws command
@@ -73,26 +73,30 @@ main(){
 	[ -d ${WD} ] || { mkdir ${WD}; cd ${WD}; mkdir log; mkdir excludes; touch backup.conf; chmod 600 backup.conf; }
 
 	# check conf file permission
-	[ "$(stat --format='%a' ${CONF})" == "600" ] && . ${CONF} || { echo "permission of ${CONF} is not 600."; exit 1; }
+	[ "$(stat --format='%a' ${CONF})" == "600" ] || { echo "permission of ${CONF} is not 600."; exit 1; }
 
 	# check conf has enough information
 	[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && { echo -e "Not enough information on ${CONF}. Conf should have following variables:\n${CONFFORMAT}"; exit 1; }
 
-	# Options
+	# read conf file
+	. ${CONF}
+
+	# options
 	OPTS="--profile default --no-follow-symlinks --delete --storage-class REDUCED_REDUNDANCY"
 
-	# Working dir
-	# Log
+	# log
 	LOGFILE="${WD}/log/$(date +%y%m%d_%H%M%S).log"
 
 	function syncdir(){
 		TARGET=${1}
 		command="aws s3 sync ${OPTS} /${TARGET}/ s3://${BACKET}/${BACKUPDIR}/${NODE}/${TARGET}/"
 		
-		while read exclude
-		do
-			command="${command} --exclude \"${exclude}\""
-		done < ${WD}/excludes/${TARGET}
+		if [ -f ${WD}/excludes/${TARGET} ]; then
+			while read exclude
+			do
+				command="${command} --exclude \"${exclude}\""
+			done < ${WD}/excludes/${TARGET}
+		fi
 		
 		echo "${command}" | tee -a ${LOGFILE}
 		eval "${command}" | tee -a ${LOGFILE}
@@ -107,9 +111,13 @@ main(){
 
 	echo "------ Backup started at $(date +%c)" > ${LOGFILE}
 
-	syncdir "root"
-	syncdir "etc"
-	syncdir "home"
+	if [ ${ENABLED} == "true" ]; then
+		syncdir "root"
+		syncdir "etc"
+		syncdir "home"
+	else
+		echo "s3backup is disabled."
+	fi
 
 	echo "------ Backup completed at $(date +%c)" >> ${LOGFILE}
 }
