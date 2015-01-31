@@ -71,7 +71,7 @@ main(){
 	fi
 
 	# get backup and gzip
-	for DBNAME in $(mysql -u${DBUSER} -p${DBPASS} -N -e 'show databases' | grep -v 'information_schema')
+	for DBNAME in $(mysql -u${DBUSER} -p${DBPASS} -N -e 'show databases' | grep -v '_schema')
 	do
 		echo "mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql"
 		mysqldump ${EVENTS} --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql
