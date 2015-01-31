@@ -82,7 +82,11 @@ NODE=\"\"
 	[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && { echo -e "Not enough information on ${CONF}. Conf should have following variables:\n${CONFFORMAT}"; exit 1; }
 
 	# options
-	OPTS="--profile default --no-follow-symlinks --delete --storage-class REDUCED_REDUNDANCY"
+	if [ "${1}" == "d" ]; then
+		OPTS="--profile default --no-follow-symlinks --delete --storage-class REDUCED_REDUNDANCY --dryrun"
+	else
+		OPTS="--profile default --no-follow-symlinks --delete --storage-class REDUCED_REDUNDANCY"
+	fi
 
 	# log
 	LOGFILE="${WD}/log/$(date +%y%m%d_%H%M%S).log"
