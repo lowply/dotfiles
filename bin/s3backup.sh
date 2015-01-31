@@ -75,11 +75,11 @@ NODE=\"\"
 	# check conf file permission
 	[ "$(stat --format='%a' ${CONF})" == "600" ] || { echo "permission of ${CONF} is not 600."; exit 1; }
 
-	# check conf has enough information
-	[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && { echo -e "Not enough information on ${CONF}. Conf should have following variables:\n${CONFFORMAT}"; exit 1; }
-
 	# read conf file
 	. ${CONF}
+
+	# check conf has enough information
+	[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && { echo -e "Not enough information on ${CONF}. Conf should have following variables:\n${CONFFORMAT}"; exit 1; }
 
 	# options
 	OPTS="--profile default --no-follow-symlinks --delete --storage-class REDUCED_REDUNDANCY"
