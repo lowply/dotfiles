@@ -311,12 +311,12 @@ nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
 let mapleader = ","
 noremap \ ,
+
+" disabled because it is confusing
 " nnoremap ; :
 " nnoremap : ;
 
-
-" http://goo.gl/nHgRxq
-set pastetoggle=<C-E>
+set pastetoggle=<F11>
 
 " Correct indent
 nnoremap Q gg=G
@@ -333,6 +333,16 @@ augroup swapchoice-readonly
 	autocmd!
 	autocmd SwapExists * let v:swapchoice = 'o'
 augroup END
+
+" http://goo.gl/6Tm4oo
+" map q: and q/ 
+nnoremap <F5> <CR>q:
+nnoremap <F6> <CR>q/
+" disable q:、q/、q?
+nnoremap q: <NOP>
+nnoremap q/ <NOP>
+nnoremap q? <NOP>
+
 
 "======================================================
 " VimShell
