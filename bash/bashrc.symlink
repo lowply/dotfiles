@@ -151,7 +151,9 @@ type less > /dev/null 2>&1 && export PAGER=/usr/bin/less
 #
 # avoid screen lock by hitting Ctrl+S
 #
-stty stop undef
+if [ ! -d /vagrant ]; then
+	stty stop undef
+fi
 
 #
 # append to the history file, don't overwrite it
