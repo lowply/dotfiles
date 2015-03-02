@@ -204,7 +204,8 @@ psone(){
 	GIT_PS1_SHOWDIRTYSTATE=true
 
 	# set PS1
-	export PS1="${EMO}$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
+	#export PS1="${EMO}$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
+	export PS1="${EMO}$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL)$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
 
 	unset bgcolor
 	unset fgcolor
