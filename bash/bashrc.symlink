@@ -262,6 +262,23 @@ darwin*)
 		source /usr/local/opt/git/etc/bash_completion.d/git-completion.bash
 	fi
 
+	#
+	# git diff-highlight
+	#
+	if [ ! -L /usr/local/bin/diff-highlight ]; then
+		ln -s /usr/local/opt/git/share/git-core/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
+	fi
+
+	#
+	# boot2docker
+	#
+	if type docker > /dev/null 2>&1; then
+		if [ "$(boot2docker info | jq -r '.State')" = "running" ];then
+			$(boot2docker shellinit)
+		fi
+		alias dockerkill="docker rm $(docker ps -a -q)"
+	fi
+
 	;;
 linux*)
 	#
@@ -331,6 +348,7 @@ if type go > /dev/null 2>&1; then
 	esac
 	export GOPATH=${HOME}
 fi
+
 
 #
 # psone
