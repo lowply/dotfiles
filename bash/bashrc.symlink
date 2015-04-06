@@ -106,7 +106,7 @@ peco-snippets() {
 # "\C-\\":"peco-snippets\n"
 
 # http://k0kubun.hatenablog.com/entry/2014/07/06/033336
-function peco-pkill() {
+peco-pkill() {
 	check_cmd "peco" || return
 	local CMD=$(for pid in $(ps aux | peco | awk '{ print $2 }'); do kill $pid; echo "Killed ${pid}"; done)
 	peco-run-cmd "$CMD"
@@ -276,7 +276,11 @@ darwin*)
 		if [ "$(boot2docker info | jq -r '.State')" = "running" ];then
 			$(boot2docker shellinit)
 		fi
-		alias dockerkill="docker rm $(docker ps -a -q)"
+		dockerkill() {
+			docker stop $1
+			docker rm $1
+		}
+		alias allrmi="docker images | grep \"<none>\" | awk '{print $3}' | xargs docker rmi"
 	fi
 
 	;;
