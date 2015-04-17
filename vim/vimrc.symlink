@@ -118,7 +118,7 @@ au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 let g:gofmt_command = 'goimports'
 
 " gocode, not necessary to be in ~/.vim/bundle/
-exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
+" exe "set rtp+=".globpath($GOPATH, "src/github.com/nsf/gocode/vim")
 
 autocmd FileType go autocmd BufWritePre <buffer> Fmt
 autocmd FileType go nnoremap <Leader>r :! go run %<CR>
@@ -126,6 +126,11 @@ autocmd FileType go nnoremap <Leader>r :! go run %<CR>
 " http://goo.gl/bHmCf5
 autocmd FileType go :highlight goErr ctermfg=210
 autocmd FileType go :match goErr /\<err\>/
+
+" http://goo.gl/wGAzyq
+autocmd FileType go set noexpandtab
+autocmd FileType go set tabstop=4
+autocmd FileType go set shiftwidth=4
 
 " http://goo.gl/Czf9g9
 set completeopt=menu,preview
