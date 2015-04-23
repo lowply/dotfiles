@@ -45,6 +45,7 @@ NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle "chase/vim-ansible-yaml"
+NeoBundle "stephpy/vim-yaml"
 NeoBundle 'tpope/vim-commentary'
 " NeoBundle 'bling/vim-airline'
 NeoBundle 'itchyny/lightline.vim'

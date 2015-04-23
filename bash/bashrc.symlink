@@ -354,6 +354,10 @@ if type go > /dev/null 2>&1; then
 	addpath ${GOROOT}/bin
 fi
 
+if [ -d ${HOME}/google-cloud-sdk ]; then
+	source "${HOME}/google-cloud-sdk/path.bash.inc"
+	source "${HOME}/google-cloud-sdk/completion.bash.inc"
+fi
 
 #
 # psone
