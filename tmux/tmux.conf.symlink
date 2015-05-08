@@ -16,15 +16,6 @@ set -g default-terminal xterm-256color
 set -g default-shell /bin/bash
 
 #----------------------------------------
-# Mouse Mode for iTerm2
-#----------------------------------------
-
-#setw -g mode-mouse on
-#set -g mouse-select-pane on
-#set -g mouse-resize-pane on
-#set -g mouse-select-window on
-
-#----------------------------------------
 # Status Bar Settings
 #----------------------------------------
 
@@ -50,8 +41,8 @@ set -g message-fg colour000
 # Border color (*reset)
 #----------------------------------------
 
-set -g pane-active-border-fg colour255
-set -g pane-active-border-bg colour000
+set -g pane-active-border-fg white
+set -g pane-active-border-bg yellow
 
 #----------------------------------------
 # Window Options
@@ -88,6 +79,35 @@ unbind M
 unbind y
 unbind p
 unbind c
+unbind 0
+unbind 1
+unbind 2
+unbind 3
+unbind 4
+unbind 5
+unbind 6
+unbind 7
+unbind 8
+unbind 9
+unbind M-1
+unbind M-2
+unbind M-3
+unbind M-4
+unbind M-5
+unbind M-n
+unbind M-o
+unbind M-p
+unbind M-Up
+unbind M-Down
+unbind M-Left
+unbind M-Right
+unbind C-Up
+unbind C-Down
+unbind C-Left
+unbind C-Right
+unbind PPage
+unbind [
+unbind ]
 
 bind h previous-window
 bind l next-window
@@ -114,6 +134,11 @@ bind -r C-j select-pane -t :.+
 bind -r C-k select-pane -t :.-
 bind -r C-n new-window
 bind -r C-Space next-layout
+
+bind -r Up resize-pane -U 5
+bind -r Down resize-pane -D 5
+bind -r Right resize-pane -R 5
+bind -r Left resize-pane -L 5
 
 bind C-r source-file ~/.tmux.conf \; display-message "Config Reloaded"
 
