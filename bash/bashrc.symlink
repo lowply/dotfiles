@@ -241,6 +241,11 @@ darwin*)
 	type rbenv >/dev/null 2>&1 && eval "$(rbenv init -)"
 
 	#
+	# pyenv
+	#
+	type pyenv >/dev/null 2>&1 && eval "$(pyenv init -)"
+
+	#
 	# bash completion (need brew install bash-completion)
 	#
 	if [ -f $(brew --prefix)/etc/bash_completion ]; then
@@ -299,6 +304,14 @@ linux*)
 	if [ -d ${HOME}/.rbenv ]; then
 		addpath ${HOME}/.rbenv/bin
 		eval "$(rbenv init -)"
+	fi
+
+	#
+	# pyenv
+	#
+	if [ -d ${HOME}/.pyenv ]; then
+		addpath ${HOME}/.pyenv/bin
+		eval "$(pyenv init -)"
 	fi
 
 	#
