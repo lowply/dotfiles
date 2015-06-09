@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-supervisorctl stop pf22
+/root/.pyenv/shims/supervisorctl stop pf22

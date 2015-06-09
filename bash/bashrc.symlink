@@ -105,7 +105,7 @@ peco-snippets() {
 }
 
 # ~/.inputrc
-# "\C-\\":"peco-snippets\n"
+# "\C-s":"peco-snippets\n"
 
 # http://k0kubun.hatenablog.com/entry/2014/07/06/033336
 peco-pkill() {

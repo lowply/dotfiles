@@ -1,30 +1,21 @@
-#
 # date
-#
 date +%Y%m%d
-#
+
 # dstat 
-#
-dstat -Tclmdrn
-dstat -Tclm
-dstat -Tclr
-dstat -Tclnd
-dstat -Tcldr
-dstat --top-cpu --top-cputime
-dstat --top-io --top-bio
-dstat --top-io-adv --top-bio-adv
+dstat -cdnlt --top-io --top-bio --top-cpu --top-cputime --top-cputime-avg --top-mem
 
-#
 # ps
-#
-
 ps auxwww --sort=rss
-#
-# dotfiles
-#
-vim /Users/sho/dotfiles/peco/snippets
-#
+
 # netstat
-#
 netstat -tlnp
-netstat -tanp
+
+# supervisord
+supervisorctl status
+
+# docker
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)
+
+# pwgen
+pwgen -Bs 8

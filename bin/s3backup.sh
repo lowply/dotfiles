@@ -5,6 +5,9 @@
 # S3 Backup Script
 # ------------------------------
 #
+# version : 0.9 (2015/06/09 lowply@gmail.com)
+# - minor updates
+#
 # version : 0.8 (2014/12/08 lowply@gmail.com)
 # - working dir name change
 # - separate config file
@@ -41,45 +44,54 @@
 # ------------------------------
 #
 
+# for multibyte filenames
+export LANG=en_US.UTF-8
+
+WD="$HOME/s3backup"
+CONF="${WD}/backup.conf"
+LOGFILE="${WD}/log/$(date +%y%m%d_%H%M%S).log"
+
+logger(){
+	echo "$(date): [Info] ${1}" | tee -a ${LOGFILE}
+}
+
+error(){
+	echo "$(date): [Error] ${1}" | tee -a ${LOGFILE} 1>&2 
+	exit 1
+}
+
 main(){
-	# for multibyte filenames
-	export LANG=en_US.UTF-8
-
-	WD="$HOME/s3backup"
-	CONF="${WD}/backup.conf"
-	CONFFORMAT="
-----------
-# Backup enabled
-ENABLED=true|false
-
-# Bucket name
-BACKET=\"\"
-
-# Backup dir name
-BACKUPDIR=\"\"
-
-# Node name
-NODE=\"\"
-----------
-	"
-
 	# check aws command
-	type aws > /dev/null 2>&1 || { echo "aws cli is not installed."; exit 1; }
+	type aws > /dev/null 2>&1 || error "aws cli is not installed"
 
 	# check aws config file
-	[ -f $HOME/.aws/config ] || { echo "~/.aws/config is not found"; exit 1; }
+	[ -f $HOME/.aws/config ] || error "~/.aws/config is not found"
 
 	# create workingdir and sub directries
-	[ -d ${WD} ] || { mkdir ${WD}; cd ${WD}; mkdir log; mkdir excludes; touch backup.conf; chmod 600 backup.conf; }
+	if [ ! -d ${WD} ]; then
+ 		mkdir ${WD}
+		cd ${WD}
+		mkdir log
+		mkdir excludes
+		cat <<- EOL > ${CONF}
+			# Backup enabled
+			ENABLED="true" # true or false
+			BACKET="" # backet name
+			BACKUPDIR="" # backup dir name in the backet
+			NODE="" # host name or IP address
+		EOL
+		chmod 600 ${CONF}
+		error "${CONF} created, please update it"
+	else
+		# check conf file permission
+		[ "$(stat --format='%a' ${CONF})" == "600" ] || error "permission of ${CONF} is not 600"
 
-	# check conf file permission
-	[ "$(stat --format='%a' ${CONF})" == "600" ] || { echo "permission of ${CONF} is not 600."; exit 1; }
+		# read conf file
+		. ${CONF}
 
-	# read conf file
-	. ${CONF}
-
-	# check conf has enough information
-	[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && { echo -e "Not enough information on ${CONF}. Conf should have following variables:\n${CONFFORMAT}"; exit 1; }
+		# check conf has enough information
+		[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && error "Not enough information in ${CONF}"
+	fi
 
 	# options
 	if [ "${1}" == "d" ]; then
@@ -87,9 +99,6 @@ NODE=\"\"
 	else
 		OPTS="--profile default --no-follow-symlinks --delete --storage-class REDUCED_REDUNDANCY"
 	fi
-
-	# log
-	LOGFILE="${WD}/log/$(date +%y%m%d_%H%M%S).log"
 
 	function syncdir(){
 		TARGET=${1}
@@ -102,18 +111,17 @@ NODE=\"\"
 			done < ${WD}/excludes/${TARGET}
 		fi
 		
-		echo "${command}" | tee -a ${LOGFILE}
+		logger "${command}"
 		eval "${command}" | tee -a ${LOGFILE}
 		
-		echo "------ /${TARGET}/" | tee -a ${LOGFILE}
-		echo -e "\n\n" | tee -a ${LOGFILE}
+		logger "------ /${TARGET}/"
 	}
 
 	#
 	# Action
 	#
 
-	echo "------ Backup started at $(date +%c)" > ${LOGFILE}
+	logger "------ Backup started at $(date +%c)"
 
 	if [ ${ENABLED} == "true" ]; then
 		syncdir "root"
@@ -123,7 +131,7 @@ NODE=\"\"
 		echo "s3backup is disabled."
 	fi
 
-	echo "------ Backup completed at $(date +%c)" >> ${LOGFILE}
+	logger "------ Backup completed at $(date +%c)"
 }
 
 main "$@"
