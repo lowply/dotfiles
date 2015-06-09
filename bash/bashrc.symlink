@@ -117,6 +117,10 @@ peco-pkill() {
 # ~/.inputrc
 # "\C-k":"peco-pkill\n"
 
+backup() {
+	cp -a $1{,.$(date +%y%m%d_%H%M%S)}
+}
+
 #
 # LANG
 #
