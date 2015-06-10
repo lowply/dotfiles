@@ -60,7 +60,7 @@ main(){
 		cat <<- EOL > ${CONF}
 			DBUSER=""
 			DBPASS=""
-			TERM="14"
+			PERIOD="14"
 			ENC="binary"
 			BACKUPDIR="/home/backup/mysql"
 		EOL
@@ -74,7 +74,7 @@ main(){
 		. ${CONF}
 
 		# check conf file has enough information
-		[ -z "${DBUSER}" -o -z "${DBPASS}" -o -z "${TERM}" -o -z "${ENC}" -o -z "${BACKUPDIR}" ] && error "Not enough information in ${CONF}"
+		[ -z "${DBUSER}" -o -z "${DBPASS}" -o -z "${PERIOD}" -o -z "${ENC}" -o -z "${BACKUPDIR}" ] && error "Not enough information in ${CONF}"
 	fi
 
 	# create target DB list
@@ -101,14 +101,14 @@ main(){
 	# get backup and gzip
 	for DBNAME in ${LIST}
 	do
-		logger "mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql"
+		logger "mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} -p\$DBPASS ${DBNAME} > ./${DBNAME}.sql"
 		mysqldump ${EVENTS} --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql
 		gzip -f ./${DBNAME}.sql
 	done
 
 	# delete old dir
 	logger "Deleting old backups..."
-	find ${BACKUPDIR}/ -type d -mtime +${TERM} | xargs rm -rf
+	find ${BACKUPDIR}/ -type d -mtime +${PERIOD} | xargs rm -rf
 
 	logger "Finished backup..."
 }

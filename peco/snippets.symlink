@@ -19,3 +19,12 @@ docker rmi $(docker images -q)
 
 # pwgen
 pwgen -Bs 8
+
+# cache
+sync && sysctl -w vm.drop_caches=3
+
+# swap
+swapoff -a && swapon -a
+
+# mysql
+mysql -e "select table_name, table_schema, engine from information_schema.tables;"
