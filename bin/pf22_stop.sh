@@ -6,8 +6,10 @@ if [ -d ~/.pyenv ]; then
 elif [ -x /usr/bin/supervisorctl ]; then
 	SUPERVISOR=/usr/bin/supervisorctl
 else
-	echo "supervisor is not installed"	
+	echo "supervisor is not installed" >&2
 	exit 1
 fi
+
+[ -z "$(supervisorctl status | grep pf22 | grep RUNNING)" ] && { echo "pf22 is not running" >&2; exit 1; }
 
 ${SUPERVISOR} stop pf22
