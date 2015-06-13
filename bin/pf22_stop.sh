@@ -10,6 +10,4 @@ else
 	exit 1
 fi
 
-[ -z "$(supervisorctl status | grep pf22 | grep RUNNING)" ] && { echo "pf22 is not running" >&2; exit 1; }
-
-${SUPERVISOR} stop pf22
+[ -z "$(supervisorctl status | grep pf22 | grep RUNNING)" ] || ${SUPERVISOR} stop pf22
