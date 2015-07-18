@@ -26,6 +26,7 @@ NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'ctrlpvim/ctrlp.vim'
+NeoBundle 'nixprime/cpsm'
 NeoBundle 'flazz/vim-colorschemes'
 
 "======================================================
@@ -52,7 +53,6 @@ NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'sheerun/vim-polyglot'
 NeoBundle 'Shougo/neomru.vim'
-NeoBundle 'Shougo/vimfiler'
 
 "
 " Ruby
@@ -104,6 +104,9 @@ filetype plugin indent on
 " this will conveniently prompt you to install them.
 NeoBundleCheck
 "End NeoBundle Scripts-------------------------
+
+" cpsm
+" let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
 
 "======================================================
 " Ruby
@@ -372,14 +375,6 @@ nnoremap <silent> [unite]m :<C-u>Unite<Space>file_mru<CR>
 nnoremap <silent> [unite]r :<C-u>UniteWithBufferDir file<CR>
 nnoremap <C-j> :<C-u>Unite file_mru<CR>
 nnoremap <C-f> :<C-u>Unite file_rec<CR>
-
-"======================================================
-" VimFiler : http://goo.gl/yZB07a
-"======================================================
-
-let g:vimfiler_as_default_explorer = 1
-nnoremap <silent> <Leader>fe :<C-u>VimFilerBufferDir -quit<CR>
-nnoremap <silent> <Leader>fi :<C-u>VimFilerBufferDir -split -simple -winwidth=35 -no-quit<CR>
 
 "======================================================
 " environment specific configuration
