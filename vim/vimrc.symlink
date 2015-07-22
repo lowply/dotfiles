@@ -119,6 +119,9 @@ autocmd FileType go set shiftwidth=4
 " http://goo.gl/Czf9g9
 set completeopt=menu,preview
 
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': ['go'] }
+let g:syntastic_go_checkers = ['go', 'golint']
+
 "======================================================
 " Neocomplete:
 "======================================================
@@ -376,6 +379,7 @@ nnoremap <silent> p p`]
 "======================================================
 " Ag_CtrlP:
 "======================================================
+"
 if executable('ag')
 	let g:ctrlp_use_caching=0
 	let g:ctrlp_user_command='ag %s -i --nocolor --nogroup -g ""'
