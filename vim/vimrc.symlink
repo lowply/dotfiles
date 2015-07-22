@@ -1,10 +1,11 @@
 
 "======================================================
-" NeoBundle Init 
-" https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh
+" NeoBundle Init: https://github.com/Shougo/neobundle.vim
 "======================================================
 
-"NeoBundle Scripts-----------------------------
+" Note: Skip initialization for vim-tiny or vim-small.
+if 0 | endif
+
 if has('vim_starting')
 	if &compatible
 		set nocompatible               " Be iMproved
@@ -21,38 +22,37 @@ call neobundle#begin(expand('~/.vim/bundle'))
 " Required:
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-" Add or remove your Bundles here:
-NeoBundle 'Shougo/neosnippet.vim'
-NeoBundle 'Shougo/neosnippet-snippets'
-NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'ctrlpvim/ctrlp.vim'
-NeoBundle 'nixprime/cpsm'
-NeoBundle 'flazz/vim-colorschemes'
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"======================================================
-" My additions begin
-"======================================================
-
-NeoBundle 'Shougo/vimproc.vim', {
-			\ 'build' : {
-			\     'windows' : 'tools\\update-dll-mingw',
-			\     'cygwin' : 'make -f make_cygwin.mak',
-			\     'mac' : 'make -f make_mac.mak',
-			\     'unix' : 'make -f make_unix.mak',
-			\    },
-			\ }
-NeoBundle 'Shougo/unite.vim'
 NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'tpope/vim-surround'
-NeoBundle 'wavded/vim-stylus'
 NeoBundle "chase/vim-ansible-yaml"
 NeoBundle "stephpy/vim-yaml"
 NeoBundle 'tpope/vim-commentary'
-" NeoBundle 'bling/vim-airline'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'sheerun/vim-polyglot'
-NeoBundle 'Shougo/neomru.vim'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'ctrlpvim/ctrlp.vim'
+NeoBundle 'flazz/vim-colorschemes'
+NeoBundle 'terryma/vim-expand-region'
+NeoBundle 'rking/ag.vim'
+NeoBundle 'justinmk/vim-dirvish'
+"NeoBundle 'nixprime/cpsm'
+
+"NeoBundle 'Shougo/neosnippet.vim'
+"NeoBundle 'Shougo/neosnippet-snippets'
+"NeoBundle 'Shougo/neomru.vim'
+"NeoBundle 'Shougo/unite.vim'
+"NeoBundle 'Shougo/vimfiler'
+"NeoBundle 'Shougo/vimproc.vim', {
+"			\ 'build' : {
+"			\     'windows' : 'tools\\update-dll-mingw',
+"			\     'cygwin' : 'make -f make_cygwin.mak',
+"			\     'mac' : 'make -f make_mac.mak',
+"			\     'unix' : 'make -f make_unix.mak',
+"			\    },
+"			\ }
 
 "
 " Ruby
@@ -81,18 +81,9 @@ NeoBundle "vim-jp/vim-go-extra"
 "
 NeoBundle "scrooloose/syntastic"
 NeoBundle "vim-scripts/closetag.vim"
-
-"
-" Disabled
-"
-" NeoBundle 'Shougo/vimshell.vim'
-" NeoBundle 'vim-scripts/grep.vim'
-" NeoBundle "majutsushi/tagbar"
 " NeoBundle "fatih/vim-go" " disabled because some functions are duplicated after vim7.4.414
 
-"======================================================
-" My additions ends
-"======================================================
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Required:
 call neobundle#end()
@@ -103,19 +94,18 @@ filetype plugin indent on
 " If there are uninstalled bundles found on startup,
 " this will conveniently prompt you to install them.
 NeoBundleCheck
-"End NeoBundle Scripts-------------------------
 
 " cpsm
 " let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
 
 "======================================================
-" Ruby
+" Ruby:
 "======================================================
 
 au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
 "======================================================
-" Go
+" Go:
 "======================================================
 
 " use goimports instead of gofmt
@@ -140,13 +130,13 @@ autocmd FileType go set shiftwidth=4
 set completeopt=menu,preview
 
 "======================================================
-" neocomplete
+" Neocomplete:
 "======================================================
 
 source ~/dotfiles/vim/vimrc_neocomplete
 
 "======================================================
-" syntax color
+" SyntaxColor:
 "======================================================
 
 set t_Co=256
@@ -190,7 +180,7 @@ set titlestring=%F
 let g:lightline = {
 			\ 'mode_map': { 'c': 'NORMAL' },
 			\ 'active': {
-			\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+			\   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ]
 			\ },
 			\ 'component_function': {
 			\   'modified': 'MyModified',
@@ -201,32 +191,41 @@ let g:lightline = {
 			\   'filetype': 'MyFiletype',
 			\   'fileencoding': 'MyFileencoding',
 			\   'mode': 'MyMode',
+			\   'ctrlpmark': 'CtrlPMark',
 			\ }
 			\ }
 
 function! MyModified()
-	return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! MyReadonly()
-	return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? 'RO' : ''
+  return &ft !~? 'help' && &readonly ? 'RO' : ''
 endfunction
 
 function! MyFilename()
-	return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-				\ (&ft == 'vimfiler' ? vimfiler#get_status_string() : 
-				\  &ft == 'unite' ? unite#get_status_string() : 
-				\  &ft == 'vimshell' ? vimshell#get_status_string() :
-				\ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-				\ ('' != MyModified() ? ' ' . MyModified() : '')
+	let fname = expand('%:t')
+	return fname == 'ControlP' ? g:lightline.ctrlp_item :
+	        \ fname == '__Tagbar__' ? g:lightline.fname :
+	        \ fname =~ '__Gundo\|NERD_tree' ? '' :
+	        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
+	        \ &ft == 'unite' ? unite#get_status_string() :
+	        \ &ft == 'vimshell' ? vimshell#get_status_string() :
+	        \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+	        \ ('' != fname ? fname : '[No Name]') .
+	        \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyFugitive()
-	if &ft !~? 'vimfiler\|gundo' && exists("*fugitive#head")
-		let _ = fugitive#head()
-		return strlen(_) ? ' '._ : ''
-	endif
-	return ''
+  try
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+      let mark = ''  " edit here for cool mark
+      let _ = fugitive#head()
+      return strlen(_) ? mark._ : ''
+    endif
+  catch
+  endtry
+  return ''
 endfunction
 
 function! MyFileformat()
@@ -244,6 +243,34 @@ endfunction
 function! MyMode()
 	return winwidth(0) > 60 ? lightline#mode() : ''
 endfunction
+
+function! CtrlPMark()
+  if expand('%:t') =~ 'ControlP'
+    call lightline#link('iR'[g:lightline.ctrlp_regex])
+    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+          \ , g:lightline.ctrlp_next], 0)
+  else
+    return ''
+  endif
+endfunction
+
+let g:ctrlp_status_func = {
+  \ 'main': 'CtrlPStatusFunc_1',
+  \ 'prog': 'CtrlPStatusFunc_2',
+  \ }
+
+function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+  let g:lightline.ctrlp_regex = a:regex
+  let g:lightline.ctrlp_prev = a:prev
+  let g:lightline.ctrlp_item = a:item
+  let g:lightline.ctrlp_next = a:next
+  return lightline#statusline(0)
+endfunction
+
+function! CtrlPStatusFunc_2(str)
+  return lightline#statusline(0)
+endfunction
+
 
 "======================================================
 " tab
@@ -318,12 +345,8 @@ inoremap jk <esc>
 nnoremap Q <Nop>
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
-let mapleader = ","
+let mapleader = "\<Space>"
 noremap \ ,
-
-" disabled because it is confusing
-" nnoremap ; :
-" nnoremap : ;
 
 set pastetoggle=<F11>
 
@@ -363,18 +386,18 @@ nnoremap q? <NOP>
 " Unite : http://goo.gl/qYQTt5
 "======================================================
 
-nnoremap [unite] <Nop>
-nmap <Space>u [unite]
-
-let g:unite_enable_start_insert=1
-let g:unite_source_history_yank_enable =1
-nnoremap [unite]u  :<C-u>Unite -no-split<Space>
-nnoremap <silent> [unite]f :<C-u>Unite<Space>file<CR>
-nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
-nnoremap <silent> [unite]m :<C-u>Unite<Space>file_mru<CR>
-nnoremap <silent> [unite]r :<C-u>UniteWithBufferDir file<CR>
-nnoremap <C-j> :<C-u>Unite file_mru<CR>
-nnoremap <C-f> :<C-u>Unite file_rec<CR>
+" nnoremap [unite] <Nop>
+" nmap <Space>u [unite]
+" 
+" let g:unite_enable_start_insert=1
+" let g:unite_source_history_yank_enable =1
+" nnoremap [unite]u  :<C-u>Unite -no-split<Space>
+" nnoremap <silent> [unite]f :<C-u>Unite<Space>file<CR>
+" nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
+" nnoremap <silent> [unite]m :<C-u>Unite<Space>file_mru<CR>
+" nnoremap <silent> [unite]r :<C-u>UniteWithBufferDir file<CR>
+" nnoremap <C-j> :<C-u>Unite file_mru<CR>
+" nnoremap <C-f> :<C-u>Unite file_rec<CR>
 
 "======================================================
 " environment specific configuration
@@ -383,4 +406,28 @@ nnoremap <C-f> :<C-u>Unite file_rec<CR>
 if filereadable(expand($HOME.'/.vimrc.local'))
 	source ~/.vimrc.local
 endif
+
+"======================================================
+" ag for CtrlP: http://christina04.hatenablog.com/entry/2014/10/30/100612
+"======================================================
+"if executable('ag')
+"	let g:ctrlp_use_caching=0
+"	let g:ctrlp_user_command='ag %s -i --nocolor --nogroup -g ""'
+"endif
+let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
+
+"======================================================
+" http://postd.cc/how-to-boost-your-vim-productivity/
+"======================================================
+nnoremap <Leader>o :CtrlP<CR>
+nnoremap <Leader>w :w<CR>
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+
+vnoremap <silent> s //e<C-r>=&selection=='exclusive'?'+1':''<CR><CR>
+			\:<C-u>call histdel('search',-1)<Bar>let @/=histget('search',-1)<CR>gv
+omap s :normal vs<CR>
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
 
