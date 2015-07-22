@@ -37,7 +37,7 @@ NeoBundle 'ctrlpvim/ctrlp.vim'
 NeoBundle 'flazz/vim-colorschemes'
 NeoBundle 'terryma/vim-expand-region'
 NeoBundle 'rking/ag.vim'
-"NeoBundle 'justinmk/vim-dirvish'
+NeoBundle 'justinmk/vim-dirvish'
 "NeoBundle 'nixprime/cpsm'
 
 "
@@ -377,12 +377,13 @@ vnoremap <silent> p p`]
 nnoremap <silent> p p`]
 
 "======================================================
-" Ag_CtrlP:
+" Files_CtrlP: faster, simpler than ag / -A for async find
+" https://github.com/mattn/files
 "======================================================
 "
-if executable('ag')
-	let g:ctrlp_use_caching=0
-	let g:ctrlp_user_command='ag %s -i --nocolor --nogroup -g ""'
+
+if executable('files')
+	let g:ctrlp_user_command = 'files -A %s'
 endif
 
 "======================================================
