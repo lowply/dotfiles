@@ -105,7 +105,7 @@ au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 let g:gofmt_command = 'goimports'
 
 autocmd FileType go autocmd BufWritePre <buffer> Fmt
-autocmd FileType go nnoremap <Leader>r :! go run %<CR>
+autocmd FileType go nnoremap <Leader>r :w<CR>:! go run %<CR>
 
 " http://goo.gl/bHmCf5
 autocmd FileType go :highlight goErr ctermfg=210
