@@ -380,9 +380,20 @@ if type go > /dev/null 2>&1; then
 	addpath ${GOROOT}/bin
 fi
 
+#
+# GCP
+#
 if [ -d ${HOME}/google-cloud-sdk ]; then
 	source "${HOME}/google-cloud-sdk/path.bash.inc"
 	source "${HOME}/google-cloud-sdk/completion.bash.inc"
+fi
+
+#
+# files
+#
+if type files > /dev/null 2>&1; then
+	# https://github.com/mattn/files/blob/master/files.go#L15
+	export FILES_IGNORE_PATTERN="^(\.git|\.hg|\.svn|_darcs|\.bzr|\.keep|\.sass-cache|node_modules)$"
 fi
 
 #
