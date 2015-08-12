@@ -281,17 +281,24 @@ darwin*)
 	fi
 
 	#
-	# boot2docker
+	# docker-machine
 	#
-	if type docker > /dev/null 2>&1; then
-		if [ "$(boot2docker info | jq -r '.State')" = "running" ];then
-			$(boot2docker shellinit)
+	# 1. Install Docker via Docker Toolbox
+	# 2. Create default VM by running: "docker-machine create --driver virtualbox default"
+	# More info: https://docs.docker.com/installation/mac/
+	#
+	if type docker-machine > /dev/null 2>&1; then
+		if [ $(docker-machine status default) == "Running" ] > /dev/null 2>&1; then
+			eval "$(docker-machine env default)"
+			dockerkill() {
+				docker stop $1
+				docker rm $1
+			}
+			alias allrmi="docker images | grep \"<none>\" | awk '{print $3}' | xargs docker rmi"
+		else
+			echo "docker-machine default is not running."
+			echo "Please run \"docker-machine start default\" and re-open the terminal"
 		fi
-		dockerkill() {
-			docker stop $1
-			docker rm $1
-		}
-		alias allrmi="docker images | grep \"<none>\" | awk '{print $3}' | xargs docker rmi"
 	fi
 
 	;;

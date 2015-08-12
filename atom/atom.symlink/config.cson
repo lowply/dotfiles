@@ -16,3 +16,5 @@
   "go-plus":
     goPath: "$HOME"
   core: {}
+  "japanese-wrap":
+    characterWidth: {}
