@@ -7,6 +7,7 @@
 	branch = auto
 	interactive = auto
 	grep = auto
+	ui = auto
 
 [merge]
 	ff = false
@@ -75,6 +76,7 @@
 	ignore = "!ignore () { echo $1 >> .gitignore;}; ignore"
 	github = !git remote add origin https://github.com/lowply/$1.git && git push -u origin master
 	now    = rev-parse --abbrev-ref HEAD
+	dag = log --graph --format='format:%C(yellow)%h%C(reset) %C(blue)\"%an\" <%ae>%C(reset) %C(magenta)%ar%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
 
 [filter "media"]
 	clean = git-media-clean %f
@@ -90,3 +92,7 @@
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
 	required = true
+[core]
+	pager = less -FMRiX
+[push]
+	default = simple
