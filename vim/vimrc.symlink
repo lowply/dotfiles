@@ -383,12 +383,18 @@ vnoremap <silent> y y`]
 vnoremap <silent> p p`]
 nnoremap <silent> p p`]
 
+nnoremap <Right> :vertical resize +5<CR>
+nnoremap <Left> :vertical resize -5<CR>
+nnoremap <Up> :resize -5<CR>
+nnoremap <Down> :resize +5<CR>
+
 "======================================================
 " Files_CtrlP: faster, simpler than ag / -A for async find
 " https://github.com/mattn/files
 "======================================================
 "
 
+let g:ctrlp_working_path_mode = 'a'
 if executable('files')
 	let g:ctrlp_user_command = 'files -A %s'
 endif
