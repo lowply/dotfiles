@@ -231,11 +231,6 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME
 case "${OSTYPE}" in
 darwin*)
 	#
-	# for homebrew cask
-	#
-	export HOMEBREW_CASK_OPTS="--appdir=/Applications --caskroom=/usr/local/Caskroom"
-
-	#
 	# coreutils
 	#
 	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnubin
@@ -244,12 +239,18 @@ darwin*)
 	#
 	# rbenv
 	#
-	type rbenv >/dev/null 2>&1 && eval "$(rbenv init -)"
+	if type rbenv >/dev/null 2>&1; then
+		export RBENV_ROOT=/usr/local/var/rbenv
+		eval "$(rbenv init -)"
+	fi
 
 	#
 	# pyenv
 	#
-	type pyenv >/dev/null 2>&1 && eval "$(pyenv init -)"
+	if type pyenv >/dev/null 2>&1; then
+		export PYENV_ROOT=/usr/local/var/pyenv
+		eval "$(pyenv init -)"
+	fi
 
 	#
 	# bash completion (need brew install bash-completion)
