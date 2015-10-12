@@ -237,33 +237,10 @@ darwin*)
 	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnuman man
 
 	#
-	# rbenv
-	#
-	if type rbenv >/dev/null 2>&1; then
-		export RBENV_ROOT=/usr/local/var/rbenv
-		eval "$(rbenv init -)"
-	fi
-
-	#
-	# pyenv
-	#
-	if type pyenv >/dev/null 2>&1; then
-		export PYENV_ROOT=/usr/local/var/pyenv
-		eval "$(pyenv init -)"
-	fi
-
-	#
 	# bash completion (need brew install bash-completion)
 	#
 	if [ -f $(brew --prefix)/etc/bash_completion ]; then
 		. $(brew --prefix)/etc/bash_completion
-	fi
-
-	#
-	# aws cli completion
-	#
-	if [ -x $(brew --prefix)/bin/aws ]; then
-		complete -C aws_completer aws
 	fi
 
 	#
@@ -282,11 +259,7 @@ darwin*)
 	fi
 
 	#
-	# docker-machine
-	#
-	# 1. Install Docker via Docker Toolbox
-	# 2. Create default VM by running: "docker-machine create --driver virtualbox default"
-	# More info: https://docs.docker.com/installation/mac/
+	# Docker - Need Docker Toolbox installed: https://docs.docker.com/installation/mac/
 	#
 	if type docker-machine > /dev/null 2>&1; then
 		if [ $(docker-machine status default) == "Running" ] > /dev/null 2>&1; then
@@ -305,28 +278,14 @@ darwin*)
 	;;
 linux*)
 	#
-	# Keychain
-	#
-	#if [ -x /usr/bin/keychain ]; then
-	#	keychain ${HOME}/.ssh/id_rsa
-	#	source ${HOME}/.keychain/$HOSTNAME-sh
-	#fi
-
-	#
 	# rbenv
 	#
-	if [ -d ${HOME}/.rbenv ]; then
-		addpath ${HOME}/.rbenv/bin
-		eval "$(rbenv init -)"
-	fi
+	[ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
 
 	#
 	# pyenv
 	#
-	if [ -d ${HOME}/.pyenv ]; then
-		addpath ${HOME}/.pyenv/bin
-		eval "$(pyenv init -)"
-	fi
+	[ -d ${HOME}/.pyenv ] && addpath ${HOME}/.pyenv/bin
 
 	#
 	# git bash completion
@@ -351,16 +310,27 @@ esac
 #
 # dotfiles
 #
-if [ -d ${HOME}/dotfiles/bin ]; then
-	addpath ${HOME}/dotfiles/bin
-fi
+[ -d ${HOME}/dotfiles/bin ] && addpath ${HOME}/dotfiles/bin
+
+#
+# aws cli completion
+#
+type aws_completer > /dev/null 2>&1 && complete -C aws_completer aws
+
+#
+# rbenv
+#
+[ -d ${HOME}/.rbenv ] && eval "$(rbenv init -)"
+
+#
+# pyenv
+#
+[ -d ${HOME}/.pyenv ] && eval "$(pyenv init -)"
 
 #
 # nodebrew
 #
-if [ -d ${HOME}/.nodebrew/current/bin ]; then
-	addpath ${HOME}/.nodebrew/current/bin
-fi
+[ -d ${HOME}/.nodebrew ] && addpath ${HOME}/.nodebrew/current/bin
 
 #
 # golang
@@ -369,14 +339,14 @@ if type go > /dev/null 2>&1; then
 	#
 	# set GOROOT for .vimrc (adding rtp)
 	#
-	case "${OSTYPE}" in
-	darwin*)
-		export GOROOT=/usr/local/opt/go/libexec
-		;;
-	linux*)
-		export GOROOT=/usr/local/go
-		;;
-	esac
+	# case "${OSTYPE}" in
+	# darwin*)
+	# 	export GOROOT=/usr/local/opt/go/libexec
+	# 	;;
+	# linux*)
+	# 	export GOROOT=/usr/local/go
+	# 	;;
+	# esac
 	export GOPATH=${HOME}
 	addpath ${GOROOT}/bin
 fi
