@@ -335,21 +335,21 @@ type aws_completer > /dev/null 2>&1 && complete -C aws_completer aws
 #
 # golang
 #
-if type go > /dev/null 2>&1; then
-	#
-	# set GOROOT for .vimrc (adding rtp)
-	#
-	# case "${OSTYPE}" in
-	# darwin*)
-	# 	export GOROOT=/usr/local/opt/go/libexec
-	# 	;;
-	# linux*)
-	# 	export GOROOT=/usr/local/go
-	# 	;;
-	# esac
-	export GOPATH=${HOME}
-	addpath ${GOROOT}/bin
-fi
+# if type go > /dev/null 2>&1; then
+# 	#
+# 	# set GOROOT for .vimrc (adding rtp)
+# 	#
+# 	case "${OSTYPE}" in
+# 	darwin*)
+# 		export GOROOT=/usr/local/opt/go/libexec
+# 		;;
+# 	linux*)
+# 		export GOROOT=/usr/local/go
+# 		;;
+# 	esac
+# 	export GOPATH=${HOME}
+# 	addpath ${GOROOT}/bin
+# fi
 
 #
 # GCP
