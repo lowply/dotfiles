@@ -1,11 +1,5 @@
 # .bashrc
 
-# User specific aliases and functions
-
-alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
-
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
@@ -14,24 +8,6 @@ fi
 # ---------------------------------------------------------------
 # Original Setting
 # ---------------------------------------------------------------
-
-#
-# aliases
-#
-alias jman='LANG=ja_JP.utf8 man'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias ls='ls -v --color=auto'
-alias tm='tmux -2u a || tmux -2u'
-alias pullall='git pull origin master && git submodule foreach git pull origin master'
-alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
-alias nstanp='lsof -nP -iTCP'
-alias lsdsstr='find . -name .DS_Store -print'
-alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
-type gsed > /dev/null 2>&1 && alias sed='gsed'
-type colordiff > /dev/null 2>&1 && alias diff='colordiff'
-type gls > /dev/null 2>&1 && alias ls='ls -v --color=auto'
 
 #
 # functions
@@ -47,8 +23,14 @@ addpath(){
 	fi
 }
 
-check_cmd(){
-	type ${1} > /dev/null 2>&1 || { echo "${1} is not installed"; return 1; }
+has(){
+	type ${1} > /dev/null 2>&1
+	return $?
+}
+
+error(){
+	echo "${1}"
+	return 1
 }
 
 peco-run-cmd(){
@@ -65,8 +47,8 @@ peco-run-cmd(){
 }
 
 peco-src () {
-	check_cmd "peco" || return
-	check_cmd "ghq" || return
+	has "peco" || return
+	has "ghq" || return
 	local DIR="$(ghq list -p | peco)"
 	if [ ! -z "${DIR}" ]; then
 		cd "${DIR}"
@@ -78,7 +60,7 @@ peco-src () {
 
 # http://qiita.com/yungsang/items/09890a06d204bf398eea
 peco-history() {
-	check_cmd "peco" || return
+	has "peco" || return
 	local NUM=$(history | wc -l)
 	local FIRST=$((-1*(NUM-1)))
 
@@ -98,7 +80,7 @@ peco-history() {
 # "\C-r":"peco-history\n"
 
 peco-snippets() {
-	check_cmd "peco" || return
+	has "peco" || return
 	[ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
 	local CMD=$(grep -v "^#" ~/.snippets | sed '/^$/d' | peco)
 	peco-run-cmd "$CMD"
@@ -109,7 +91,7 @@ peco-snippets() {
 
 # http://k0kubun.hatenablog.com/entry/2014/07/06/033336
 peco-pkill() {
-	check_cmd "peco" || return
+	has "peco" || return
 	local CMD=$(for pid in $(ps aux | peco | awk '{ print $2 }'); do kill $pid; echo "Killed ${pid}"; done)
 	peco-run-cmd "$CMD"
 }
@@ -120,6 +102,30 @@ peco-pkill() {
 backup() {
 	cp -a $1{,.$(date +%y%m%d_%H%M%S)}
 }
+
+#
+# aliases
+#
+#alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+alias jman='LANG=ja_JP.utf8 man'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias ls='ls -v --color=auto'
+alias tm='tmux -2u a || tmux -2u'
+alias pullall='git pull origin master && git submodule foreach git pull origin master'
+alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
+alias nstanp='lsof -nP -iTCP'
+alias lsdsstr='find . -name .DS_Store -print'
+alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
+
+has gsed && alias sed='gsed'
+has colordiff && alias diff='colordiff'
+has gls && alias ls='ls -v --color=auto'
+has gomi && alias rm=gomi || error "gomi is not installed"
 
 #
 # LANG
