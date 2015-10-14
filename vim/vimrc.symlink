@@ -89,20 +89,17 @@ au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 " Go:
 "======================================================
 
-" use goimports instead of gofmt
-let g:gofmt_command = 'goimports'
-
-autocmd FileType go autocmd BufWritePre <buffer> Fmt
-autocmd FileType go nnoremap <Leader>r :w<CR>:! go run %<CR>
+autocmd FileType go autocmd BufWritePre <buffer> GoFmt
+autocmd FileType go nnoremap <Leader>r :w<CR>:GoRun<CR>
 
 " http://goo.gl/bHmCf5
 autocmd FileType go :highlight goErr ctermfg=210
 autocmd FileType go :match goErr /\<err\>/
 
 " http://goo.gl/wGAzyq
-autocmd FileType go set noexpandtab
-autocmd FileType go set tabstop=4
-autocmd FileType go set shiftwidth=4
+" autocmd FileType go set noexpandtab
+" autocmd FileType go set tabstop=4
+" autocmd FileType go set shiftwidth=4
 
 " http://goo.gl/Czf9g9
 set completeopt=menu,preview
