@@ -57,21 +57,9 @@ NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'altercation/vim-colors-solarized'
 
 "
-" go - since 7.4.414, vim merged go support. if vim is lower than that, use vim-ft-go
+" go
 "
-if !has('patch-7.4.414')
-	NeoBundle "google/vim-ft-go"
-endif
-
-"
-" go - disabled because some functions are duplicated after vim7.4.414
-"
-" NeoBundle "fatih/vim-go"
-
-"
-" go - extra go supports
-"
-NeoBundle "vim-jp/vim-go-extra"
+NeoBundle "fatih/vim-go"
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
