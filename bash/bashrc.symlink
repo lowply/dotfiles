@@ -275,10 +275,8 @@ darwin*)
 				docker rm $1
 			}
 			alias allrmi="docker images | grep \"<none>\" | awk '{print $3}' | xargs docker rmi"
-		else
-			echo "docker-machine default is not running."
-			echo "Please run \"docker-machine start default\" and re-open the terminal"
 		fi
+		# run "docker-machine start default" to start docker-machine
 	fi
 
 	;;
@@ -341,21 +339,21 @@ type aws_completer > /dev/null 2>&1 && complete -C aws_completer aws
 #
 # golang
 #
-# if type go > /dev/null 2>&1; then
-# 	#
-# 	# set GOROOT for .vimrc (adding rtp)
-# 	#
-# 	case "${OSTYPE}" in
-# 	darwin*)
-# 		export GOROOT=/usr/local/opt/go/libexec
-# 		;;
-# 	linux*)
-# 		export GOROOT=/usr/local/go
-# 		;;
-# 	esac
-# 	export GOPATH=${HOME}
-# 	addpath ${GOROOT}/bin
-# fi
+if type go > /dev/null 2>&1; then
+	#
+	# set GOROOT for .vimrc (adding rtp)
+	#
+	# case "${OSTYPE}" in
+	# darwin*)
+	# 	export GOROOT=/usr/local/opt/go/libexec
+	# 	;;
+	# linux*)
+	# 	export GOROOT=/usr/local/go
+	# 	;;
+	# esac
+	# addpath ${GOROOT}/bin
+	export GOPATH=${HOME}
+fi
 
 #
 # GCP
