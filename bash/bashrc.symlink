@@ -148,8 +148,14 @@ export LESS='-X -R -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
 # for Mac, brew install source-highlight
 # for Linux, yum install source-highlight
 #
-if has src-hilite-lesspipe.sh; then
-	LESSPIPE=`which src-hilite-lesspipe.sh`
+if has source-highlight; then
+	if has src-hilite-lesspipe.sh; then
+		# CentOS / Mac
+		LESSPIPE=$(which src-hilite-lesspipe.sh)
+	elif [ -x "/usr/share/source-highlight/src-hilite-lesspipe.sh" ]; then
+		# Ubuntu
+		LESSPIPE="/usr/share/source-highlight/src-hilite-lesspipe.sh"
+	fi
 	export LESSOPEN="| $LESSPIPE %s"
 fi
 
