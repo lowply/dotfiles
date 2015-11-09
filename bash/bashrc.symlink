@@ -125,7 +125,6 @@ alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
-has gomi && alias rm=gomi || error "gomi is not installed"
 
 #
 # LANG
@@ -146,9 +145,10 @@ export HISTTIMEFORMAT="%F %T : "
 export LESS='-X -R -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
 
 #
-# http://blog.elliptium.net/2011/11/less-homebrew
+# for Mac, brew install source-highlight
+# for Linux, yum install source-highlight
 #
-if type src-hilite-lesspipe.sh > /dev/null 2>&1;then
+if has src-hilite-lesspipe.sh; then
 	LESSPIPE=`which src-hilite-lesspipe.sh`
 	export LESSOPEN="| $LESSPIPE %s"
 fi
@@ -158,7 +158,7 @@ fi
 #
 [ -x "/usr/bin/vim" ] && export EDITOR=/usr/bin/vim
 [ -x "/usr/local/bin/vim" ] && export EDITOR=/usr/local/bin/vim
-type less > /dev/null 2>&1 && export PAGER=/usr/bin/less
+has less && export PAGER=/usr/bin/less
 
 #
 # avoid screen lock by hitting Ctrl+S
@@ -267,7 +267,7 @@ darwin*)
 	#
 	# Docker - Need Docker Toolbox installed: https://docs.docker.com/installation/mac/
 	#
-	if type docker-machine > /dev/null 2>&1; then
+	if has docker-machine; then
 		if [ $(docker-machine status default) == "Running" ] > /dev/null 2>&1; then
 			eval "$(docker-machine env default)"
 			dockerkill() {
@@ -319,7 +319,7 @@ esac
 #
 # aws cli completion
 #
-type aws_completer > /dev/null 2>&1 && complete -C aws_completer aws
+has aws_completer && complete -C aws_completer aws
 
 #
 # rbenv
@@ -339,19 +339,7 @@ type aws_completer > /dev/null 2>&1 && complete -C aws_completer aws
 #
 # golang
 #
-if type go > /dev/null 2>&1; then
-	#
-	# set GOROOT for .vimrc (adding rtp)
-	#
-	# case "${OSTYPE}" in
-	# darwin*)
-	# 	export GOROOT=/usr/local/opt/go/libexec
-	# 	;;
-	# linux*)
-	# 	export GOROOT=/usr/local/go
-	# 	;;
-	# esac
-	# addpath ${GOROOT}/bin
+if has go; then
 	export GOPATH=${HOME}
 fi
 
@@ -366,7 +354,7 @@ fi
 #
 # files
 #
-if type files > /dev/null 2>&1; then
+if has files; then
 	# https://github.com/mattn/files/blob/master/files.go#L15
 	export FILES_IGNORE_PATTERN="^(\.git|\.hg|\.svn|_darcs|\.bzr|\.keep|\.sass-cache|node_modules)$"
 fi
@@ -382,7 +370,7 @@ export LANG=en_US.UTF-8
 #
 # archey
 #
-type archey > /dev/null 2>&1 && archey
+has archey && archey
 
 #
 # cowsay
@@ -394,8 +382,8 @@ if [ -f /etc/lsb-release ]; then
 	[ "${DISTRIB_ID}" == "Ubuntu" ] && addpath /usr/games
 fi
 
-type cowsay > /dev/null 2>&1 && COWSAY=true
-type fortune > /dev/null 2>&1 && FORTUNE=true
+has cowsay && COWSAY=true
+has fortune && FORTUNE=true
 if [ "${COWSAY}" == "true" -a "${FORTUNE}" == "true" ]; then
 	fortune | cowsay -f small
 fi
