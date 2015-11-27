@@ -38,7 +38,7 @@ NeoBundle 'flazz/vim-colorschemes'
 NeoBundle 'terryma/vim-expand-region'
 NeoBundle 'rking/ag.vim'
 NeoBundle 'justinmk/vim-dirvish'
-"NeoBundle 'nixprime/cpsm'
+NeoBundle 'nixprime/cpsm'
 
 "
 " Vim After 11 Years: http://statico.github.io/vim.html
@@ -77,7 +77,7 @@ NeoBundleCheck
 " Cpsm:
 "======================================================
 
-" let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
+let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
 
 "======================================================
 " Ruby:
