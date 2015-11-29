@@ -13,7 +13,7 @@ fi
 # functions
 #
 addpath(){
-	[ -d ${1} ] || { echo "[addpath] ${1} does not exist."; return; }
+	# [ -d ${1} ] || { echo "[addpath] ${1} does not exist."; return; }
 	if [ "${2}" == "man" ]; then
 		# for MANPATH
 		export MANPATH=${1}:${MANPATH//$1:/}
@@ -338,9 +338,11 @@ has aws_completer && complete -C aws_completer aws
 [ -d ${HOME}/.pyenv ] && eval "$(pyenv init -)"
 
 #
-# nodebrew
+# npm
 #
-[ -d ${HOME}/.nodebrew ] && addpath ${HOME}/.nodebrew/current/bin
+if has npm; then
+	addpath ./node_modules/.bin
+fi
 
 #
 # golang
