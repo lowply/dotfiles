@@ -33,6 +33,12 @@ error(){
 	return 1
 }
 
+mksha512(){
+	has "pip" || { echo "Please install pip"; return; }
+	python -c "from passlib.hash import sha512_crypt" > /dev/null 2>&1 || { echo "Please run \"pip install passlib\""; return; }
+	python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
+}
+
 peco-run-cmd(){
 	if [ -n "$1" ] ; then
 		# Replace the last entry, with $1
