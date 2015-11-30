@@ -77,7 +77,9 @@ NeoBundleCheck
 " Cpsm:
 "======================================================
 
-let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
+if has("mac")
+	let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
+endif
 
 "======================================================
 " Ruby:
