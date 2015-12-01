@@ -46,8 +46,9 @@
 
 # for multibyte filenames
 export LANG=en_US.UTF-8
+export PATH=${HOME}/.pyenv/shims:${PATH}
 
-WD="$HOME/s3backup"
+WD="${HOME}/s3backup"
 CONF="${WD}/backup.conf"
 LOGFILE="${WD}/log/$(date +%y%m%d_%H%M%S).log"
 
@@ -65,7 +66,7 @@ main(){
 	type aws > /dev/null 2>&1 || error "aws cli is not installed"
 
 	# check aws config file
-	[ -f $HOME/.aws/config ] || error "~/.aws/config is not found"
+	[ -f ${HOME}/.aws/config ] || error "~/.aws/config is not found"
 
 	# create workingdir and sub directries
 	if [ ! -d ${WD} ]; then
