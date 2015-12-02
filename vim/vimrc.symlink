@@ -39,6 +39,7 @@ NeoBundle 'terryma/vim-expand-region'
 NeoBundle 'rking/ag.vim'
 NeoBundle 'justinmk/vim-dirvish'
 NeoBundle 'nixprime/cpsm'
+NeoBundle 'bkad/CamelCaseMotion'
 
 "
 " Vim After 11 Years: http://statico.github.io/vim.html
@@ -72,6 +73,19 @@ filetype plugin indent on
 " If there are uninstalled bundles found on startup,
 " this will conveniently prompt you to install them.
 NeoBundleCheck
+
+"======================================================
+" CamelCaseMotion:
+"======================================================
+
+map <silent> w <Plug>CamelCaseMotion_w
+map <silent> b <Plug>CamelCaseMotion_b
+map <silent> e <Plug>CamelCaseMotion_e
+map <silent> ge <Plug>CamelCaseMotion_ge
+sunmap w
+sunmap b
+sunmap e
+sunmap ge
 
 "======================================================
 " Cpsm:
