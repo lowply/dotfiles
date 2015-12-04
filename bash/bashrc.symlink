@@ -95,16 +95,6 @@ peco-snippets() {
 # ~/.inputrc
 # "\C-s":"peco-snippets\n"
 
-# http://k0kubun.hatenablog.com/entry/2014/07/06/033336
-peco-pkill() {
-	has "peco" || return
-	local CMD=$(for pid in $(ps aux | peco | awk '{ print $2 }'); do kill $pid; echo "Killed ${pid}"; done)
-	peco-run-cmd "$CMD"
-}
-
-# ~/.inputrc
-# "\C-k":"peco-pkill\n"
-
 backup() {
 	cp -a $1{,.$(date +%y%m%d_%H%M%S)}
 }

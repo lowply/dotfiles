@@ -1,7 +1,5 @@
-
 $if Bash
 	"\C-r": "peco-history\n"
 	"\C-]": "peco-src\n"
-	"\C-k": "peco-pkill\n"
 	"\C-s": "peco-snippets\n"
 $endif
