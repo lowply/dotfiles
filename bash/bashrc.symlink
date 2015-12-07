@@ -360,7 +360,29 @@ fi
 #
 if has files; then
 	# https://github.com/mattn/files/blob/master/files.go#L15
-	export FILES_IGNORE_PATTERN="^(\.git|\.hg|\.svn|_darcs|\.bzr|\.keep|\.sass-cache|node_modules)$"
+	FILES_IGNORE_PATTERN_LIST="
+		\.git
+		\.hg
+		\.svn
+		\.bzr
+		\.keep
+		\.sass-cache
+		\.npm
+		\.mozilla
+		_darcs
+		node_modules
+		\.local
+		\.pyenv
+		\.rbenv
+		\.vim_tmp
+		n
+		backup
+		dotfiles
+		src
+		pkg
+		bin
+	"
+	export FILES_IGNORE_PATTERN="^($(echo ${FILES_IGNORE_PATTERN_LIST} | tr ' ', '|'))$"
 fi
 
 #
@@ -402,3 +424,5 @@ fi
 if [ -f ${HOME}/.bashrc.local ]; then
 	source ${HOME}/.bashrc.local
 fi
+
+export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
