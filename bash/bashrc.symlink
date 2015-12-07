@@ -374,7 +374,9 @@ if has files; then
 		\.local
 		\.pyenv
 		\.rbenv
+		\.gem
 		\.vim_tmp
+		\.cache
 		n
 		backup
 		dotfiles
