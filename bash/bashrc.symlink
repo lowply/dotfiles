@@ -239,6 +239,13 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME
 case "${OSTYPE}" in
 darwin*)
 	#
+	# htop
+	#
+	if has htop; then
+		alias htop='sudo htop'
+	fi
+
+	#
 	# coreutils
 	#
 	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnubin
