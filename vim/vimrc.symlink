@@ -389,6 +389,9 @@ nnoremap <Left> :vertical resize -5<CR>
 nnoremap <Up> :resize -5<CR>
 nnoremap <Down> :resize +5<CR>
 
+" save file by hitting enter key in normal mode
+nnoremap <unique> <expr> <CR> empty(&buftype) ? ':w<CR>' : '<CR>'
+
 "======================================================
 " Files_CtrlP: faster, simpler than ag / -A for async find
 " https://github.com/mattn/files
