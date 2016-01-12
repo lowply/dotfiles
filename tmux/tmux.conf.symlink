@@ -11,7 +11,7 @@ bind C-a send-prefix
 #----------------------------------------
 
 set -g history-limit 10000
-set -g repeat-time 1000
+# set -g repeat-time 1000 # back to defalt value (500)
 set -g default-terminal xterm-256color
 set -g default-shell /bin/bash
 
