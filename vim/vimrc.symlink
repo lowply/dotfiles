@@ -112,11 +112,6 @@ autocmd FileType go nnoremap <Leader>r :w<CR>:GoRun<CR>
 autocmd FileType go :highlight goErr ctermfg=210
 autocmd FileType go :match goErr /\<err\>/
 
-" http://goo.gl/wGAzyq
-" autocmd FileType go set noexpandtab
-" autocmd FileType go set tabstop=4
-" autocmd FileType go set shiftwidth=4
-
 " http://goo.gl/Czf9g9
 set completeopt=menu,preview
 
@@ -388,9 +383,6 @@ nnoremap <Right> :vertical resize +5<CR>
 nnoremap <Left> :vertical resize -5<CR>
 nnoremap <Up> :resize -5<CR>
 nnoremap <Down> :resize +5<CR>
-
-" save file by hitting enter key in normal mode
-nnoremap <unique> <expr> <CR> empty(&buftype) ? ':w<CR>' : '<CR>'
 
 "======================================================
 " Files_CtrlP: faster, simpler than ag / -A for async find
