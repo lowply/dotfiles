@@ -40,6 +40,8 @@ NeoBundle 'rking/ag.vim'
 NeoBundle 'justinmk/vim-dirvish'
 " NeoBundle 'nixprime/cpsm'
 NeoBundle 'bkad/CamelCaseMotion'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet-snippets'
 
 "
 " Vim After 11 Years: http://statico.github.io/vim.html
@@ -133,6 +135,28 @@ source ~/dotfiles/vim/vimrc_neocomplete
 
 " http://goo.gl/6M3GYZ
 set completeopt=menuone
+
+"======================================================
+" Neosnippet:
+"======================================================
+
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
 
 "======================================================
 " SyntaxColor:
