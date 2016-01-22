@@ -49,6 +49,4 @@ STATUS="$(${SUPERVISOR} status ${DAEMON} | awk '{print $2}')"
 
 if [ "${STATUS}" = "RUNNING" ]; then
 	logger "$(${SUPERVISOR} stop ${DAEMON})"
-else
-	error "${DAEMON} is not running."
 fi
