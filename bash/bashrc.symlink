@@ -165,9 +165,7 @@ has less && export PAGER=/usr/bin/less
 #
 # avoid screen lock by hitting Ctrl+S
 #
-if [ ! -d /vagrant ]; then
-	stty stop undef
-fi
+[ -t 0 ] && stty stop undef
 
 #
 # append to the history file, don't overwrite it
