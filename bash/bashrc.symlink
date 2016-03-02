@@ -374,20 +374,23 @@ if has files; then
 		\.sass-cache
 		\.npm
 		\.mozilla
-		_darcs
-		node_modules
 		\.local
 		\.pyenv
 		\.rbenv
 		\.gem
 		\.vim_tmp
 		\.cache
+		\.node-gyp
+		\.apm
+		_darcs
+		node_modules
 		n
 		backup
 		dotfiles
 		src
 		pkg
 		bin
+		compile-cache
 	"
 	export FILES_IGNORE_PATTERN="^($(echo ${FILES_IGNORE_PATTERN_LIST} | tr ' ', '|'))$"
 fi

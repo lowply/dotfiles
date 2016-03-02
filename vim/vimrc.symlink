@@ -1,5 +1,11 @@
 
-" ref : https://github.com/Shougo/shougo-s-github/blob/master/vim/rc/vimrc
+"======================================================
+" dein
+"======================================================
+
+if &compatible
+  set nocompatible               " Be iMproved
+endif
 
 let s:dein_dir = expand('~/.dein')
 let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
@@ -8,18 +14,9 @@ if &runtimepath !~# '/dein.vim'
   if !isdirectory(s:dein_repo_dir)
     execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
   endif
+  " Required:
   execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
 endif
-
-
-"dein Scripts-----------------------------
-"
-if &compatible
-  set nocompatible               " Be iMproved
-endif
-
-" Required:
-set runtimepath^=~/.dein/repos/github.com/Shougo/dein.vim
 
 " Required:
 call dein#begin(s:dein_dir)
@@ -43,8 +40,6 @@ filetype plugin indent on
 if dein#check_install()
   call dein#install()
 endif
-
-"End dein Scripts-------------------------
 
 "======================================================
 " CamelCaseMotion:
@@ -104,11 +99,6 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
 
-" SuperTab like snippets behavior.
-"imap <expr><TAB>
-" \ pumvisible() ? "\<C-n>" :
-" \ neosnippet#expandable_or_jumpable() ?
-" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 
