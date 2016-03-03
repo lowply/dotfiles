@@ -1,20 +1,15 @@
-#!/usr/bin/env bash
+#!/bin/bash
+
+# ------------------------------
+# Stop SSH port forwarding
+# ------------------------------
+
+. $(dirname $0)/lib.sh
 
 CONF="${HOME}/.supervisord_access"
-LOGFILE="/var/log/supervisor/stop.log"
 DAEMON="pf22"
 
-logger(){
-	echo "$(date): [Info] ${1}" | tee -a ${LOGFILE}
-}
-
-error(){
-	echo "$(date): [Error] ${1}" | tee -a ${LOGFILE} 1>&2 
-	exit 1
-}
-
-# check if stat is installed
-type stat > /dev/null 2>&1 || error "stat is not installed"
+has stat
 
 # if conf file does not exist, create it
 if [ ! -f ${CONF} ]; then

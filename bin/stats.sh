@@ -1,20 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-# -------------------------------------
-# version : 1.00
-# - First edition.
-# -------------------------------------
+# ------------------------------
+# keep stats
+# ------------------------------
 
-echo ${OSTYPE} | grep "linux" || { echo "Not a Linux OS"; exit 1; }
+. $(dirname $0)/lib.sh
+
+check_os "linux"
 
 #
 # create dir if not exsits
 #
 
-if [ ! -d "/root/stats" ]
-then
-  mkdir /root/stats
-fi
+automkdir "/root/stats" 
 
 #
 # rm old stats logs
