@@ -13,7 +13,6 @@ export PATH=${HOME}/.pyenv/shims:${PATH}
 
 WD="${HOME}/s3backup"
 CONF="${WD}/backup.conf"
-LOGFILE="${WD}/log/$(date +%y%m%d_%H%M%S).log"
 
 # check aws command
 has aws
