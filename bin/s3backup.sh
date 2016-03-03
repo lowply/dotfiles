@@ -24,7 +24,6 @@ check_file "${HOME}/.aws/config"
 if [ ! -d ${WD} ]; then
 	mkdir ${WD}
 	cd ${WD}
-	mkdir log
 	mkdir excludes
 	cat <<- EOL > ${CONF}
 		# Backup enabled
