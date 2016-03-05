@@ -93,3 +93,5 @@
 	pager = less -FMRiX
 [push]
 	default = simple
+[ghq]
+	root = ~/src
