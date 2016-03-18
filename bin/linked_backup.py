@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
+# Python 3.5.1 compatible
+# You will need to run "pip install toml"
+
 """
 ~/.backup.toml
 
 backuproot = "/path/to/backup"
-logdir     = "/path/to/logdir"
 key        = "/path/to/ssh/key"
 
 [[hosts]]
@@ -49,7 +51,7 @@ def findlatest(path):
 def loginit(backuproot):
     logdir = backuproot + "/log"
     if not os.path.isdir(logdir):
-        os.mkdir(logdir)
+        os.makedirs(logdir)
     global logpath
     logpath = logdir + "/" + now.strftime("%y%m%d.%H%M%S") + ".log"
     logging.basicConfig(filename=logpath, level=logging.DEBUG, format='%(asctime)s: %(message)s', datefmt='%a, %d %b %Y %H:%M:%S +0000')
@@ -82,14 +84,16 @@ def dircheck(config):
     if not os.path.isdir(config["backuproot"]):
         os.mkdir(config["backuproot"])
 
-    if not os.path.isdir(config["logdir"]):
-        os.mkdir(config["logdir"])
-
 def backup(key, backuproot, host):
     hostdir = backuproot + "/" + host["hostname"]
     datedir = hostdir + "/" + now.strftime("%y%m%d.%H%M%S")
 
-    latestdir = findlatest(hostdir)
+    if not os.path.isdir(hostdir):
+        os.makedirs(hostdir)
+        logging.info("Created directory: " + hostdir)
+        latestdir = False
+    else:
+        latestdir = findlatest(hostdir)
 
     if not os.path.isdir(datedir):
         os.makedirs(datedir)
