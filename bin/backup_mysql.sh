@@ -40,8 +40,9 @@ else
 	[ -z "${DBUSER}" -o -z "${DBPASS}" -o -z "${PERIOD}" -o -z "${ENC}" -o -z "${BACKUPDIR}" ] && error "Not enough information in ${CONF}"
 fi
 
+export MYSQL_PWD="${DBPASS}"
 # create target DB list
-LIST=$(mysql -u${DBUSER} -p${DBPASS} -N -e 'show databases' | grep -v '_schema')
+LIST=$(mysql -u${DBUSER} -N -e 'show databases' | grep -v '_schema')
 
 # validate username and password
 [ $? -ne 0 ] && error "Can't connect to mysql server, username or password is invalid"
@@ -64,8 +65,8 @@ logger "Starting backup..."
 # get backup and gzip
 for DBNAME in ${LIST}
 do
-	logger "mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} -p\$DBPASS ${DBNAME} > ./${DBNAME}.sql"
-	mysqldump ${EVENTS} --default-character-set=${ENC} --opt -c -u${DBUSER} -p${DBPASS} ${DBNAME} > ./${DBNAME}.sql
+	logger "mysqldump --events --default-character-set=${ENC} --opt -c -u${DBUSER} > ./${DBNAME}.sql"
+	mysqldump ${EVENTS} --default-character-set=${ENC} --opt -c -u${DBUSER} ${DBNAME} > ./${DBNAME}.sql
 	gzip -f ./${DBNAME}.sql
 done
 
