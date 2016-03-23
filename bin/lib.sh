@@ -41,8 +41,12 @@ check_args(){
 	[ ${1} -eq ${2} ] || error "${3}"
 }
 
+check_dir(){
+	[ -d ${1} ] || error "No such directory: ${1}"
+}
+
 check_file(){
-	[ -f $1 ] || error "No such file: ${1}"
+	[ -f ${1} ] || error "No such file: ${1}"
 }
 
 check_os(){
