@@ -30,18 +30,22 @@ else
 	[ -z "${USER}" -o -z "${PASS}" ] && error "Not enough information in ${CONF}"
 fi
 
+[ $(id -u) -eq 0 ] && SUDO="" || SUDO="sudo "
+
 if [ -d ~/.pyenv ]; then
-	eval "$(~/.pyenv/bin/pyenv init -)"
-	SUPERVISOR="/root/.pyenv/shims/supervisorctl -u ${USER} -p ${PASS}"
+	eval "$(${HOME}/.pyenv/bin/pyenv init -)"
+	SUPERVISOR="${SUDO}/root/.pyenv/shims/supervisorctl -u ${USER} -p ${PASS}"
 elif [ -x /usr/bin/supervisorctl ]; then
-	SUPERVISOR="/usr/bin/supervisorctl -u ${USER} -p ${PASS}"
+	SUPERVISOR="${SUDO}/usr/bin/supervisorctl -u ${USER} -p ${PASS}"
 else
-	echo "supervisor is not installed" >&2
-	exit 1
+	error "supervisor is not installed"
 fi
 
 STATUS="$(${SUPERVISOR} status ${DAEMON} | awk '{print $2}')"
 
 if [ "${STATUS}" = "RUNNING" ]; then
-	logger "$(${SUPERVISOR} stop ${DAEMON})"
+	${SUPERVISOR} stop ${DAEMON}
+	logger "Stopped ${DAEMON}"
+else
+	logger "${DAEMON} is not running"
 fi
