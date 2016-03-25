@@ -30,15 +30,18 @@ else
 	[ -z "${USER}" -o -z "${PASS}" ] && error "Not enough information in ${CONF}"
 fi
 
-[ $(id -u) -eq 0 ] && SUDO="" || SUDO="sudo "
-
-if [ -d ~/.pyenv ]; then
-	eval "$(${HOME}/.pyenv/bin/pyenv init -)"
-	SUPERVISOR="${SUDO}/root/.pyenv/shims/supervisorctl -u ${USER} -p ${PASS}"
-elif [ -x /usr/bin/supervisorctl ]; then
-	SUPERVISOR="${SUDO}/usr/bin/supervisorctl -u ${USER} -p ${PASS}"
+if [ -x /usr/bin/supervisorctl ]; then
+	# Be sure that socket file configured right permission in /etc/supervisord.conf
+	# so that an user can access via console and web UI. Example:
+	# ...
+	# [unix_http_server]
+	# file=/var/run/supervisor.sock
+	# chmod=0770
+	# chown=username:nginx
+	# ...
+	SUPERVISOR="/usr/bin/supervisorctl -u ${USER} -p ${PASS}"
 else
-	error "supervisor is not installed"
+	error "Supervisor was not found. If you are using pyenv, switch to system and install supervisor via pip."
 fi
 
 STATUS="$(${SUPERVISOR} status ${DAEMON} | awk '{print $2}')"
