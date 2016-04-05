@@ -391,6 +391,7 @@ if has files; then
 		pkg
 		bin
 		compile-cache
+		vendor
 	"
 	export FILES_IGNORE_PATTERN="^($(echo ${FILES_IGNORE_PATTERN_LIST} | tr ' ', '|'))$"
 fi
