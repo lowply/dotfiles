@@ -387,7 +387,6 @@ if has files; then
 		n
 		backup
 		dotfiles
-		src
 		pkg
 		bin
 		compile-cache
