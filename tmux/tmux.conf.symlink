@@ -25,7 +25,6 @@ set -g status-right-length 100
 set -g status-left '#[fg=colour000]#[bg=colour039] %m/%d %a * %H:%M '
 set -g status-right '#[fg=colour000]#[bg=colour226] #T '
 set -g base-index 1
-set -g status-utf8 on
 set -g status-justify left
 
 #----------------------------------------
@@ -48,7 +47,6 @@ set -g pane-active-border-bg yellow
 # Window Options
 #----------------------------------------
 
-setw -g utf8 on
 setw -g mode-keys vi
 setw -g automatic-rename off
 
