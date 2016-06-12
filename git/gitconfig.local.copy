@@ -1,6 +1,3 @@
 [user]
 	name = AUTHOR NAME
 	email = AUTHOR ADDRESS
-
-[credential]
-	helper = osxkeychain
