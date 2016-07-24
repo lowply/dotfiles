@@ -3,10 +3,12 @@
     disabledPackages: [
       "vim-mode"
       "vim-surround"
+      "linter-write-good"
+      "linter-just-say-no"
     ]
   editor:
     fontFamily: "SourceHanCodeJP-Light"
-    fontSize: 12
+    fontSize: 11
     invisibles: {}
     showInvisibles: true
     softTabs: false
@@ -18,6 +20,7 @@
     goPath: "$HOME"
   "japanese-wrap":
     characterWidth: {}
+  linter: {}
   metrics:
     userId: "34983b77569c4f14b0a4e7ce82ed4c9df2fb42b1"
   welcome:
