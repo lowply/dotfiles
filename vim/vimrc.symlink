@@ -52,6 +52,7 @@ sunmap ge
 "======================================================
 
 au FileType markdown setl wrap
+au FileType markdown setl conceallevel=0
 
 "======================================================
 " Ruby:
