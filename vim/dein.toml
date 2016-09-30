@@ -32,7 +32,7 @@ repo = 'sheerun/vim-polyglot'
 repo = 'ctrlpvim/ctrlp.vim'
 
 [[plugins]]
-repo = 'flazz/vim-colorschemes'
+repo = 'lifepillar/vim-solarized8'
 
 [[plugins]]
 repo = 'terryma/vim-expand-region'
@@ -57,9 +57,6 @@ repo = 'scrooloose/syntastic'
 
 [[plugins]]
 repo = 'vim-scripts/closetag.vim'
-
-[[plugins]]
-repo = 'altercation/vim-colors-solarized'
 
 [[plugins]]
 repo = 'vim-ruby/vim-ruby'
