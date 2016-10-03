@@ -194,15 +194,6 @@ psone(){
 		echo "\\[\\e[0m\\]"
 	}
 
-	# just for fun
-	case "${OSTYPE}" in
-	darwin*)
-		local EMO_EYES="\xf0\x9f\x91\x80"
-		local EMO_BURG="\xf0\x9f\x8d\x94"
-		local EMO=`echo -e "${EMO_EYES}  "`
-		local EMO=""
-	esac
-
 	# default coloring
 	local BACKGROUND=0
 	local UNAME=198
@@ -218,12 +209,7 @@ psone(){
 	GIT_PS1_SHOWDIRTYSTATE=true
 
 	# set PS1
-	#export PS1="${EMO}$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL):$(fgcolor $DIRNAME)\$PWD$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
-	export PS1="${EMO}$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL)$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
-
-	unset bgcolor
-	unset fgcolor
-	unset resetcolor
+	export PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL)$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
 }
 
 #
@@ -270,22 +256,6 @@ darwin*)
 	if [ ! -L /usr/local/bin/diff-highlight ]; then
 		ln -s /usr/local/opt/git/share/git-core/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
 	fi
-
-	#
-	# Docker - Need Docker Toolbox installed: https://docs.docker.com/installation/mac/
-	#
-	if has docker-machine; then
-		if [ $(docker-machine status default) == "Running" ] > /dev/null 2>&1; then
-			eval "$(docker-machine env default)"
-			dockerkill() {
-				docker stop $1
-				docker rm $1
-			}
-			alias allrmi="docker images | grep \"<none>\" | awk '{print $3}' | xargs docker rmi"
-		fi
-		# run "docker-machine start default" to start docker-machine
-	fi
-
 	;;
 linux*)
 	#
@@ -337,13 +307,6 @@ has aws_completer && complete -C aws_completer aws
 # pyenv
 #
 [ -d ${HOME}/.pyenv ] && eval "$(pyenv init -)"
-
-#
-# npm
-#
-if has npm; then
-	addpath ./node_modules/.bin
-fi
 
 #
 # golang
