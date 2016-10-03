@@ -17,6 +17,7 @@ type aws >/dev/null 2>&1 || error "awscli is not installed"
 type jq >/dev/null 2>&1 || error "jq is not installed"
 
 [ $# -ne 5 ] && usage
+[ -d ${HOME}/.cache ] || mkdir ${HOME}/.cache 
 
 LOGFILE="${HOME}/.cache/update_r53.log"
 BATCHFILE="${HOME}/.cache/update_r53_batch.json"
