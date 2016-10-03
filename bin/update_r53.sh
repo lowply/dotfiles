@@ -1,18 +1,10 @@
 #!/bin/bash
 
-TTL=60
-LOGFILE="${HOME}/.cache/update_r53.log"
-BATCHFILE="${HOME}/.cache/update_r53_batch.json"
-DATE=$(date)
-FQDN=$1
-IP=$2
-PROFILE=$3
+set -e
 
 usage(){
-	echo "Usage:   ./update_r53.sh [domain] [IP] [awscli profile (optional)]>"
-	echo "Example: ./update_r53.sh lowply.com 192.168.1.0 personal"
-	echo "    Only use _subdomain.domain.tld_ format for the A record."
-	echo "    If profile is empty, default profile will be used"
+	echo "Usage  : ./update_r53.sh [domain] [type] [record] [TTL] [awscli profile]>"
+	echo "Example: ./update_r53.sh test.lowply.com A 192.168.1.0 300 private"
 	exit 1
 }
 
@@ -24,44 +16,79 @@ error(){
 type aws >/dev/null 2>&1 || error "awscli is not installed"
 type jq >/dev/null 2>&1 || error "jq is not installed"
 
-[ $# -lt 2 ] && usage
-[ $# -gt 3 ] && usage
-[ -z ${PROFILE} ] && PROFILE="default"
+[ $# -ne 5 ] && usage
 
-SUBDOMAIN=$(echo ${FQDN} | awk -F. '{print $1}')
-DOMAIN=$(echo ${FQDN} | sed "s/${SUBDOMAIN}\.//g")
-HOSTED_ZONE_ID=$(aws --profile ${PROFILE} route53 list-hosted-zones --output json | jq -r ".HostedZones[] | select(.Name == \"${DOMAIN}.\").Id" | sed -e 's/\/hostedzone\///g')
+LOGFILE="${HOME}/.cache/update_r53.log"
+BATCHFILE="${HOME}/.cache/update_r53_batch.json"
+DATE=$(date)
+FQDN=$1
+TYPE=$2
+RECORD=$3
+TTL=$4
+PROFILE=$5
+
+TLD=$(echo ${FQDN} | awk -F. '{print $NF}')
+DOMAIN=$(echo ${FQDN} | awk -F. '{print $(NF-1)}').${TLD}
+SUBDOMAIN=$(echo ${FQDN} | sed "s/\.${DOMAIN}//g")
+R53="aws --profile ${PROFILE} route53"
+HOSTED_ZONE_ID=$(${R53} list-hosted-zones --output json | jq -r ".HostedZones[] | select(.Name == \"${DOMAIN}.\").Id" | sed -e 's/\/hostedzone\///g')
 
 [ -z "${HOSTED_ZONE_ID}" ] && error "\"${DOMAIN}\" not found in your Route53 zones."
+
+if [ ${TYPE} == "TXT" ]; then
+	RECORD="\\\"${RECORD}\\\""
+fi
+
+cat << EOT > ${BATCHFILE}
+{
+	"Comment": "Updated by updater53.sh",
+	"Changes": [
+		{
+			"Action": "UPSERT",
+			"ResourceRecordSet": {
+				"Name": "${SUBDOMAIN}.${DOMAIN}",
+				"Type": "${TYPE}",
+				"TTL": ${TTL},
+				"ResourceRecords": [
+					{
+						"Value": "${RECORD}"
+					}
+				]
+			}
+		}
+	]
+}
+EOT
+
+RESULT=$(${R53} change-resource-record-sets --hosted-zone-id ${HOSTED_ZONE_ID} --change-batch "file://${BATCHFILE}")
 
 cat << EOL >> ${LOGFILE}
 
 Executed on     : ${DATE}
 Hosted zone ID  : ${HOSTED_ZONE_ID}
-Public DNS name : ${SUBDOMAIN}.${DOMAIN}
-IP address      : ${IP}
+Public DNS name : ${FQDN}
+Type            : ${TYPE}
+Record          : ${RECORD}
+TTL             : ${TTL}
 Used profile    : ${PROFILE}
 EOL
 
-cat << EOT > ${BATCHFILE}
-{
-"Comment": "Updated by updater53.sh",
-"Changes": [
-	{
-	"Action": "UPSERT",
-	"ResourceRecordSet": {
-		"Name": "${SUBDOMAIN}.${DOMAIN}",
-		"Type": "A",
-		"TTL": ${TTL},
-		"ResourceRecords": [
-		{
-			"Value": "${IP}"
-		}
-		]
-	}
-	}
-]
-}
-EOT
+CHANGE_ID=$(echo ${RESULT} | jq -r .ChangeInfo.Id | sed -e 's/\/change\///g')
+echo "Change requested"
+echo "${RESULT}"
 
-aws --profile ${PROFILE} route53 change-resource-record-sets --hosted-zone-id ${HOSTED_ZONE_ID} --change-batch "file://${BATCHFILE}"
+while true
+do
+	STATUS=$(${R53} get-change --id ${CHANGE_ID} | jq -r .ChangeInfo.Status)
+	echo "Status: ${STATUS}"
+	if [ "${STATUS}" = "INSYNC" ]; then
+		echo "Done"
+		break
+	fi
+	sleep 2
+done
+
+echo "Checking result..."
+sleep 2
+echo "host -t ${TYPE} ${FQDN}"
+host -t ${TYPE} ${FQDN}
