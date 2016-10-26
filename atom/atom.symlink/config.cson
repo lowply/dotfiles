@@ -6,9 +6,9 @@
       "linter-write-good"
       "linter-just-say-no"
     ]
+    telemetryConsent: "limited"
   editor:
     fontFamily: "SourceHanCodeJP-Light"
-    fontSize: 11
     invisibles: {}
     showInvisibles: true
     softTabs: false
