@@ -354,6 +354,7 @@ if has files; then
 		bin
 		compile-cache
 		vendor
+		packages
 	"
 	export FILES_IGNORE_PATTERN="^($(echo ${FILES_IGNORE_PATTERN_LIST} | tr ' ', '|'))$"
 fi
