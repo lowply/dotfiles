@@ -1,4 +1,13 @@
 
+
+"======================================================
+" Python3 support
+"======================================================
+
+if has('nvim')
+	let g:python3_host_prog = expand('$HOME') . '/.pyenv/shims/python'
+endif
+
 "======================================================
 " dein
 "======================================================
@@ -75,34 +84,40 @@ let g:go_highlight_structs = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 let g:go_fmt_fail_silently = 1
-let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+let g:syntastic_go_checkers = ['golint', 'gotype', 'govet', 'go']
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 let g:go_fmt_command = "goimports"
 
-"======================================================
-" Neocomplete:
-"======================================================
-
-source ~/dotfiles/vim/vimrc_neocomplete
-
-" http://goo.gl/6M3GYZ
-set completeopt=menuone
+let g:deoplete#sources#go#align_class = 1
+let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+let g:deoplete#sources#go#package_dot = 1
 
 "======================================================
-" Neosnippet:
+" Auto Complete 
 "======================================================
+"
+if has('nvim')
+	" deoplete:
+	let g:deoplete#enable_at_startup = 1
+	let g:deoplete#enable_ignore_case = 1
+    let g:deoplete#enable_smart_case = 1
+	" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+	" <TAB>: completion.
+    imap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<TAB>" : deoplete#mappings#manual_complete()
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~ '\s'
+    endfunction
 
-" Plugin key-mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
+    " <S-TAB>: completion back.
+    inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
 
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-" For conceal markers.
-if has('conceal')
-  set conceallevel=2 concealcursor=niv
+	inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
+else
+	" neocomplete:
+	source ~/dotfiles/vim/vimrc_neocomplete
+	" http://goo.gl/6M3GYZ
+	set completeopt=menuone
 endif
 
 "======================================================
