@@ -47,12 +47,6 @@ repo = 'justinmk/vim-dirvish'
 repo = 'bkad/CamelCaseMotion'
 
 [[plugins]]
-repo = 'Shougo/neosnippet.vim'
-
-[[plugins]]
-repo = 'Shougo/neosnippet-snippets'
-
-[[plugins]]
 repo = 'scrooloose/syntastic'
 
 [[plugins]]
@@ -69,3 +63,6 @@ on_ft = 'toml'
 [[plugins]]
 repo = 'elzr/vim-json'
 on_ft = 'json'
+
+[[plugins]]
+repo = 'Shougo/deoplete.nvim'
