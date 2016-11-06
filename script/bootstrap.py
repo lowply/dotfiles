@@ -107,6 +107,15 @@ def linkandcopy():
         dst = home + "/." + os.path.basename(src).replace(".copy","")
         link_file(src, dst, True)
 
+    #
+    # For neovim
+    #
+    if not os.path.isdir(home + "/.config/nvim"):
+        os.mkdir(home + "/.config/nvim")
+    src = home + "/dotfiles/vim/vimrc.symlink"
+    dst = home + "/.config/nvim/init.vim"
+    link_file(src, dst, False)
+
     vim_tmp = home + "/.vim_tmp"
     if not os.path.isdir(vim_tmp):
         os.mkdir(vim_tmp)
