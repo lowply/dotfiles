@@ -317,6 +317,9 @@ set encoding=utf-8
 " Utils:
 "======================================================
 
+" Disable mouse support
+set mouse=
+
 inoremap jk <esc>
 
 " http://goo.gl/ZSlTLG
