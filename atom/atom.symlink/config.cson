@@ -9,6 +9,7 @@
     telemetryConsent: "limited"
   editor:
     fontFamily: "SourceHanCodeJP-Light"
+    fontSize: 13
     invisibles: {}
     showInvisibles: true
     softTabs: false
