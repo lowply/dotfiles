@@ -295,12 +295,7 @@ elif [ -d ${HOME}/git/contrib/completion ]; then
 	source ${GIT_COMPLETION_PATH}/git-completion.bash
 fi
 
-#
-# git diff-highlight
-#
-if [ ! -L /usr/local/bin/diff-highlight ]; then
-	ln -s /usr/local/opt/git/share/git-core/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
-fi
+has diff-highlight || echo "Please install diff-highlight"
 
 #
 # dotfiles
