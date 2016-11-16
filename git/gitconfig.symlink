@@ -103,3 +103,11 @@
 	signingkey = 0D9BE6E9F8C77C48
 [commit]
 	verbose = true
+[pager]
+	log = diff-highlight | less
+	show = diff-highlight | less
+	diff = diff-highlight | less
+[interactive]
+	diffFilter = diff-highlight
+[diff]
+	compactionHeuristic = true
