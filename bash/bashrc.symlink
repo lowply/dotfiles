@@ -36,7 +36,7 @@ error(){
 mksha512(){
 	has "pip" || { echo "Please install pip"; return; }
 	python -c "from passlib.hash import sha512_crypt" > /dev/null 2>&1 || { echo "Please run \"pip install passlib\""; return; }
-	python -c "from passlib.hash import sha512_crypt; import getpass; print sha512_crypt.encrypt(getpass.getpass())"
+	python -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.encrypt(getpass.getpass()))"
 }
 
 peco-run-cmd(){
@@ -164,6 +164,7 @@ fi
 #
 [ -x "/usr/bin/vim" ] && export EDITOR=/usr/bin/vim
 [ -x "/usr/local/bin/vim" ] && export EDITOR=/usr/local/bin/vim
+[ -x "/usr/local/bin/nvim" ] && export EDITOR=/usr/local/bin/nvim
 has less && export PAGER=/usr/bin/less
 
 #
@@ -245,52 +246,48 @@ darwin*)
 	if [ -f $(brew --prefix)/etc/bash_completion ]; then
 		. $(brew --prefix)/etc/bash_completion
 	fi
-
-	#
-	# git bash completion
-	#
-	if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
-		source /usr/local/opt/git/etc/bash_completion.d/git-prompt.sh
-		source /usr/local/opt/git/etc/bash_completion.d/git-completion.bash
-	fi
-
-	#
-	# git diff-highlight
-	#
-	if [ ! -L /usr/local/bin/diff-highlight ]; then
-		ln -s /usr/local/opt/git/share/git-core/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
-	fi
 	;;
 linux*)
-	#
-	# rbenv
-	#
-	[ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
-
-	#
-	# pyenv
-	#
-	[ -d ${HOME}/.pyenv ] && addpath ${HOME}/.pyenv/bin
-
-	#
-	# git bash completion
-	#
-	if [ -d /usr/local/git ]; then
-		#
-		# if compiled from source (mainly for CentOS 6)
-		#
-		source /usr/local/git/contrib/completion/git-completion.bash
-		source /usr/local/git/contrib/completion/git-prompt.sh
-	elif [ -d /usr/share/git-core/contrib/completion ]; then
-		#
-		# if installed via yum (mainly for Amazon Linux 2014.03)
-		# /etc/bash_completion.d/git should be loaded 
-		#
-		source /usr/share/git-core/contrib/completion/git-prompt.sh
-	fi
-
+	:
 	;;
 esac
+
+#
+# git prompt and bash completion
+#
+if [ -d /usr/local/git ]; then
+	# For CentOS and others - compiled from source
+	# sudo yum install bash-completion
+	# need to copy contrib directory to /usr/local/git
+	GIT_COMPLETION_PATH="/usr/local/git/contrib/completion"
+	source ${GIT_COMPLETION_PATH}/git-prompt.sh
+	source ${GIT_COMPLETION_PATH}/git-completion.bash
+elif [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
+	# For Mac, installed with homebrew
+	# brew install bash-completion
+	GIT_COMPLETION_PATH="/usr/local/opt/git/etc/bash_completion.d"
+	source ${GIT_COMPLETION_PATH}/git-prompt.sh
+	source ${GIT_COMPLETION_PATH}/git-completion.bash
+elif [ -d /usr/share/git-core/contrib/completion ]; then
+	# For Amazon Linux
+	# sudo yum --enablerepo=epel install bash-completion
+	GIT_COMPLETION_PATH="/usr/share/git-core/contrib/completion"
+	source ${GIT_COMPLETION_PATH}/git-prompt.sh
+	# /etc/bash_completion.d/git should already be loaded 
+elif [ -d ${HOME}/git/contrib/completion ]; then
+	# For Debian
+	# Download the source, unarchive it and rename the dir to *git*
+	GIT_COMPLETION_PATH="${HOME}/git/contrib/completion"
+	source ${GIT_COMPLETION_PATH}/git-prompt.sh
+	source ${GIT_COMPLETION_PATH}/git-completion.bash
+fi
+
+#
+# git diff-highlight
+#
+if [ ! -L /usr/local/bin/diff-highlight ]; then
+	ln -s /usr/local/opt/git/share/git-core/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
+fi
 
 #
 # dotfiles
@@ -311,6 +308,11 @@ has aws_completer && complete -C aws_completer aws
 # pyenv
 #
 [ -d ${HOME}/.pyenv ] && eval "$(pyenv init -)"
+
+#
+# nodenv
+#
+[ -d ${HOME}/.nodenv ] && eval "$(nodenv init -)"
 
 #
 # golang
@@ -344,6 +346,7 @@ if has files; then
 		\.local
 		\.pyenv
 		\.rbenv
+		\.nodenv
 		\.gem
 		\.vim_tmp
 		\.cache
@@ -376,15 +379,15 @@ export LANG=en_US.UTF-8
 #
 has archey && archey
 
-#
-# cowsay
-#
-
 # for Ubuntu
 if [ -f /etc/lsb-release ]; then
 	. /etc/lsb-release
 	[ "${DISTRIB_ID}" == "Ubuntu" ] && addpath /usr/games
 fi
+
+#
+# cowsay
+#
 
 has cowsay && COWSAY=true
 has fortune && FORTUNE=true
@@ -402,8 +405,6 @@ fi
 if [ -f ${HOME}/.bashrc.local ]; then
 	source ${HOME}/.bashrc.local
 fi
-
-export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
 # added by travis gem
 [ -f /Users/lowply/.travis/travis.sh ] && source /Users/lowply/.travis/travis.sh
