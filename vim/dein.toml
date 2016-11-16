@@ -1,8 +1,8 @@
 [[plugins]]
 repo = 'Shougo/dein.vim'
 
-[[plugins]]
-repo = 'Shougo/neocomplete.vim'
+# [[plugins]]
+# repo = 'Shougo/neocomplete.vim'
 
 [[plugins]]
 repo = 'tpope/vim-commentary'
@@ -66,3 +66,10 @@ on_ft = 'json'
 
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
+
+[[plugins]]
+repo = 'osyo-manga/vim-monster'
+
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+build = 'make'

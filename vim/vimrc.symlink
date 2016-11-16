@@ -88,19 +88,28 @@ let g:syntastic_go_checkers = ['golint', 'gotype', 'govet', 'go']
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 let g:go_fmt_command = "goimports"
 
-let g:deoplete#sources#go#align_class = 1
-let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
-let g:deoplete#sources#go#package_dot = 1
+if has('nvim')
+	let g:deoplete#sources#go#align_class = 1
+	let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+	let g:deoplete#sources#go#package_dot = 1
+endif
 
 "======================================================
 " Auto Complete 
 "======================================================
-"
+
 if has('nvim')
 	" deoplete:
 	let g:deoplete#enable_at_startup = 1
 	let g:deoplete#enable_ignore_case = 1
     let g:deoplete#enable_smart_case = 1
+
+	" With deoplete.nvim
+	let g:monster#completion#rcodetools#backend = "async_rct_complete"
+	let g:deoplete#sources#omni#input_patterns = {
+	\   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
+	\}
+
 	" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 	" <TAB>: completion.
     imap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<TAB>" : deoplete#mappings#manual_complete()
