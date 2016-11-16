@@ -248,7 +248,20 @@ darwin*)
 	fi
 	;;
 linux*)
-	:
+	#
+    # rbenv
+    #
+    [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
+
+    #
+    # pyenv
+    #
+    [ -d ${HOME}/.pyenv ] && addpath ${HOME}/.pyenv/bin
+
+    #
+    # nodenv
+    #
+    [ -d ${HOME}/.nodenv ] && addpath ${HOME}/.nodenv/bin
 	;;
 esac
 
