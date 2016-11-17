@@ -273,27 +273,23 @@ if [ -d /usr/local/git ]; then
 	# sudo yum install bash-completion
 	# need to copy contrib directory to /usr/local/git
 	GIT_COMPLETION_PATH="/usr/local/git/contrib/completion"
-	source ${GIT_COMPLETION_PATH}/git-prompt.sh
-	source ${GIT_COMPLETION_PATH}/git-completion.bash
 elif [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
 	# For Mac, installed with homebrew
 	# brew install bash-completion
 	GIT_COMPLETION_PATH="/usr/local/opt/git/etc/bash_completion.d"
-	source ${GIT_COMPLETION_PATH}/git-prompt.sh
-	source ${GIT_COMPLETION_PATH}/git-completion.bash
 elif [ -d /usr/share/git-core/contrib/completion ]; then
 	# For Amazon Linux
 	# sudo yum --enablerepo=epel install bash-completion
-	GIT_COMPLETION_PATH="/usr/share/git-core/contrib/completion"
-	source ${GIT_COMPLETION_PATH}/git-prompt.sh
-	# /etc/bash_completion.d/git should already be loaded 
+	GIT_VERSION=$(git --version | sed -e "s/git version //")
+	GIT_COMPLETION_PATH="/usr/share/doc/git-${GIT_VERSION}/contrib/completion"
 elif [ -d ${HOME}/git/contrib/completion ]; then
 	# For Debian
 	# Download the source, unarchive it and rename the dir to *git*
 	GIT_COMPLETION_PATH="${HOME}/git/contrib/completion"
-	source ${GIT_COMPLETION_PATH}/git-prompt.sh
-	source ${GIT_COMPLETION_PATH}/git-completion.bash
 fi
+
+source ${GIT_COMPLETION_PATH}/git-prompt.sh
+source ${GIT_COMPLETION_PATH}/git-completion.bash
 
 has diff-highlight || echo "Please install diff-highlight"
 
