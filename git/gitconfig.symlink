@@ -102,7 +102,6 @@
 	helper = osxkeychain
 [user]
 	signingkey = 0D9BE6E9F8C77C48
-	name = Sho Mizutani
 [commit]
 	verbose = true
 [pager]
