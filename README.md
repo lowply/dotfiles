@@ -5,5 +5,5 @@
 ```bash
 $ cd
 $ git clone git://github.com/lowply/dotfiles.git
-$ ./dotfiles/script/bootstrap.py
+$ ./dotfiles/bin/install.sh
 ```
