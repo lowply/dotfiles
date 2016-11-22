@@ -2,14 +2,16 @@
 
 . $(dirname $0)/lib.sh
 
+BACKUPDIR="${HOME}/dotfiles_backup_${DATE}"
+
 usage(){
 	echo "Usage:"
 	echo "    ${0}       # to run install"
 	echo "    ${0} clean # to cleanup"
+	exit 1
 }
 
 link(){
-	local BACKUPDIR="${HOME}/dotfiles_backup_${DATE}"
 	local LIST_SYMLINKS=$(find ${HOME}/dotfiles -name "*.symlink")
 	for x in ${LIST_SYMLINKS}; do
 		local SRC=${x}
@@ -24,7 +26,6 @@ link(){
 }
 
 unlink(){
-	local BACKUPDIR="${HOME}/dotfiles_backup_${DATE}"
 	local LIST_SYMLINKS=$(find ${HOME}/dotfiles -name "*.symlink")
 	for x in ${LIST_SYMLINKS}; do
 		local DST=$(echo ${x} | sed -e "s|^.*\/|${HOME}/.|" | sed -e "s|\.symlink||")
@@ -59,34 +60,24 @@ create_backupdir(){
 }
 
 create_gitconfig_local(){
-	local TARGET="${HOME}/.gitconfig.local"
-	local NAME
-	local EMAIL
+	[ -z $(git config --get user.email) ] || { echo "user.email has already been configured"; return 0; }
 
-	if [ ! -f ${TARGET} ]; then
-		if [ -z $(git config --get user.name) ]; then
-			echo "Type your name for git and hit [ENTER]:"
-			read NAME
-		else
-			echo "user.email has already been configured"
-		fi
-
-		if [ -z $(git config --get user.email) ]; then
-			echo "Type your email address for git and hit [ENTER]:"
-			read EMAIL
-		else
-			echo "user.name has already been configured"
-		fi
-
-		cat <<- EOF > ${TARGET}
-		[user]
-			name = ${NAME}
-			email = ${EMAIL}
-		EOF
-		echo "${TARGET} is created"
-	else
-		echo "${TARGET} already exists"
+	if [ -f ${TARGET} ]; then
+		mv ${TARGET} ${BACKUPDIR}
+		message warn "${TARGET} already exists, moving to ${BACKUPDIR}"
 	fi
+
+	local TARGET="${HOME}/.gitconfig.local"
+	local EMAIL
+	echo "Type your email address for git and hit [ENTER]:"
+	read EMAIL
+
+	cat <<- EOF > ${TARGET}
+	[user]
+		name = Sho Mizutani
+		email = ${EMAIL}
+	EOF
+	echo "${TARGET} is created"
 }
 
 create_bash_color(){
@@ -125,11 +116,11 @@ create_vimrc_local(){
 }
 
 post_install(){
-	echo "Please install dein, pyenv, neovim and its pip module"
+	echo "Please install dein, pyenv, python3, neovim and its pip module"
 }
 
 main(){
-	[ $# -gt 1 ] && abort "Wrong number of arguments"
+	[ $# -gt 1 ] && usage
 
 	create_backupdir
 	case "${1}" in
@@ -148,7 +139,7 @@ main(){
 		unlink
 		;;
 	*)
-		abort "Incorrect argument: ${1}"
+		usage
 		;;
 	esac
 }
