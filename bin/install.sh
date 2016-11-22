@@ -58,16 +58,74 @@ create_backupdir(){
 	mkdir ${HOME}/dotfiles_backup_${DATE}
 }
 
-git_config_email(){
-	if [ -z $(git config --get user.email) ]; then
-		echo "Type your email address for Git and hit [ENTER]:"
-		read EMAIL
-		git config --global user.email ${EMAIL}
+create_gitconfig_local(){
+	local TARGET="${HOME}/.gitconfig.local"
+	local NAME
+	local EMAIL
+
+	if [ ! -f ${TARGET} ]; then
+		if [ -z $(git config --get user.name) ]; then
+			echo "Type your name for git and hit [ENTER]:"
+			read NAME
+		else
+			echo "user.email has already been configured"
+		fi
+
+		if [ -z $(git config --get user.email) ]; then
+			echo "Type your email address for git and hit [ENTER]:"
+			read EMAIL
+		else
+			echo "user.name has already been configured"
+		fi
+
+		cat <<- EOF > ${TARGET}
+		[user]
+			name = ${NAME}
+			email = ${EMAIL}
+		EOF
+		echo "${TARGET} is created"
+	else
+		echo "${TARGET} already exists"
+	fi
+}
+
+create_bash_color(){
+	local TARGET="${HOME}/.bash_color"
+	if [ ! -f ${TARGET} ]; then
+		cat <<- EOF > ${TARGET}
+			#
+			# bash color config
+			# type "psone" to take effect immediately
+			#
+
+			local BACKGROUND=0
+			local UNAME=112
+			local SYMBOL=127
+			local HOST=222
+			local DIRNAME=39
+			local PROMPT=119
+			local BRANCH=211
+		EOF
+		echo "${TARGET} is created"
+	else
+		echo "${TARGET} already exists"
+	fi
+}
+
+create_vimrc_local(){
+	local TARGET="${HOME}/.vimrc.local"
+	if [ ! -f ${TARGET} ]; then 
+		cat <<- EOF > ${TARGET}
+			" env specific configs
+		EOF
+		echo "${TARGET} is created"
+	else
+		echo "${TARGET} already exists"
 	fi
 }
 
 post_install(){
-	echo "Please install dein, pyenv, neovim, neovim pip module"
+	echo "Please install dein, pyenv, neovim and its pip module"
 }
 
 main(){
@@ -79,7 +137,11 @@ main(){
 		link
 		makedirs
 		link_init_nvim
-		git_config_email
+
+		create_gitconfig_local
+		create_bash_color
+		create_vimrc_local
+
 		post_install
 		;;
 	"clean")
