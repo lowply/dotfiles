@@ -14,9 +14,9 @@ link(){
 	for x in ${LIST_SYMLINKS}; do
 		local SRC=${x}
 		local DST=$(echo ${x} | sed -e "s|^.*\/|${HOME}/.|" | sed -e "s|\.symlink||")
-		if [ -L ${DST} ]; then
+		if [ -r ${DST} ]; then
 			mv ${DST} ${BACKUPDIR}
-			message warn "Symlink ${DST} already exists, moving to ${BACKUPDIR}"
+			message warn "A File, Symlink or Directory ${DST} already exists, moving to ${BACKUPDIR}"
 		fi
 		ln -s ${SRC} ${DST}
 		message success "Created symlink from ${SRC} to ${DST}"
@@ -59,9 +59,11 @@ create_backupdir(){
 }
 
 git_config_email(){
-	echo "Type your email address for Git and hit [ENTER]:"
-	read EMAIL
-	git config --global user.email ${EMAIL}
+	if [ -z $(git config --get user.email) ]; then
+		echo "Type your email address for Git and hit [ENTER]:"
+		read EMAIL
+		git config --global user.email ${EMAIL}
+	fi
 }
 
 post_install(){
