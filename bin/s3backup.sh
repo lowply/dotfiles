@@ -36,13 +36,13 @@ if [ ! -d ${WD} ]; then
 	error "${CONF} created, please update it"
 else
 	# check conf file permission
-	[ "$(stat --format='%a' ${CONF})" == "600" ] || error "permission of ${CONF} is not 600"
+	[ "$(stat --format='%a' ${CONF})" == "600" ] || logger_error "permission of ${CONF} is not 600"
 
 	# read conf file
 	. ${CONF}
 
 	# check conf has enough information
-	[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && error "Not enough information in ${CONF}"
+	[ -z "${ENABLED}" -o -z "${BACKET}" -o -z "${BACKUPDIR}" -o -z "${NODE}" ] && logger_error "Not enough information in ${CONF}"
 fi
 
 # options

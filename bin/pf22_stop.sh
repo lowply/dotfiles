@@ -21,13 +21,13 @@ if [ ! -f ${CONF} ]; then
 	error "${CONF} created, please update it"
 else
 	# check if conf file exists with permission 600
-	[ "$(stat --format='%a' ${CONF})" == "600" ] || error "Permission of ${CONF} is not 600"
+	[ "$(stat --format='%a' ${CONF})" == "600" ] || logger_error "Permission of ${CONF} is not 600"
 
 	# load conf
 	. ${CONF}
 
 	# check conf file has enough information
-	[ -z "${USER}" -o -z "${PASS}" ] && error "Not enough information in ${CONF}"
+	[ -z "${USER}" -o -z "${PASS}" ] && logger_error "Not enough information in ${CONF}"
 fi
 
 if [ -x /usr/bin/supervisorctl ]; then
