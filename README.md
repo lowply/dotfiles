@@ -4,6 +4,6 @@
 
 ```bash
 $ cd
-$ git clone git://github.com/lowply/dotfiles.git
+$ git clone https://github.com/lowply/dotfiles.git
 $ ./dotfiles/bin/install.sh
 ```
