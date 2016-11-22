@@ -16,7 +16,7 @@ check_os "linux"
 has mysql
 
 # check if mysqld is running
-[ ! -z "$(/sbin/pidof mysqld)" ] || error "mysql is not running"
+[ ! -z "$(/sbin/pidof mysqld)" ] || logger_error "mysql is not running"
 
 # if conf file does not exist, create it
 if [ ! -f ${CONF} ]; then
@@ -31,13 +31,13 @@ if [ ! -f ${CONF} ]; then
 	error "${CONF} created, please update it"
 else
 	# check if conf file exists with permission 600
-	[ "$(stat --format='%a' ${CONF})" == "600" ] || error "Permission of ${CONF} is not 600"
+	[ "$(stat --format='%a' ${CONF})" == "600" ] || logger_error "Permission of ${CONF} is not 600"
 
 	# load conf
 	. ${CONF}
 
 	# check conf file has enough information
-	[ -z "${DBUSER}" -o -z "${DBPASS}" -o -z "${PERIOD}" -o -z "${ENC}" -o -z "${BACKUPDIR}" ] && error "Not enough information in ${CONF}"
+	[ -z "${DBUSER}" -o -z "${DBPASS}" -o -z "${PERIOD}" -o -z "${ENC}" -o -z "${BACKUPDIR}" ] && logger_error "Not enough information in ${CONF}"
 fi
 
 export MYSQL_PWD="${DBPASS}"
@@ -45,7 +45,7 @@ export MYSQL_PWD="${DBPASS}"
 LIST=$(mysql -u${DBUSER} -N -e 'show databases' | grep -v '_schema')
 
 # validate username and password
-[ $? -ne 0 ] && error "Can't connect to mysql server, username or password is invalid"
+[ $? -ne 0 ] && logger_error "Can't connect to mysql server, username or password is invalid"
 
 # create backup dir if it doesn't exist
 [ -d ${BACKUPDIR} ] || mkdir -p ${BACKUPDIR}
