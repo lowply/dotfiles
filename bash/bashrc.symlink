@@ -279,8 +279,8 @@ elif [ -d ${HOME}/git/contrib/completion ]; then
 	GIT_COMPLETION_PATH="${HOME}/git/contrib/completion"
 fi
 
-source ${GIT_COMPLETION_PATH}/git-prompt.sh
-source ${GIT_COMPLETION_PATH}/git-completion.bash
+. ${GIT_COMPLETION_PATH}/git-prompt.sh
+. ${GIT_COMPLETION_PATH}/git-completion.bash
 
 has diff-highlight || echo "Please install diff-highlight"
 
@@ -320,8 +320,8 @@ fi
 # GCP
 #
 if [ -d ${HOME}/google-cloud-sdk ]; then
-	source "${HOME}/google-cloud-sdk/path.bash.inc"
-	source "${HOME}/google-cloud-sdk/completion.bash.inc"
+	. "${HOME}/google-cloud-sdk/path.bash.inc"
+	. "${HOME}/google-cloud-sdk/completion.bash.inc"
 fi
 
 #
@@ -398,8 +398,5 @@ fi
 # env specific additions
 #
 if [ -f ${HOME}/.bashrc.local ]; then
-	source ${HOME}/.bashrc.local
+	. ${HOME}/.bashrc.local
 fi
-
-# added by travis gem
-[ -f /Users/lowply/.travis/travis.sh ] && source /Users/lowply/.travis/travis.sh
