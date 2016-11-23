@@ -62,12 +62,12 @@ create_backupdir(){
 create_gitconfig_local(){
 	[ -z $(git config --get user.email) ] || { echo "user.email has already been configured"; return 0; }
 
+	local TARGET="${HOME}/.gitconfig.local"
 	if [ -f ${TARGET} ]; then
 		mv ${TARGET} ${BACKUPDIR}
 		message warn "${TARGET} already exists, moving to ${BACKUPDIR}"
 	fi
 
-	local TARGET="${HOME}/.gitconfig.local"
 	local EMAIL
 	echo "Type your email address for git and hit [ENTER]:"
 	read EMAIL
