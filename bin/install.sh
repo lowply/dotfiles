@@ -90,12 +90,12 @@ create_bash_color(){
 			#
 
 			local BACKGROUND=0
-			local UNAME=112
-			local SYMBOL=127
-			local HOST=222
-			local DIRNAME=39
-			local PROMPT=119
-			local BRANCH=211
+			local UNAME=198
+			local SYMBOL=147
+			local HOST=173
+			local DIRNAME=120
+			local PROMPT=129
+			local BRANCH=111
 		EOF
 		echo "${TARGET} is created"
 	else
