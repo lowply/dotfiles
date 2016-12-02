@@ -60,16 +60,15 @@ create_backupdir(){
 }
 
 check_old_file(){
-	local TARGET=${1}
-	if [ -f ${TARGET} ]; then
-		mv ${TARGET} ${BACKUPDIR}
-		message warn "${TARGET} already exists, moving to ${BACKUPDIR}"
+	if [ -f ${1} ]; then
+		mv ${1} ${BACKUPDIR}
+		message warn "${1} already exists, moving to ${BACKUPDIR}"
 	fi
 }
 
 create_bash_color(){
-	check_old_file "${HOME}/.bash_color"
-	cat <<- EOF > ${TARGET}
+	check_old_file ${1}
+	cat <<- EOF > ${1}
 		#
 		# bash color config
 		# type "psone" to take effect immediately
@@ -83,39 +82,38 @@ create_bash_color(){
 		local PROMPT=129
 		local BRANCH=111
 	EOF
-	echo "${TARGET} is created"
+	echo "${1} is created"
 }
 
 create_bashrc_local(){
-	check_old_file "${HOME}/.bashrc.local"
-	cat <<- EOF > ${TARGET}
+	check_old_file ${1}
+	cat <<- EOF > ${1}
 		# env specific configs
 	EOF
-	echo "${TARGET} is created"
+	echo "${1} is created"
 }
 
 create_gitconfig_local(){
-	check_old_file "${HOME}/.gitconfig.local"
-
+	check_old_file ${1}
 	local EMAIL
+	echo ""
 	echo "Type your email address for git and hit [ENTER]:"
 	read EMAIL
 
-	cat <<- EOF > ${TARGET}
+	cat <<- EOF > ${1}
 	[user]
 		name = Sho Mizutani
 		email = ${EMAIL}
 	EOF
-	echo "${TARGET} is created"
+	echo "${1} is created"
 }
 
 create_vimrc_local(){
-	check_old_file "${HOME}/.vimrc.local"
-
-	cat <<- EOF > ${TARGET}
+	check_old_file ${1}
+	cat <<- EOF > ${1}
 		" env specific configs
 	EOF
-	echo "${TARGET} is created"
+	echo "${1} is created"
 }
 
 post_install(){
@@ -132,10 +130,10 @@ main(){
 		makedirs
 		link_init_nvim
 
-		create_bash_color
-		create_bashrc_local
-		create_gitconfig_local
-		create_vimrc_local
+		create_bash_color "${HOME}/.bash_color"
+		create_bashrc_local "${HOME}/.bashrc.local"
+		create_gitconfig_local "${HOME}/.gitconfig.local"
+		create_vimrc_local "${HOME}/.vimrc.local"
 
 		post_install
 		;;
