@@ -121,7 +121,7 @@ if has('nvim')
     " <S-TAB>: completion back.
     inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
 
-	inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
+	" inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
 else
 	" neocomplete:
 	source ~/dotfiles/vim/vimrc_neocomplete
