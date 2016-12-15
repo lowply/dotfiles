@@ -8,8 +8,6 @@
     ]
     telemetryConsent: "limited"
   editor:
-    fontFamily: "SourceHanCodeJP-Light"
-    fontSize: 13
     invisibles: {}
     showInvisibles: true
     softTabs: false
@@ -25,5 +23,7 @@
   metrics:
     userId: "34983b77569c4f14b0a4e7ce82ed4c9df2fb42b1"
   minimap: {}
+  nvatom:
+    directory: "/Users/lowply/Dropbox/nvatom"
   welcome:
     showOnStartup: false
