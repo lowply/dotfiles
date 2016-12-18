@@ -43,11 +43,11 @@ main(){
 	TITLE=${1}
 	DISKNAME="DVD_VIDEO"
 
-	RIPDIR="${WORKDIR}/tmp"
-	[ -d ${RIPDIR} ] && { echo "Removing old workdir..."; rm -rf ${RIPDIR}; }
-
 	DRUTIL_DVD=$(drutil status | grep -m 1 "Type: DVD-R")
 	[ -z "${DRUTIL_DVD}" ] && abort "No DVD is inserted"
+
+	RIPDIR="${WORKDIR}/.tmp"
+	[ -d ${RIPDIR} ] && { echo "Removing old workdir..."; rm -rf ${RIPDIR}; }
 
 	DEVICE=$(echo ${DRUTIL_DVD} | grep Name | sed -e 's/^.*Name: //')
 
@@ -57,12 +57,11 @@ main(){
 	# start ripping
 	echo "Target : ${DEVICE}, Name : ${TITLE}"
 	echo "Ripping..."
-	echo dvdbackup -n ${DISKNAME} -i ${DEVICE} -M -p -o ${RIPDIR}
+	dvdbackup -n ${DISKNAME} -i ${DEVICE} -M -p -o ${RIPDIR}
 
 	# start making iso
 	echo "Ripping done. Creating ISO diskimage..."
-	echo hdiutil makehybrid -o ${WORKDIR}/${TITLE}.iso ${RIPDIR}/${DISKNAME} -iso -udf -udf-volume-name ${DISKNAME}
-
+	hdiutil makehybrid -o ${WORKDIR}/${TITLE}.iso ${RIPDIR}/${DISKNAME} -iso -udf -udf-volume-name ${DISKNAME}
 
 	# eject DVD and finish
 	echo "ISO diskimage created. Ejecting disk..."
@@ -70,3 +69,4 @@ main(){
 }
 
 main $@
+
