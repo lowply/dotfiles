@@ -25,5 +25,6 @@
   minimap: {}
   nvatom:
     directory: "/Users/lowply/Dropbox/nvatom"
+  "tree-view": {}
   welcome:
     showOnStartup: false
