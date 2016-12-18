@@ -52,7 +52,7 @@ makedirs(){
 link_init_nvim(){
 	local SRC="${HOME}/dotfiles/vim/vimrc.symlink"
 	local DST="${HOME}/.config/nvim/init.vim"
-	[ -L ${DST} ] || ln -s ${SRC} ${DST}
+	[ -L ${DST} ] && abort "${DST} already exists." || ln -s ${SRC} ${DST}
 }
 
 create_backupdir(){
