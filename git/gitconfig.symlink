@@ -94,8 +94,6 @@
 	editor = vim
 [push]
 	default = simple
-[ghq]
-	root = ~/src
 [github]
 	user = lowply
 [credential]
