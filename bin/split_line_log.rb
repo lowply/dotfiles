@@ -44,7 +44,7 @@ def create_messages(src_file)
   messages = []
   File.open(src_file) do |file|
     reading = false
-    text_date_regex = "([0-9][0-9][0-9][0-9])\/([0-9][0-9])\/([0-9][0-9]) ([A-Z][a-z][a-z])"
+    text_date_regex = "^([0-9]{4})\/([0-9]{2})\/([0-9]{2}) ([A-Z][a-z]{2})$"
     file.each_line do |l|
       l = l.gsub("\r\n", "\n")
       if md = l.match(/#{text_date_regex}/)
