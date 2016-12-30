@@ -237,6 +237,11 @@ darwin*)
 	if [ -f $(brew --prefix)/etc/bash_completion ]; then
 		. $(brew --prefix)/etc/bash_completion
 	fi
+
+	#
+	# For Python 3
+	#
+	export LC_ALL="en_US.UTF-8"
 	;;
 linux*)
 	#
@@ -369,29 +374,10 @@ psone
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-#
-# archey
-#
-has archey && archey
-
 # for Ubuntu
 if [ -f /etc/lsb-release ]; then
 	. /etc/lsb-release
 	[ "${DISTRIB_ID}" == "Ubuntu" ] && addpath /usr/games
-fi
-
-#
-# cowsay
-#
-
-has cowsay && COWSAY=true
-has fortune && FORTUNE=true
-if [ "${COWSAY}" == "true" -a "${FORTUNE}" == "true" ]; then
-	fortune | cowsay -f small
-fi
-
-if [ "${COWSAY}" == "true" ]; then
-	export ANSIBLE_NOCOWS=1
 fi
 
 #
