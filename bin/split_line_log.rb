@@ -2,6 +2,13 @@
 
 require 'date'
 
+def usage
+  abort "Usage: \n    env SPLIT_LINE_LOG_DIR=\"/path/to/dir\" #{$PROGRAM_NAME} line_export_file.txt"
+end
+
+usage if ENV["SPLIT_LINE_LOG_DIR"].nil?
+usage if ARGV.length != 1
+
 class Message
   # Trailing slash adjustment
   @@filedir = File.join(ENV["SPLIT_LINE_LOG_DIR"], "")
@@ -16,6 +23,12 @@ class Message
     @content = @content + text
   end
 
+  def read_last_file(dir)
+    Dir.chdir(dir)
+    files = Dir.glob("*.txt")
+    return dir + files.last if ! files.empty?
+  end
+
   def write_to_file
     last_updated = read_last_file(@@filedir)
     if ! File.exist?(@path) || (@path == last_updated)
@@ -28,16 +41,6 @@ class Message
       puts "File created at: " + @path
     end
   end
-end
-
-def usage
-  abort "Usage: \n    env SPLIT_LINE_LOG_DIR=\"/path/to/dir\" #{$PROGRAM_NAME} line_export_file.txt"
-end
-
-def read_last_file(dir)
-  Dir.chdir(dir)
-  files = Dir.glob("*.txt")
-  return dir + files.last if ! files.empty?
 end
 
 def create_messages(src_file)
@@ -59,12 +62,9 @@ def create_messages(src_file)
 end
 
 def main
-  usage if ENV["SPLIT_LINE_LOG_DIR"].nil?
-  usage if ARGV.length != 1
-  src_file = ARGV[0]
-  abort "\"#{src_file}\" does not exitst." if ! File.exist?(src_file)
-
-  messages = create_messages(src_file)
+  abort "\"#{ENV["SPLIT_LINE_LOG_DIR"]}\" does not exitst."  if ! Dir.exist?(ENV["SPLIT_LINE_LOG_DIR"])
+  abort "\"#{ARGV[0]}\" does not exitst." if ! File.exist?(ARGV[0])
+  messages = create_messages(ARGV[0])
   messages.each do |m|
     m.write_to_file
   end
