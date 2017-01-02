@@ -20,6 +20,18 @@ deploy_challenge() {
 	lacrosse _acme-challenge.${DOMAIN} TXT ${TOKEN_VALUE} 300 private
 }
 
+clean_challenge() {
+    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
+}
+
+deploy_cert() {
+    local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}" TIMESTAMP="${6}"
+}
+
+unchanged_cert() {
+    local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}"
+}
+
 invalid_challenge(){
     local DOMAIN="${1}" RESPONSE="${2}"
 	abort "Error: ${DOMAIN} / Response: ${RESPONSE}"
@@ -34,5 +46,6 @@ renew(){
 	dehydrated --config ${CONFIG} --cron --domain ${1} --hook ${0} --challenge dns-01
 }
 
+[ $# == 0 ] && usage
 HANDLER="$1"; shift
 "$HANDLER" "$@"
