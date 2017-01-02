@@ -43,6 +43,7 @@ makedirs(){
 		${HOME}/.cache
 		${HOME}/.cache/dein
 		${HOME}/.vim_tmp
+		${HOME}/.dehydrated
 	"
 	for x in ${DIRS}; do
 		[ -d ${x} ] || mkdir -p ${x}
@@ -52,6 +53,12 @@ makedirs(){
 link_init_nvim(){
 	local SRC="${HOME}/dotfiles/vim/vimrc.symlink"
 	local DST="${HOME}/.config/nvim/init.vim"
+	[ -L ${DST} ] && abort "${DST} already exists." || ln -s ${SRC} ${DST}
+}
+
+link_dehydrated_condig(){
+	local SRC="${HOME}/dotfiles/dehydrated/config.symlink"
+	local DST="${HOME}/.dehydrated/config"
 	[ -L ${DST} ] && abort "${DST} already exists." || ln -s ${SRC} ${DST}
 }
 
@@ -129,6 +136,7 @@ main(){
 		link
 		makedirs
 		link_init_nvim
+		link_dehydrated_condig
 
 		create_bash_color "${HOME}/.bash_color"
 		create_bashrc_local "${HOME}/.bashrc.local"

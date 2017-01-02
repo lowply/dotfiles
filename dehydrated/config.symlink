@@ -1,0 +1,2 @@
+BASEDIR=${HOME}/.dehydrated
+KEYSIZE="2048"
