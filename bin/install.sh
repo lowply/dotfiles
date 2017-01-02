@@ -56,7 +56,7 @@ link_init_nvim(){
 	[ -L ${DST} ] && abort "${DST} already exists." || ln -s ${SRC} ${DST}
 }
 
-link_dehydrated_condig(){
+link_dehydrated_config(){
 	local SRC="${HOME}/dotfiles/dehydrated/config.symlink"
 	local DST="${HOME}/.dehydrated/config"
 	[ -L ${DST} ] && abort "${DST} already exists." || ln -s ${SRC} ${DST}
@@ -136,7 +136,7 @@ main(){
 		link
 		makedirs
 		link_init_nvim
-		link_dehydrated_condig
+		link_dehydrated_config
 
 		create_bash_color "${HOME}/.bash_color"
 		create_bashrc_local "${HOME}/.bashrc.local"
