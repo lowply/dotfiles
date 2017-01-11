@@ -15,6 +15,9 @@
     tabLength: 4
   "exception-reporting":
     userId: "9ee1121b-79db-9c30-7f90-e9bdacbeff2f"
+  "git-plus":
+    general:
+      _analyticsUserId: "db04a951-c24d-4fb0-a5c7-7348f9ed0c22"
   "go-plus":
     goPath: "$HOME"
   "japanese-wrap":
