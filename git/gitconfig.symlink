@@ -112,3 +112,5 @@
 	diffFilter = diff-highlight
 [diff]
 	compactionHeuristic = true
+[ghq]
+	root = ~/src
