@@ -1,23 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Let's Encrypt hook & renew
 #
-# Hook example:
-# dehydrated --cron --domain example.com --hook letsencrypt.sh --challenge dns-01
-#
-# hook script example:
-# https://github.com/lukas2511/letsencrypt.sh/blob/master/docs/examples/hook.sh
+# Based on:
+# https://github.com/lukas2511/dehydrated/blob/master/docs/examples/hook.sh
 
 . $(dirname $0)/lib.sh
 
 usage(){
-	echo "Usage: ${0} renew example.com"
+	echo "Usage: AWSPROFILE=\"profile\" letsencrypt.sh renew example.com"
 	exit 1
 }
 
 deploy_challenge() {
-	local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
-	lacrosse _acme-challenge.${DOMAIN} TXT ${TOKEN_VALUE} 300 private
+    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
+	lacrosse _acme-challenge.${DOMAIN} TXT ${TOKEN_VALUE} 300 ${AWSPROFILE}
 }
 
 clean_challenge() {
@@ -32,18 +29,31 @@ unchanged_cert() {
     local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}"
 }
 
-function invalid_challenge(){
+invalid_challenge() {
     local DOMAIN="${1}" RESPONSE="${2}"
-	abort "Error: ${DOMAIN} / Response: ${RESPONSE}"
+}
+
+request_failure() {
+    local STATUSCODE="${1}" REASON="${2}" REQTYPE="${3}"
+}
+
+exit_hook() {
+  :
 }
 
 renew(){
 	[ $# != 1 ] && usage
+	[ -z "${AWSPROFILE}" ] && usage
 	has dehydrated
 	has lacrosse
 	local CONFIG="${HOME}/.dehydrated/config"
 	dehydrated --config ${CONFIG} --cron --domain ${1} --hook ${0} --challenge dns-01
 }
 
+[ -z "$1" ] && usage
+
 HANDLER="$1"; shift
-"$HANDLER" "$@"
+
+if [[ "${HANDLER}" =~ ^(deploy_challenge|clean_challenge|deploy_cert|unchanged_cert|invalid_challenge|request_failure|exit_hook|renew)$ ]]; then
+  "$HANDLER" "$@"
+fi
