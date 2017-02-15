@@ -23,6 +23,7 @@
   "japanese-wrap":
     characterWidth: {}
   linter: {}
+  "markdown-preview": {}
   metrics:
     userId: "34983b77569c4f14b0a4e7ce82ed4c9df2fb42b1"
   minimap: {}
