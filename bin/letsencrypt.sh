@@ -13,32 +13,33 @@ usage(){
 }
 
 deploy_challenge() {
-    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
+	local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
+	echo "lacrosse _acme-challenge.${DOMAIN} TXT ${TOKEN_VALUE} 300 ${AWSPROFILE}"
 	lacrosse _acme-challenge.${DOMAIN} TXT ${TOKEN_VALUE} 300 ${AWSPROFILE}
 }
 
 clean_challenge() {
-    local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
+	local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
 }
 
 deploy_cert() {
-    local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}" TIMESTAMP="${6}"
+	local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}" TIMESTAMP="${6}"
 }
 
 unchanged_cert() {
-    local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}"
+	local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}"
 }
 
 invalid_challenge() {
-    local DOMAIN="${1}" RESPONSE="${2}"
+	local DOMAIN="${1}" RESPONSE="${2}"
 }
 
 request_failure() {
-    local STATUSCODE="${1}" REASON="${2}" REQTYPE="${3}"
+	local STATUSCODE="${1}" REASON="${2}" REQTYPE="${3}"
 }
 
 exit_hook() {
-  :
+	:
 }
 
 renew(){
@@ -55,5 +56,5 @@ renew(){
 HANDLER="$1"; shift
 
 if [[ "${HANDLER}" =~ ^(deploy_challenge|clean_challenge|deploy_cert|unchanged_cert|invalid_challenge|request_failure|exit_hook|renew)$ ]]; then
-  "$HANDLER" "$@"
+	"$HANDLER" "$@"
 fi
