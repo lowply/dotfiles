@@ -35,7 +35,7 @@ check_conf(){
 }
 
 main(){
-	CONF=${HOME}/.ripdvd
+	CONF=${HOME}/.config/ripdvd.conf
 	check_conf
 	has dvdbackup
 	[ $# -ne 1 ] && usage
