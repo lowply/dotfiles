@@ -112,6 +112,7 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias ls='ls -v --color=auto'
 alias tm='tmux -2u a || tmux -2u'
+alias zcat='gzcat'
 alias pullall='git pull origin master && git submodule foreach git pull origin master'
 alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
 alias nstanp='lsof -nP -iTCP'
@@ -250,11 +251,6 @@ linux*)
     [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
 
     #
-    # pyenv
-    #
-    [ -d ${HOME}/.pyenv ] && addpath ${HOME}/.pyenv/bin
-
-    #
     # nodenv
     #
     [ -d ${HOME}/.nodenv ] && addpath ${HOME}/.nodenv/bin
@@ -305,11 +301,6 @@ has aws_completer && complete -C aws_completer aws
 [ -d ${HOME}/.rbenv ] && eval "$(rbenv init -)"
 
 #
-# pyenv
-#
-[ -d ${HOME}/.pyenv ] && eval "$(pyenv init -)"
-
-#
 # nodenv
 #
 [ -d ${HOME}/.nodenv ] && eval "$(nodenv init -)"
@@ -344,7 +335,6 @@ if has files; then
 		\.npm
 		\.mozilla
 		\.local
-		\.pyenv
 		\.rbenv
 		\.nodenv
 		\.gem
