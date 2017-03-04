@@ -53,12 +53,24 @@ peco-run-cmd(){
 }
 
 peco-src () {
-	has "peco" || return
-	has "ghq" || return
+	has "peco" || { echo "peco is not installed"; return 1; }
+	has "ghq" || { echo "ghq is not installed"; return 1; }
 	local DIR="$(ghq list -p | peco)"
 	if [ ! -z "${DIR}" ]; then
 		cd "${DIR}"
 	fi
+}
+
+pero(){
+	has "peco-beta" || { echo "peco-beta is not installed"; return 1; }
+	has "pt" || { echo "pt is not installed"; return 1; }
+	exec pt "$@" . | peco-beta --exec 'awk -F : '"'"'{print "+" $2 " " $1}'"'"' | xargs less '
+}
+
+pyhttp(){
+	has "python3" || { echo "python3 is not installed"; return 1; }
+	[ $# -eq 1 ] || { echo "pyhttp <port>"; return 1; }
+	python3 -m http.server $1
 }
 
 # ~/.inputrc
