@@ -17,7 +17,7 @@ symlink(){
 		local DST="${HOME}/${D##*/}"
 		[ -d ${DST} ] || mkdir ${DST}
 	done
-	for F in $(find ${SYMLINK_DIR} -type f); do
+	for F in $(find ${SYMLINK_DIR} -type f -not -name '.gitkeep'); do
 		local SRC="${F}"
 		local DST="$(echo ${F} | sed -e 's/\/dotfiles\/symlinks//g')"
 		if [ -L ${DST} ] || [ -e ${DST} ]; then
@@ -52,7 +52,7 @@ copies(){
 
 unlink(){
 	local SYMLINK_DIR="${HOME}/dotfiles/symlinks"
-	for F in $(find ${SYMLINK_DIR} -type f); do
+	for F in $(find ${SYMLINK_DIR} -type f -not -name '.gitkeep'); do
 		local DST="$(echo ${F} | sed -e 's/\/dotfiles\/symlinks//g')"
 		if [ -L ${DST} ]; then
 			rm -f ${DST}
