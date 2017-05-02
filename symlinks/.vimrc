@@ -20,8 +20,8 @@ set runtimepath^=~/.cache/dein/repos/github.com/Shougo/dein.vim
 if dein#load_state(s:dein_dir)
 	call dein#begin(s:dein_dir)
 
-	let s:toml_path      = '~/dotfiles/vim/dein.toml'
-	let s:toml_lazy_path = '~/dotfiles/vim/deinlazy.toml'
+	let s:toml_path      = '~/.dein/dein.toml'
+	let s:toml_lazy_path = '~/.dein/deinlazy.toml'
 
 	call dein#load_toml(s:toml_path,      {'lazy': 0})
 	call dein#load_toml(s:toml_lazy_path, {'lazy' : 1})
@@ -122,11 +122,6 @@ if has('nvim')
     inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
 
 	" inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
-else
-	" neocomplete:
-	source ~/dotfiles/vim/vimrc_neocomplete
-	" http://goo.gl/6M3GYZ
-	set completeopt=menuone
 endif
 
 "======================================================

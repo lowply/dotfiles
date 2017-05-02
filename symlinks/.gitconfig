@@ -102,6 +102,8 @@
 [user]
 	signingkey = 0D9BE6E9F8C77C48
 	username = lowply
+	name = Sho Mizutani
+	email = lowply@github.com
 [commit]
 	verbose = true
 [pager]

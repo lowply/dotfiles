@@ -3,8 +3,6 @@
     disabledPackages: [
       "vim-mode"
       "vim-surround"
-      "linter-write-good"
-      "linter-just-say-no"
     ]
     telemetryConsent: "limited"
   editor:
