@@ -33,7 +33,7 @@ symlink_nvim(){
 	[ -d ${HOME}/.config/nvim ] || mkdir ${HOME}/.config/nvim
 	local SRC="${HOME}/dotfiles/symlinks/.vimrc"
 	local DST="${HOME}/.config/nvim/init.vim"
-	[ -L ${DST} ] && abort "${DST} already exists." || ln -s ${SRC} ${DST}
+	[ -L ${DST} ] || ln -s ${SRC} ${DST}
 }
 
 copies(){
