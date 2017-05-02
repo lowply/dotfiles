@@ -10,6 +10,11 @@ fi
 # ---------------------------------------------------------------
 
 #
+# reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
+#
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin"
+
+#
 # functions
 #
 addpath(){
@@ -220,11 +225,6 @@ psone(){
 	# set PS1
 	export PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL)$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
 }
-
-#
-# reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
-#
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin"
 
 #
 # path
