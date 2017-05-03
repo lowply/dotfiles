@@ -218,7 +218,7 @@ psone(){
 	}
 
 	# load color config if exists
-	if [ -f ${HOME}/.bash_colors ]; then
+	if [ -f ${HOME}/.bash_color ]; then
 		. ${HOME}/.bash_color
 	else
 		local BACKGROUND=0
