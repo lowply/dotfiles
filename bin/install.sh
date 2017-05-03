@@ -12,10 +12,13 @@ usage(){
 }
 
 symlink(){
+	local BACKUPDIR="${HOME}/.dotfiles_backup_${DATE}"
+	mkdir ${BACKUPDIR}
+
 	local SYMLINK_DIR="${HOME}/dotfiles/symlinks"
 	for D in $(find ${SYMLINK_DIR} -mindepth 1 -type d); do
-		local DST="${HOME}/${D##*/}"
-		[ -d ${DST} ] || mkdir ${DST}
+		local DST="$(echo ${D} | sed -e 's/\/dotfiles\/symlinks//g')"
+		[ -d ${DST} ] || mkdir -p ${DST}
 	done
 	for F in $(find ${SYMLINK_DIR} -type f -not -name '.gitkeep'); do
 		local SRC="${F}"
@@ -27,13 +30,6 @@ symlink(){
 		ln -s ${SRC} ${DST}
 		message success "Created symlink from ${SRC} to ${DST}"
 	done
-}
-
-symlink_nvim(){
-	[ -d ${HOME}/.config/nvim ] || mkdir ${HOME}/.config/nvim
-	local SRC="${HOME}/dotfiles/symlinks/.vimrc"
-	local DST="${HOME}/.config/nvim/init.vim"
-	[ -L ${DST} ] || ln -s ${SRC} ${DST}
 }
 
 copies(){
@@ -64,14 +60,10 @@ unlink(){
 main(){
 	[ $# -gt 1 ] && usage
 
-	BACKUPDIR="${HOME}/.dotfiles_backup_${DATE}"
-	mkdir ${BACKUPDIR}
-
 	case "${1}" in
 		"")
 			symlink
-			symlink_nvim
-			copies
+			# copies
 		;;
 		"clean")
 			unlink
