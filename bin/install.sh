@@ -11,7 +11,7 @@ usage(){
 	exit 1
 }
 
-symlink(){
+symlinks(){
 	local BACKUPDIR="${HOME}/.dotfiles_backup_${DATE}"
 	mkdir ${BACKUPDIR}
 
@@ -34,7 +34,7 @@ symlink(){
 			mv ${DST} ${BACKUPDIR}
 		fi
 		ln -s ${SRC} ${DST}
-		message success "Created symlink from ${SRC} to ${DST}"
+		message success "Created a symlink from ${SRC} to ${DST}"
 	done
 }
 
@@ -64,7 +64,7 @@ unlink(){
 			rm -f ${DST}
 			message success "${DST} has been unlinked"
 		else
-			message warn "${DST} isn't an symlink, doing nothing"
+			message warn "${DST} isn't a symlink, doing nothing"
 		fi
 	done
 }
@@ -74,7 +74,7 @@ main(){
 
 	case "${1}" in
 		"")
-			symlink
+			symlinks
 			copies
 		;;
 		"clean")
