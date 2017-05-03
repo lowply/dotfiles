@@ -72,7 +72,6 @@ main(){
 			symlink
 			symlink_nvim
 			copies
-			echo "Please install dein, pyenv, python3, neovim and its pip module"
 		;;
 		"clean")
 			unlink
