@@ -27,7 +27,7 @@ symlinks(){
 
 	# make symlinks
 	for F in ${LIST_FILES}; do
-		local SRC="$(realpath ${F})"
+		local SRC="$(readlink -f ${F})"
 		local DST="${HOME}/${F}"
 		if [ -L ${DST} ] || [ -e ${DST} ]; then
 			message warn "A symlink or a directory ${DST} already exists, moving to ${BACKUPDIR}"
@@ -43,7 +43,7 @@ copies(){
 	local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
 	
 	for F in ${LIST_FILES}; do
-		local SRC="$(realpath ${F})"
+		local SRC="$(readlink -f ${F})"
 		local DST="${HOME}/${F}"
 		if [ -L ${DST} ] || [ -e ${DST} ]; then
 			message warn "A file or a directory ${DST} already exists, doing nothing"
