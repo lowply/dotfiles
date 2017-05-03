@@ -18,27 +18,33 @@ $ ./dotfiles/bin/install.sh
 Install `diff-highlight` if necessary:
 
 ```
-cd
-git clone https://github.com/git/git.git
-sudo cp -a git/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
+$ cd
+$ git clone https://github.com/git/git.git
+$ sudo cp -a git/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
 ```
 
-Install neovim pip module:
+Install neovim pip module. Don't do `sudo pip3 install`, see [Why you shouldn't use sudo](https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim#why-you-shouldnt-use-sudo)
 
 ```
-pip3 install neovim
+$ pip3 install neovim
 ```
 
 Install [dein.vim](https://github.com/Shougo/dein.vim):
 
 ```
-cd
-curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
-bash installer.sh ~/.cache/dein
-rm installer.sh
+$ cd
+$ curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
+$ bash installer.sh ~/.cache/dein
+$ rm installer.sh
 ```
 
-Then type `vim`. Neovim starts up and installs all plugins. To update vim plugins, run following in vim:
+Then type `vim`. Neovim starts up and installs all plugins. To make sure [deoplete](https://github.com/Shougo/deoplete.nvim) works as expected, run following in vim:
+
+```
+:UpdateRemotePlugins
+```
+
+To update vim plugins, run following in vim:
 
 ```
 :call dein#update()
