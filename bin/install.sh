@@ -15,14 +15,20 @@ symlink(){
 	local BACKUPDIR="${HOME}/.dotfiles_backup_${DATE}"
 	mkdir ${BACKUPDIR}
 
-	local SYMLINK_DIR="${HOME}/dotfiles/symlinks"
-	for D in $(find ${SYMLINK_DIR} -mindepth 1 -type d); do
-		local DST="$(echo ${D} | sed -e 's/\/dotfiles\/symlinks//g')"
+	cd ${HOME}/dotfiles/symlinks
+	local LIST_DIRS=$(find . -mindepth 1 -type d | sed -e 's/^\.\///')
+	local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
+
+	# make directories
+	for D in ${LIST_DIRS}; do
+		local DST="${HOME}/${D}"
 		[ -d ${DST} ] || mkdir -p ${DST}
 	done
-	for F in $(find ${SYMLINK_DIR} -type f -not -name '.gitkeep'); do
-		local SRC="${F}"
-		local DST="$(echo ${F} | sed -e 's/\/dotfiles\/symlinks//g')"
+
+	# make symlinks
+	for F in ${LIST_FILES}; do
+		local SRC="$(realpath ${F})"
+		local DST="${HOME}/${F}"
 		if [ -L ${DST} ] || [ -e ${DST} ]; then
 			message warn "A symlink or a directory ${DST} already exists, moving to ${BACKUPDIR}"
 			mv ${DST} ${BACKUPDIR}
@@ -33,12 +39,14 @@ symlink(){
 }
 
 copies(){
-	local COPY_DIR="${HOME}/dotfiles/copies"
-	for F in $(find ${COPY_DIR} -type f); do
-		local SRC="${F}"
-		local DST="$(echo ${F} | sed -e 's/\/dotfiles\/copies//g')"
+	cd ${HOME}/dotfiles/copies
+	local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
+	
+	for F in ${LIST_FILES}; do
+		local SRC="$(realpath ${F})"
+		local DST="${HOME}/${F}"
 		if [ -L ${DST} ] || [ -e ${DST} ]; then
-			message warn "A file or a directory ${DST} already exists, do nothing"
+			message warn "A file or a directory ${DST} already exists, doing nothing"
 		else
 			cp ${SRC} ${DST}
 			message success "Copied file from ${SRC} to ${DST}"
@@ -47,12 +55,16 @@ copies(){
 }
 
 unlink(){
-	local SYMLINK_DIR="${HOME}/dotfiles/symlinks"
-	for F in $(find ${SYMLINK_DIR} -type f -not -name '.gitkeep'); do
-		local DST="$(echo ${F} | sed -e 's/\/dotfiles\/symlinks//g')"
+	cd ${HOME}/dotfiles/symlinks
+	local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
+
+	for F in ${LIST_FILES}; do
+		local DST="${HOME}/${F}"
 		if [ -L ${DST} ]; then
 			rm -f ${DST}
 			message success "${DST} has been unlinked"
+		else
+			message warn "${DST} isn't an symlink, doing nothing"
 		fi
 	done
 }
@@ -63,7 +75,7 @@ main(){
 	case "${1}" in
 		"")
 			symlink
-			# copies
+			copies
 		;;
 		"clean")
 			unlink
