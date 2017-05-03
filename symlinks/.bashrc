@@ -218,12 +218,32 @@ psone(){
 	}
 
 	# load color config if exists
-	[ -f ${HOME}/.bash_color ] && . ${HOME}/.bash_color
+	if [ -f ${HOME}/.bash_colors ]; then
+		. ${HOME}/.bash_color
+	else
+		local BACKGROUND=0
+		local UNAME=252
+		local SYMBOL=3
+		local HOST=252
+		local DIRNAME=252
+		local PROMPT=3
+		local BRANCH=33
+	fi
+
+	if [ $(id -u) == 0 ]; then
+		local BACKGROUND=0
+		local UNAME=196
+		local SYMBOL=226
+		local HOST=196
+		local DIRNAME=196
+		local PROMPT=196
+		local BRANCH=226
+	fi
 
 	GIT_PS1_SHOWDIRTYSTATE=true
 
 	# set PS1
-	export PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $SYMBOL)$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)"'\$'"$(resetcolor) "
+	export PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)\$$(resetcolor) "
 }
 
 #
