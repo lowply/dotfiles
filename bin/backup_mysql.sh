@@ -28,7 +28,7 @@ if [ ! -f ${CONF} ]; then
 		BACKUPDIR="/home/backup/mysql"
 	EOL
 	chmod 600 ${CONF}
-	error "${CONF} created, please update it"
+	logger_error "${CONF} created, please update it"
 else
 	# check if conf file exists with permission 600
 	[ "$(stat --format='%a' ${CONF})" == "600" ] || logger_error "Permission of ${CONF} is not 600"
