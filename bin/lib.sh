@@ -11,9 +11,9 @@ DATE=$(date +%y%m%d_%H%M%S)
 # ------------------------------
 
 logfile(){
-	LOGDIR="${HOME}/.log"
-	LOGFILE="${LOGDIR}/$(basename $0).log"
-	[ -d ${LOGDIR} ] || mkdir ${LOGDIR}
+	LOGDIR="${HOME}/.log/$(basename $0)"
+	LOGFILE="${LOGDIR}/$(date +%y%m%d).log"
+	[ -d ${LOGDIR} ] || mkdir -p ${LOGDIR}
 	[ -f ${LOGFILE} ] || touch ${LOGFILE}
 	echo ${LOGFILE}
 }
