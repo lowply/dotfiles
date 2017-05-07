@@ -22,6 +22,7 @@ symlinks(){
 	# make directories
 	for D in ${LIST_DIRS}; do
 		local DST="${HOME}/${D}"
+		[ -l ${DST} ] && mv ${DST} ${BACKUPDIR}
 		[ -d ${DST} ] || mkdir -p ${DST}
 	done
 
