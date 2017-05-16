@@ -71,5 +71,8 @@ repo = 'Shougo/deoplete.nvim'
 repo = 'osyo-manga/vim-monster'
 
 [[plugins]]
+repo = 'majutsushi/tagbar'
+
+[[plugins]]
 repo = 'Shougo/vimproc.vim'
 build = 'make'
