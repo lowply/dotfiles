@@ -2,18 +2,26 @@
 
 . $(dirname $0)/lib.sh
 
-usage(){
-	cat <<- EOS
-	Usage:
-	$(basename ${0})          # create symlinks
-	$(basename ${0}) cleanup  # cleanup symlinks
-	EOS
+#/
+#/ Subcommands:
+#/ 
+#/ install.sh          # create symlinks
+#/ install.sh cleanup  # cleanup symlinks
+#/
+
+usage() {
+	grep '^#/' < ${0} | cut -c4-
 	exit 1
 }
 
-symlinks(){
+backup(){
+	local TARGET=${1}
 	local BACKUPDIR="${HOME}/.dotfiles_backup_${DATE}"
-	mkdir ${BACKUPDIR}
+	[ -d ${BACKUPDIR} ] || mkdir ${BACKUPDIR}
+	mv ${TARGET} ${BACKUPDIR}
+}
+
+symlinks(){
 
 	cd ${HOME}/dotfiles/symlinks
 	local LIST_DIRS=$(find . -mindepth 1 -type d | sed -e 's/^\.\///')
@@ -22,7 +30,7 @@ symlinks(){
 	# make directories
 	for D in ${LIST_DIRS}; do
 		local DST="${HOME}/${D}"
-		[ -l ${DST} ] && mv ${DST} ${BACKUPDIR}
+		[ -L ${DST} ] && backup ${DST}
 		[ -d ${DST} ] || mkdir -p ${DST}
 	done
 
@@ -32,7 +40,7 @@ symlinks(){
 		local DST="${HOME}/${F}"
 		if [ -L ${DST} ] || [ -e ${DST} ]; then
 			message warn "A symlink or a directory ${DST} already exists, moving to ${BACKUPDIR}"
-			mv ${DST} ${BACKUPDIR}
+			backup ${TARGET} ${DST}
 		fi
 		ln -s ${SRC} ${DST}
 		message success "Created a symlink from ${SRC} to ${DST}"
