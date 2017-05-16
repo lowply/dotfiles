@@ -9,3 +9,5 @@
   "file-icons": {}
   "go-plus":
     config: {}
+  welcome:
+    showOnStartup: false
