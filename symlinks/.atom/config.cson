@@ -1,32 +1,11 @@
 "*":
+  "atom-clock":
+    dateFormat: "HH:mm"
   core:
-    disabledPackages: [
-      "vim-mode"
-      "vim-surround"
-    ]
     telemetryConsent: "limited"
-  editor:
-    invisibles: {}
-    showInvisibles: true
-    softTabs: false
-    softWrap: true
-    tabLength: 4
+  editor: {}
   "exception-reporting":
     userId: "9ee1121b-79db-9c30-7f90-e9bdacbeff2f"
-  "git-plus":
-    general:
-      _analyticsUserId: "db04a951-c24d-4fb0-a5c7-7348f9ed0c22"
+  "file-icons": {}
   "go-plus":
-    goPath: "$HOME"
-  "japanese-wrap":
-    characterWidth: {}
-  linter: {}
-  "markdown-preview": {}
-  metrics:
-    userId: "34983b77569c4f14b0a4e7ce82ed4c9df2fb42b1"
-  minimap: {}
-  nvatom:
-    directory: "/Users/lowply/Dropbox/nvatom"
-  "tree-view": {}
-  welcome:
-    showOnStartup: false
+    config: {}
