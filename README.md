@@ -26,7 +26,7 @@ $ sudo cp -a git/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highl
 Install neovim pip module. Don't do `sudo pip3 install`, see [Why you shouldn't use sudo](https://github.com/zchee/deoplete-jedi/wiki/Setting-up-Python-for-Neovim#why-you-shouldnt-use-sudo)
 
 ```
-$ pip3 install neovim
+$ pip3 install --user neovim
 ```
 
 Install [dein.vim](https://github.com/Shougo/dein.vim):
