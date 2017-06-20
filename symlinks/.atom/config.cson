@@ -3,7 +3,9 @@
     dateFormat: "HH:mm"
   core:
     telemetryConsent: "limited"
-  editor: {}
+  editor:
+    tabLength: 4
+    tabType: "hard"
   "exception-reporting":
     userId: "9ee1121b-79db-9c30-7f90-e9bdacbeff2f"
   "file-icons": {}
