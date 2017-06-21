@@ -144,7 +144,7 @@ sync(){
 	local BUCKET=$(jqr '.bucket')
 	local BACKUPDIR=$(jqr '.dir')
 	local NODE=$(jqr '.node')
-	local BASIC_OPTS="--profile ${PROFILE} --no-follow-symlinks --delete --storage-class REDUCED_REDUNDANCY"
+	local BASIC_OPTS="--profile ${PROFILE} --no-follow-symlinks --delete"
 	
 	[ "${ENABLED}" != "true" ] && { echo "Backup is disabled."; return 1; }
 
