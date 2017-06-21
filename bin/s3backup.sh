@@ -12,6 +12,58 @@
 #/ - test:  Dry Run
 #/ - clean: Remove all backups
 #/
+#/ Example Config:
+#/ 
+#/ -------------------- 
+#/ {
+#/ 	"enabled": true,
+#/ 	"profile": "default",
+#/ 	"bucket": "bucket",
+#/ 	"dir": "backup",
+#/ 	"node": "hostname",
+#/ 	"targets": [
+#/ 		{
+#/ 			"path": "/home",
+#/ 			"exclude": [
+#/				"*.ssh/*",
+#/				"*.aws/*",
+#/				"*.cache/*",
+#/				"*.bash-git-prompt/*",
+#/				"*.log/*",
+#/				"*.nodenv/*",
+#/				"*.npm/*",
+#/				"*.cpanm/*",
+#/				"*.pyenv/*",
+#/				"*.rbenv/*",
+#/				"*.node-gyp/*",
+#/				"*.gem/*",
+#/				"*.github-backup-utils/*",
+#/				"*.terminfo/*",
+#/				"*dotfiles/*",
+#/				"*src/*",
+#/				"*bin/*",
+#/				"*pkg/*",
+#/				"*node_modules/*",
+#/				"*tmp/*",
+#/				"*vendor/*",
+#/				"*.sass-cache/*",
+#/				"*.cache",
+#/				".vim_tmp/*"
+#/ 			]
+#/ 		},
+#/ 		{
+#/ 			"path": "/etc",
+#/ 			"exclude": [
+#/ 				"httpd/logs/*",
+#/ 				"selinux/*",
+#/ 				"pki/*",
+#/ 				"xdg/*"
+#/ 			]
+#/ 		}
+#/ 	]
+#/ }
+#/ -------------------- 
+#/ 
 
 CONF="${HOME}/.config/s3backup.json"
 
@@ -20,18 +72,17 @@ usage() {
 	exit 1
 }
 
-readvalue(){
-	[ $# -ne 1 ] && abort "Wrong argument"
-	echo $(jq -Mcr "${1}" ${CONF})
+jqr(){
+	jq -r "${1}" ${CONF}
 }
 
 check_value(){
-	if [ "$(readvalue ${1})" == "null" ]; then
+	if [ "$(jqr ${1})" == "null" ]; then
 		logger_error"${1} is null"
 		return 1
 	fi
 
-	if [ -z "$(readvalue ${1})" ]; then
+	if [ -z "$(jqr ${1})" ]; then
 		logger_error "${1} is empty"
 		return 1
 	fi
@@ -42,7 +93,7 @@ check_value(){
 check_conf(){
 	[ $# -ne 1 ] && abort "Wrong argument"
 	if [ -f ${1} ]; then
-		jq -Mc '.' ${1} > /dev/null 2>&1
+		jq '.' ${1} > /dev/null 2>&1
 		if [ $? -ne 0 ]; then
 			logger_error "Error parsing config: ${1}"
 			return 1
@@ -64,7 +115,7 @@ check_conf(){
 				"profile": "aws_profile",
 				"bucket": "aws_bucket",
 				"dir": "directory_in_bucket",
-				"node":"your_node_name",
+				"node":"your_host_name",
 				"targets": [
 					{
 						"path":"/path/to/directory_A",
@@ -87,18 +138,19 @@ check_conf(){
 }
 
 sync(){
-	local ENABLED=$(readvalue '.enabled')
-	local PROFILE=$(readvalue '.profile')
-	local TARGETS=$(readvalue '.targets[] | .path')
-	local BUCKET=$(readvalue '.bucket')
-	local BACKUPDIR=$(readvalue '.dir')
-	local NODE=$(readvalue '.node')
+	local ENABLED=$(jqr '.enabled')
+	local PROFILE=$(jqr '.profile')
+	local TARGETS=$(jqr '.targets[] | .path')
+	local BUCKET=$(jqr '.bucket')
+	local BACKUPDIR=$(jqr '.dir')
+	local NODE=$(jqr '.node')
 	local BASIC_OPTS="--profile ${PROFILE} --no-follow-symlinks --delete --storage-class REDUCED_REDUNDANCY"
 	
 	[ "${ENABLED}" != "true" ] && { echo "Backup is disabled."; return 1; }
 
 	for TARGET in ${TARGETS}; do
-		local EXCLUDES=$(readvalue ".targets[] | select(.path == \"${TARGET}\") .exclude[]")
+		# Not using jqr because I need no-raw output here:
+		local EXCLUDES=$(jq ".targets[] | select(.path == \"${TARGET}\") .exclude[]" ${CONF})
 		local OPTS=${BASIC_OPTS}
 
 		for EXCLUDE in ${EXCLUDES}; do
@@ -106,24 +158,25 @@ sync(){
 		done
 
 		if [ "${1}" == "test" ]; then
-			echo "aws s3 sync ${OPTS} --dryrun ${TARGET}/ s3://${BUCKET}/${BACKUPDIR}/${NODE}${TARGET}/"
-			aws s3 sync ${OPTS} --dryrun ${TARGET}/ s3://${BUCKET}/${BACKUPDIR}/${NODE}${TARGET}/
+			CMD="aws s3 sync ${OPTS} --dryrun ${TARGET}/ s3://${BUCKET}/${BACKUPDIR}/${NODE}${TARGET}/"
 		else
 			logger "Starting backup for ${TARGET}..."
 			logger "aws s3 sync ${OPTS} ${TARGET}/ s3://${BUCKET}/${BACKUPDIR}/${NODE}${TARGET}/"
-			aws s3 sync ${OPTS} ${TARGET}/ s3://${BUCKET}/${BACKUPDIR}/${NODE}${TARGET}/ | tee -a $(logfile)
+			CMD="aws s3 sync ${OPTS} ${TARGET}/ s3://${BUCKET}/${BACKUPDIR}/${NODE}${TARGET}/ | tee -a $(logfile)"
 		fi
+		eval "${CMD}"
 	done
 }
 
 clean(){
-	local PROFILE=$(readvalue '.profile')
-	local BUCKET=$(readvalue '.bucket')
-	local BACKUPDIR=$(readvalue '.dir')
-	local NODE=$(readvalue '.node')
+	local PROFILE=$(jqr '.profile')
+	local BUCKET=$(jqr '.bucket')
+	local BACKUPDIR=$(jqr '.dir')
+	local NODE=$(jqr '.node')
 	logger "Removing backup for ${TARGET}..."
-	logger "aws s3 --profile ${PROFILE} rm --recursive s3://${BUCKET}/${BACKUPDIR}/${NODE}/*"
-	aws s3 --profile ${PROFILE} rm --recursive s3://${BUCKET}/${BACKUPDIR}/${NODE}/ | tee -a $(logfile)
+	CMD="aws s3 --profile ${PROFILE} rm --recursive s3://${BUCKET}/${BACKUPDIR}/${NODE}/ | tee -a $(logfile)"
+	logger "${CMD}"
+	eval "${CMD}"
 }
 
 main(){
