@@ -281,13 +281,13 @@ linux*)
     # rbenv
     #
     [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
-
-    #
-    # nodenv
-    #
-    [ -d ${HOME}/.nodenv ] && addpath ${HOME}/.nodenv/bin
 	;;
 esac
+
+#
+# nodenv (for macOS as well, since homebrew is slow to catchup the latest version of node)
+#
+[ -d ${HOME}/.nodenv ] && addpath ${HOME}/.nodenv/bin
 
 #
 # git prompt and bash completion
