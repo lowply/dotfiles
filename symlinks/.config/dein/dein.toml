@@ -74,5 +74,8 @@ repo = 'osyo-manga/vim-monster'
 repo = 'majutsushi/tagbar'
 
 [[plugins]]
+repo = 'pangloss/vim-javascript'
+
+[[plugins]]
 repo = 'Shougo/vimproc.vim'
 build = 'make'
