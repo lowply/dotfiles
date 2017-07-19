@@ -348,10 +348,12 @@ fi
 #
 # GCP
 #
-if [ -d ${HOME}/google-cloud-sdk ]; then
-	. "${HOME}/google-cloud-sdk/path.bash.inc"
-	. "${HOME}/google-cloud-sdk/completion.bash.inc"
-fi
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/lowply/Downloads/google-cloud-sdk/path.bash.inc' ]; then source '/Users/lowply/Downloads/google-cloud-sdk/path.bash.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/lowply/Downloads/google-cloud-sdk/completion.bash.inc' ]; then source '/Users/lowply/Downloads/google-cloud-sdk/completion.bash.inc'; fi
 
 #
 # files
