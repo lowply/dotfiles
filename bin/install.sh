@@ -22,7 +22,6 @@ backup(){
 }
 
 symlinks(){
-
 	cd ${HOME}/dotfiles/symlinks
 	local LIST_DIRS=$(find . -mindepth 1 -type d | sed -e 's/^\.\///')
 	local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
@@ -38,12 +37,15 @@ symlinks(){
 	for F in ${LIST_FILES}; do
 		local SRC="$(readlink -f ${F})"
 		local DST="${HOME}/${F}"
-		if [ -L ${DST} ] || [ -e ${DST} ]; then
-			message warn "A symlink or a directory ${DST} already exists, moving to ${BACKUPDIR}"
+		if [ -L ${DST} ]; then
+			message info "A symlink ${DST} already exists, skipping"
+		elif [ -e ${DST} ]; then
+			message warn "A directory ${DST} already exists, moving to backup"
 			backup ${TARGET} ${DST}
+		else
+			ln -s ${SRC} ${DST}
+			message success "Created a symlink from ${SRC} to ${DST}"
 		fi
-		ln -s ${SRC} ${DST}
-		message success "Created a symlink from ${SRC} to ${DST}"
 	done
 }
 
@@ -55,7 +57,7 @@ copies(){
 		local SRC="$(readlink -f ${F})"
 		local DST="${HOME}/${F}"
 		if [ -L ${DST} ] || [ -e ${DST} ]; then
-			message warn "A file or a directory ${DST} already exists, doing nothing"
+			message info "A file or a directory ${DST} already exists, skipping"
 		else
 			cp ${SRC} ${DST}
 			message success "Copied file from ${SRC} to ${DST}"
