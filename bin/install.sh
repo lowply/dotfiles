@@ -40,8 +40,10 @@ symlinks(){
 		if [ -L ${DST} ]; then
 			message info "A symlink ${DST} already exists, skipping"
 		elif [ -e ${DST} ]; then
-			message warn "A file or a directory ${DST} already exists, moving to backup"
+			message warn "A file or a directory ${DST} already exists, moving to backup and create a symlink"
 			backup ${TARGET} ${DST}
+			ln -s ${SRC} ${DST}
+		else
 			ln -s ${SRC} ${DST}
 			message success "Created a symlink from ${SRC} to ${DST}"
 		fi
