@@ -38,6 +38,10 @@ error(){
 	return 1
 }
 
+mcd(){
+	mkdir ${1} && cd ${1}
+}
+
 mksha512(){
 	has "pip" || { echo "Please install pip"; return; }
 	python -c "from passlib.hash import sha512_crypt" > /dev/null 2>&1 || { echo "Please run \"pip install passlib\""; return; }
@@ -144,6 +148,10 @@ fi
 has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
+
+
+# Use the latest openssl
+# [ -f /usr/local/opt/openssl/bin/openssl ] && alias openssl='/usr/local/opt/openssl/bin/openssl'
 
 #
 # LANG
