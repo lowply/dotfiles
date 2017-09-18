@@ -301,29 +301,24 @@ esac
 #
 # git prompt and bash completion
 #
-if [ -d /usr/local/git ]; then
-	# For CentOS and others - compiled from source
-	# sudo yum install bash-completion
-	# need to copy contrib directory to /usr/local/git
-	GIT_COMPLETION_PATH="/usr/local/git/contrib/completion"
-elif [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
-	# For Mac, installed with homebrew
-	# brew install bash-completion
+
+if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
+	# On macOS - installing git via homebrew will do most of the things
 	GIT_COMPLETION_PATH="/usr/local/opt/git/etc/bash_completion.d"
-elif [ -d /usr/share/git-core/contrib/completion ]; then
-	# For Amazon Linux
-	# sudo yum --enablerepo=epel install bash-completion
-	GIT_COMPLETION_PATH="/usr/share/git-core/contrib/completion"
-elif [ -d ${HOME}/git/contrib/completion ]; then
-	# For Debian
-	# Download the source, unarchive it and rename the dir to *git*
-	GIT_COMPLETION_PATH="${HOME}/git/contrib/completion"
+else
+	# On any linux systems - downlaod git tarball to /usr/local/src and extract it
+	# Use the same version as the system git, otherwise this won't work
+	# You don't have to install bash-completion
+	GIT_VERSION=$(git --version | sed -e "s/git version //")
+	CONTRIB_PATH="/usr/local/src/git-${GIT_VERSION}/contrib"
+	GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
+	if [ -x "${CONTRIB_PATH}/diff-highlight/diff-highlight" ]; then
+		echo "Build diff-highlight in ${CONTRIB_PATH}/diff-highlight and create a symlink to /usr/local/bin/diff-highlight"
+	fi
 fi
 
 . ${GIT_COMPLETION_PATH}/git-prompt.sh
 . ${GIT_COMPLETION_PATH}/git-completion.bash
-
-has diff-highlight || echo "Please install diff-highlight"
 
 #
 # dotfiles
