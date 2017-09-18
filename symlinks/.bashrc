@@ -313,8 +313,7 @@ elif [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
 elif [ -d /usr/share/git-core/contrib/completion ]; then
 	# For Amazon Linux
 	# sudo yum --enablerepo=epel install bash-completion
-	GIT_VERSION=$(git --version | sed -e "s/git version //")
-	GIT_COMPLETION_PATH="/usr/share/doc/git-${GIT_VERSION}/contrib/completion"
+	GIT_COMPLETION_PATH="/usr/share/git-core/contrib/completion"
 elif [ -d ${HOME}/git/contrib/completion ]; then
 	# For Debian
 	# Download the source, unarchive it and rename the dir to *git*
