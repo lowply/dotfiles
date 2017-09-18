@@ -312,9 +312,7 @@ else
 	GIT_VERSION=$(git --version | sed -e "s/git version //")
 	CONTRIB_PATH="/usr/local/src/git-${GIT_VERSION}/contrib"
 	GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
-	if [ -x "${CONTRIB_PATH}/diff-highlight/diff-highlight" ]; then
-		echo "Build diff-highlight in ${CONTRIB_PATH}/diff-highlight and create a symlink to /usr/local/bin/diff-highlight"
-	fi
+	[ -x "${CONTRIB_PATH}/diff-highlight/diff-highlight" ] || echo "Build diff-highlight in ${CONTRIB_PATH}/diff-highlight and create a symlink to /usr/local/bin/diff-highlight"
 fi
 
 . ${GIT_COMPLETION_PATH}/git-prompt.sh
