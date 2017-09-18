@@ -302,14 +302,14 @@ esac
 # git prompt and bash completion
 #
 
+GIT_VERSION=$(git --version | sed -e "s/git version //")
 if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
 	# On macOS - installing git via homebrew will do most of the things
 	GIT_COMPLETION_PATH="/usr/local/opt/git/etc/bash_completion.d"
-else
+elif [ -d /usr/local/src/git-${GIT_VERSION} ]; then
 	# On any linux systems - downlaod git tarball to /usr/local/src and extract it
 	# Use the same version as the system git, otherwise this won't work
 	# You don't have to install bash-completion
-	GIT_VERSION=$(git --version | sed -e "s/git version //")
 	CONTRIB_PATH="/usr/local/src/git-${GIT_VERSION}/contrib"
 	GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
 	[ -x "${CONTRIB_PATH}/diff-highlight/diff-highlight" ] || echo "Build diff-highlight in ${CONTRIB_PATH}/diff-highlight and create a symlink to /usr/local/bin/diff-highlight"
