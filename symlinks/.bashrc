@@ -301,19 +301,32 @@ esac
 #
 # git prompt and bash completion
 #
-
-GIT_VERSION=$(git --version | sed -e "s/git version //")
-if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
+case "${OSTYPE}" in
+darwin*)
 	# On macOS - installing git via homebrew will do most of the things
-	GIT_COMPLETION_PATH="/usr/local/opt/git/etc/bash_completion.d"
-elif [ -d /usr/local/src/git-${GIT_VERSION} ]; then
-	# On any linux systems - downlaod git tarball to /usr/local/src and extract it
-	# Use the same version as the system git, otherwise this won't work
-	# You don't have to install bash-completion
-	CONTRIB_PATH="/usr/local/src/git-${GIT_VERSION}/contrib"
+	if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
+		# On macOS - installing git via homebrew will do most of the things
+		GIT_COMPLETION_PATH="/usr/local/opt/git/etc/bash_completion.d"
+	fi
+	;;
+linux*)
+	GIT_VERSION=$(git --version | sed -e "s/git version //")
+
+	if [ -d /usr/local/git ]; then
+		# Installed from source - expecting the contrib directory is in /usr/local/git
+		CONTRIB_PATH="/usr/local/src/git/contrib"
+	elif [ -d /usr/local/src/git-${GIT_VERSION} ]; then
+		# Installed via package manager and missing the contrib directory
+		# Downlaod git tarball to /usr/local/src and extract it
+		# Use the same version as the installed git, otherwise this won't work
+		# You don't have to install bash-completion
+		CONTRIB_PATH="/usr/local/src/git-${GIT_VERSION}/contrib"
+	fi
+
 	GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
 	[ -x "${CONTRIB_PATH}/diff-highlight/diff-highlight" ] || echo "Build diff-highlight in ${CONTRIB_PATH}/diff-highlight and create a symlink to /usr/local/bin/diff-highlight"
-fi
+	;;
+esac
 
 . ${GIT_COMPLETION_PATH}/git-prompt.sh
 . ${GIT_COMPLETION_PATH}/git-completion.bash
