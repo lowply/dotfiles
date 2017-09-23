@@ -314,7 +314,7 @@ linux*)
 
 	if [ -d /usr/local/git ]; then
 		# Installed from source - expecting the contrib directory is in /usr/local/git
-		CONTRIB_PATH="/usr/local/src/git/contrib"
+		CONTRIB_PATH="/usr/local/git/contrib"
 	elif [ -d /usr/local/src/git-${GIT_VERSION} ]; then
 		# Installed via package manager and missing the contrib directory
 		# Downlaod git tarball to /usr/local/src and extract it
