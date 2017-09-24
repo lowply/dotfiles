@@ -120,6 +120,16 @@ backup() {
 	cp -a $1{,.$(date +%y%m%d_%H%M%S)}
 }
 
+# Docker
+
+clean_docker_images(){
+	for x in $(docker images | grep "<none>" | awk '{print $3}'); do docker rmi $x; done
+}
+
+clean_docker_containers(){
+	for x in $(docker ps -a | grep Exited | awk '{print $1}'); do docker rm $x; done
+}
+
 #
 # aliases
 #
