@@ -8,8 +8,20 @@ $ git clone https://github.com/lowply/dotfiles.git
 $ ./dotfiles/bin/install.sh
 ```
 
-## Post install
+## Post install - macOS
 
-Install [git](https://github.com/git/git/releases) + [diff-highlight](https://github.com/git/git/tree/master/contrib/diff-highlight), [python3](https://www.python.org/downloads/) (make sure you have `python3` command in the `/usr/local/bin` dir), [go](https://golang.org/), [neovim](https://neovim.io/), [dein.vim](https://github.com/Shougo/dein.vim), [tmux](https://github.com/tmux/tmux/wiki), [docker](https://www.docker.com/docker-mac) etc.
+Install [Homebrew](https://brew.sh/), `brew tap Homebrew/bundle` and run:
 
-For CentOS 7, see [lowply/kickstart](https://github.com/lowply/kickstart/) for install scripts.
+```
+$ cd ~/dotfiles && brew bundle
+```
+
+- Don't forget `diff-highlight`
+- Make sure you have `python3` in `/usr/local/bin`
+- `pip3 install neovim` for [neovim](https://neovim.io/)
+- [dein.vim](https://github.com/Shougo/dein.vim) for neovim  
+- [Docker for Mac](https://www.docker.com/docker-mac)
+
+## Post install - CentOS
+
+See [lowply/kickstart](https://github.com/lowply/kickstart/) for install scripts.
