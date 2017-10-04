@@ -92,7 +92,7 @@
 	required = true
 [core]
 	pager = less -FMRiX
-	editor = vim
+	editor = nvim
 [push]
 	default = simple
 [github]
