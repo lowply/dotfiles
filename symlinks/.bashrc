@@ -262,7 +262,7 @@ psone(){
 	GIT_PS1_SHOWDIRTYSTATE=true
 
 	# set PS1
-	export PS1="$(bgcolor $BACKGROUND)$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)\$$(resetcolor) "
+	export PS1="$(bgcolor $BACKGROUND)\t:$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)\n\$ $(resetcolor)"
 }
 
 #
