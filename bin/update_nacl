@@ -1,0 +1,121 @@
+#!/bin/bash
+
+#/
+#/ update_nacl
+#/
+#/ Prerequirements: aws-cli
+#/ Author: @lowply
+#/ 
+#/ Subcommands:
+#/ 
+#/ - get: 
+#/ - add <IP> <RULE ID>
+#/ - update <IP> <RULE ID>
+#/ - delete <RULE ID>
+#/
+
+has(){
+	type ${1} >/dev/null 2>&1 || abort "Command not found: ${1}"
+}
+
+usage() {
+	grep '^#/' < ${0} | cut -c4-
+	exit 1
+}
+
+check_conf(){
+	[ -d ${HOME}/.config ] || mkdir ${HOME}/.config
+	if [ -f ${1} ]; then
+		. ${1}
+	else
+		cat <<- EOF > ${1}
+			# Example:
+			# ACL_ID="acl-xxxxxxxx"
+
+			ACL_ID=""
+		EOF
+		abort "${1} is created. Please update it."
+	fi
+}
+
+get(){
+	local TARGET_IP="${1}"
+	local RULE_ID="${2}"
+	aws --profile ${AWSPROFILE} ec2 describe-network-acls \
+		--filters Name=network-acl-id,Values="${ACL_ID}" \
+		--query 'sort_by(NetworkAcls[].Entries[][].{
+			Rule:RuleNumber,
+			IP:CidrBlock,
+			Egress:Egress,
+			Protocol:Protocol,
+			Action:RuleAction
+		},&Rule)' \
+		--output table
+}
+
+add(){
+	local TARGET_IP="${1}"
+	local RULE_ID="${2}"
+	aws --profile ${AWSPROFILE} ec2 create-network-acl-entry \
+		--network-acl-id ${ACL_ID} \
+		--ingress \
+		--rule-number ${RULE_ID} \
+		--protocol all \
+		--cidr-block ${TARGET_IP}/32 \
+		--rule-action deny
+}
+
+update(){
+	local TARGET_IP="${1}"
+	local RULE_ID="${2}"
+	aws --profile ${AWSPROFILE} ec2 replace-network-acl-entry \
+		--network-acl-id ${ACL_ID} \
+		--ingress \
+		--rule-number ${RULE_ID} \
+		--protocol all \
+		--cidr-block ${TARGET_IP}/32 \
+		--rule-action deny
+}
+
+delete(){
+	local RULE_ID="${1}"
+	aws --profile ${AWSPROFILE} ec2 delete-network-acl-entry \
+		--network-acl-id ${ACL_ID} \
+		--ingress \
+		--rule-number ${RULE_ID}
+}
+
+main(){
+	has aws
+	check_conf "${HOME}/.config/update_nacl.conf"
+
+	[ ${#} -eq 0 ] && usage
+	HANDLER="${1}"
+	shift
+
+	case ${HANDLER} in
+		"get")
+			get ${@}
+		;;
+		"add")
+			[ ${#} -eq 2 ] || usage
+			add ${@}
+			get
+		;;
+		"update")
+			[ ${#} -eq 2 ] || usage
+			update $@
+			get
+		;;
+		"delete")
+			[ ${#} -eq 1 ] || usage
+			 delete $@
+			 get
+		;;
+		*)
+			usage
+		;;
+	esac
+}
+
+main $@
