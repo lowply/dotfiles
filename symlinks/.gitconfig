@@ -114,5 +114,6 @@
 	diffFilter = diff-highlight
 [diff]
 	compactionHeuristic = true
+	submodule = log
 [ghq]
 	root = ~/src
