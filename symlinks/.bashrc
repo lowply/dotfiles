@@ -304,11 +304,6 @@ linux*)
 esac
 
 #
-# nodenv (for macOS as well, since homebrew is slow to catchup the latest version of node)
-#
-[ -d ${HOME}/.nodenv ] && addpath ${HOME}/.nodenv/bin
-
-#
 # git prompt and bash completion
 #
 case "${OSTYPE}" in
@@ -357,11 +352,6 @@ has aws_completer && complete -C aws_completer aws
 [ -d ${HOME}/.rbenv ] && eval "$(rbenv init -)"
 
 #
-# nodenv
-#
-[ -d ${HOME}/.nodenv ] && eval "$(nodenv init -)"
-
-#
 # golang
 #
 if has go; then
@@ -371,12 +361,15 @@ fi
 #
 # GCP
 #
+case "${OSTYPE}" in
+darwin*)
+	# The next line updates PATH for the Google Cloud SDK.
+	source '/Users/lowply/google-cloud-sdk/path.bash.inc'
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/lowply/Downloads/google-cloud-sdk/path.bash.inc' ]; then source '/Users/lowply/Downloads/google-cloud-sdk/path.bash.inc'; fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f '/Users/lowply/Downloads/google-cloud-sdk/completion.bash.inc' ]; then source '/Users/lowply/Downloads/google-cloud-sdk/completion.bash.inc'; fi
+	# The next line enables shell command completion for gcloud.
+	source '/Users/lowply/google-cloud-sdk/completion.bash.inc'
+	;;
+esac
 
 #
 # files
@@ -394,7 +387,6 @@ if has files; then
 		\.mozilla
 		\.local
 		\.rbenv
-		\.nodenv
 		\.gem
 		\.vim_tmp
 		\.cache
