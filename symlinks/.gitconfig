@@ -100,12 +100,13 @@
 [credential]
 	helper = osxkeychain
 [user]
-	signingkey = 0D9BE6E9F8C77C48
+	signingkey = 60D5826A8C6AD306
 	username = lowply
 	name = Sho Mizutani
 	email = lowply@github.com
 [commit]
 	verbose = true
+	gpgSign = true
 [pager]
 	log = diff-highlight | less
 	show = diff-highlight | less
@@ -117,3 +118,7 @@
 	submodule = log
 [ghq]
 	root = ~/src
+[gpg]
+	program = /usr/local/bin/krgpg
+[tag]
+	forceSignAnnotated = true

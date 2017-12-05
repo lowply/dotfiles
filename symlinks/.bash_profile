@@ -7,3 +7,5 @@ fi
 
 # User specific environment and startup programs
 
+
+export GPG_TTY=$(tty)
