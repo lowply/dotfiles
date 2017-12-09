@@ -90,6 +90,7 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	required = true
+	process = git-lfs filter-process
 [core]
 	pager = less -FMRiX
 	editor = nvim
@@ -106,7 +107,6 @@
 	email = lowply@github.com
 [commit]
 	verbose = true
-	gpgSign = true
 [pager]
 	log = diff-highlight | less
 	show = diff-highlight | less
@@ -118,7 +118,3 @@
 	submodule = log
 [ghq]
 	root = ~/src
-[gpg]
-	program = /usr/local/bin/krgpg
-[tag]
-	forceSignAnnotated = true
