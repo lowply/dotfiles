@@ -101,7 +101,7 @@
 [credential]
 	helper = osxkeychain
 [user]
-	signingkey = EFEEB940555ECE3D
+	signingkey = 0D9BE6E9F8C77C48
 	username = lowply
 	name = Sho Mizutani
 	email = lowply@github.com
