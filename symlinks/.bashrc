@@ -300,6 +300,12 @@ linux*)
     # rbenv
     #
     [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
+
+	#
+	# n
+	#
+	export N_PREFIX="$HOME/n"
+	[ -d ${N_PREFIX} ] && addpath ${N_PREFIX}/bin
 	;;
 esac
 
