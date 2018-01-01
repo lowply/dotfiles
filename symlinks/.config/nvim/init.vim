@@ -356,9 +356,9 @@ augroup END
 nnoremap <F5> <CR>q:
 nnoremap <F6> <CR>q/
 " disable q:、q/、q?
-nnoremap q: <NOP>
-nnoremap q/ <NOP>
-nnoremap q? <NOP>
+" nnoremap q: <NOP>
+" nnoremap q/ <NOP>
+" nnoremap q? <NOP>
 
 " http://goo.gl/ziiiKA
 nnoremap <Leader>o :CtrlP<CR>
