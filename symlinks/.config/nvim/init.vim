@@ -95,6 +95,14 @@ if has('nvim')
 endif
 
 "======================================================
+" SCSS:
+"======================================================
+augroup fileTypeIndent
+    autocmd!
+	autocmd FileType scss setlocal tabstop=2 softtabstop=2 shiftwidth=2
+augroup END
+
+"======================================================
 " Auto Complete 
 "======================================================
 
