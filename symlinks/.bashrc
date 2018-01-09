@@ -64,9 +64,10 @@ peco-run-cmd(){
 peco-src () {
 	has "peco" || { echo "peco is not installed"; return 1; }
 	has "ghq" || { echo "ghq is not installed"; return 1; }
-	local DIR="$(ghq list -p | sed -e 's|/Users/lowply/src/||g' | peco)"
+	local PREFIX="/Users/lowply/src/"
+	local DIR="$(ghq list -p | sed -e "s|${PREFIX}||g" | peco)"
 	if [ ! -z "${DIR}" ]; then
-		cd "${DIR}"
+		cd "${PREFIX}/${DIR}"
 	fi
 }
 
