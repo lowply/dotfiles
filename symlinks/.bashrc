@@ -62,12 +62,12 @@ peco-run-cmd(){
 }
 
 peco-src () {
-	has "peco" || { echo "peco is not installed"; return 1; }
-	has "ghq" || { echo "ghq is not installed"; return 1; }
-	local PREFIX="/Users/lowply/src/"
-	local DIR="$(ghq list -p | sed -e "s|${PREFIX}||g" | peco)"
+	has "peco" || error "peco is not installed"
+	has "ghq" || error "ghq is not installed"
+	[ -z "${GOPATH}" ] && error '$GOPATH is empty'
+	local DIR="$(ghq list -p | sed -e "s|${GOPATH}/src/||g" | peco)"
 	if [ ! -z "${DIR}" ]; then
-		cd "${PREFIX}/${DIR}"
+		cd "${GOPATH}/src/${DIR}"
 	fi
 }
 
