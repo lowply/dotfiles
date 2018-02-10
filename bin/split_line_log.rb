@@ -16,7 +16,15 @@ class Message
   def initialize(match)
     @date = Date.parse("#{match[1]}-#{match[2]}-#{match[3]}")
     @content = @date.strftime("%Y/%m/%d %a") + "\n\n"
-    @path = @@filedir + @date.strftime("%Y_%m_%d") + ".txt"
+    @fullpath = @date.strftime("%Y") + "/" + @date.strftime("%m") + "/" + @date.strftime("%d") + ".txt"
+    create_directories
+  end
+
+  def create_directories
+    year = @@filedir + "/" + @date.strftime("%Y")
+    month = year + "/" + @date.strftime("%m")
+    Dir.mkdir(year, 0755) if !Dir.exist?(year)
+    Dir.mkdir(month, 0755) if !Dir.exist?(month)
   end
 
   def add(text)
@@ -29,16 +37,20 @@ class Message
     return dir + files.last if ! files.empty?
   end
 
+  def content
+    return @content
+  end
+
   def write_to_file
     last_updated = read_last_file(@@filedir)
-    if ! File.exist?(@path) || (@path == last_updated)
+    if ! File.exist?(@fullpath) || (@fullpath == last_updated)
       #
       # Write to a file only when there's no file yet or it's the latest file
       #
-      File.open(@path, "w") do |f|
+      File.open(@fullpath, "w") do |f|
         f.puts @content
       end
-      puts "File created at: " + @path
+      puts "File created at: " + @fullpath
     end
   end
 end
