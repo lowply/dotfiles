@@ -1,4 +1,10 @@
 "*":
+  "atom-beautify":
+    general:
+      _analyticsUserId: "fbe7320e-78cc-4b9e-8a92-f0501890768b"
+    html:
+      beautify_on_save: true
+      indent_char: " \\t"
   "atom-clock":
     dateFormat: "HH:mm"
   core:
