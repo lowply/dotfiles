@@ -1,0 +1,38 @@
+#!/bin/bash
+
+usage(){
+	echo "Usage: $(basename $0) /path/to/file"
+	exit 1
+}
+
+[ $# -ne 1 ] && usage
+
+TARGET="${1}"
+GPSTS=$(exiftool ${TARGET} | grep "GPS Time Stamp")
+
+echo ${GPSTS} | grep -q 59.99[0-9]
+
+if [ $? -eq 0 ]; then
+	VAL=$(echo ${GPSTS} | sed -e "s/GPS Time Stamp : //")
+	echo "This file has a unsafe time stamp: ${VAL}"
+
+	echo "Copying it to fix_gps_ts dir..."
+	# Bring it to the tmp dir
+	[ -d ./fix_gps_ts ] || mkdir ./fix_gps_ts
+	cp -a ${TARGET} ./fix_gps_ts
+
+	NEWVAL=$(echo ${GPSTS} | grep -o "[0-9][0-9]:[0-9][0-9]:[0-9][0-9]")
+	echo "Changing ${VAL} to ${NEWVAL}"
+
+	# Update it
+	NEW_TARGET="./fix_gps_ts/$(basename ${TARGET})"
+	exiftool -overwrite_original "-gpstimestamp=${NEWVAL}" ${NEW_TARGET}
+
+	echo "Updated copied file. Here's the result:"
+	exiftool ${NEW_TARGET} | grep "GPS Time Stamp"
+
+	echo "The original remains untouched: ${TARGET}"
+else
+	echo "${GPSTS}"
+	echo "The GPS Time Stamp value is safe."
+fi
