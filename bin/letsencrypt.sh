@@ -1,60 +1,30 @@
 #!/usr/bin/env bash
 
-# Let's Encrypt hook & renew
-#
-# Based on:
-# https://github.com/lukas2511/dehydrated/blob/master/docs/examples/hook.sh
-
-. $(dirname $0)/lib.sh
-
-usage(){
-	echo "Usage: AWSPROFILE=\"profile\" letsencrypt.sh renew example.com"
+abort(){
+	echo "${1}"
 	exit 1
 }
 
-deploy_challenge() {
-	local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
-	echo "lacrosse _acme-challenge.${DOMAIN} TXT ${TOKEN_VALUE} 300 ${AWSPROFILE}"
-	lacrosse _acme-challenge.${DOMAIN} TXT ${TOKEN_VALUE} 300 ${AWSPROFILE}
+usage(){
+	abort "Usage: ${0} example.com aws_profile <wc>"
 }
 
-clean_challenge() {
-	local DOMAIN="${1}" TOKEN_FILENAME="${2}" TOKEN_VALUE="${3}"
-}
+[ $# -ne 2 ] && usage
+[ -f ${HOME}/.aws/credentials ] || abort "aws credentials not found"
+[ -d ${HOME}/.acme.sh ] || abort "acme.sh not found"
 
-deploy_cert() {
-	local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}" TIMESTAMP="${6}"
-}
+DOMAIN=${1}
+PROFILE=${2}
+WILDCARD=${3}
+AWS_ACCESS_KEY_ID="$(cat ~/.aws/credentials | grep "\[${PROFILE}\]" -A 2 | grep 'aws_secret_access_key' | sed -e 's/aws_secret_access_key = //')"
+AWS_SECRET_ACCESS_KEY="$(cat ~/.aws/credentials | grep "\[${PROFILE}\]" -A 2 | grep 'aws_access_key_id' | sed -e 's/aws_access_key_id = //')"
 
-unchanged_cert() {
-	local DOMAIN="${1}" KEYFILE="${2}" CERTFILE="${3}" FULLCHAINFILE="${4}" CHAINFILE="${5}"
-}
-
-invalid_challenge() {
-	local DOMAIN="${1}" RESPONSE="${2}"
-}
-
-request_failure() {
-	local STATUSCODE="${1}" REASON="${2}" REQTYPE="${3}"
-}
-
-exit_hook() {
-	:
-}
-
-renew(){
-	[ $# != 1 ] && usage
-	[ -z "${AWSPROFILE}" ] && usage
-	has dehydrated
-	has lacrosse
-	local CONFIG="${HOME}/.dehydrated/config"
-	dehydrated --config ${CONFIG} --cron --domain ${1} --hook ${0} --challenge dns-01
-}
-
-[ -z "$1" ] && usage
-
-HANDLER="$1"; shift
-
-if [[ "${HANDLER}" =~ ^(deploy_challenge|clean_challenge|deploy_cert|unchanged_cert|invalid_challenge|request_failure|exit_hook|renew)$ ]]; then
-	"$HANDLER" "$@"
+if [ "${WILDCARD}" == "wc" ]; then
+	${HOME}/.acme.sh/acme.sh --issue --dns dns_aws \
+		-d *.${DOMAIN}
+		-d ${DOMAIN}
+else
+	${HOME}/.acme.sh/acme.sh --issue --dns dns_aws \
+		-d ${DOMAIN}
 fi
+

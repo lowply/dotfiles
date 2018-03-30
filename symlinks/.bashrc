@@ -414,6 +414,11 @@ if has files; then
 fi
 
 #
+# acme.sh
+#
+. "/Users/lowply/.acme.sh/acme.sh.env"
+
+#
 # psone
 #
 psone
