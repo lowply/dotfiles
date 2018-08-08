@@ -84,6 +84,12 @@ unlink(){
 main(){
 	[ $# -gt 1 ] && usage
 
+	case "${OSTYPE}" in
+	darwin*)
+		[ -d /usr/local/opt/coreutils ] || { echo "Install coreutils first."; exit 1; }
+		export PATH=$PATH:/usr/local/opt/coreutils/libexec/gnubin
+	esac
+
 	case "${1}" in
 		"")
 			symlinks
