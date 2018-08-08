@@ -316,9 +316,13 @@ esac
 case "${OSTYPE}" in
 darwin*)
 	# On macOS - installing git via homebrew will do most of the things
-	if [ -d /usr/local/opt/git/etc/bash_completion.d ]; then
-		# On macOS - installing git via homebrew will do most of the things
-		GIT_COMPLETION_PATH="/usr/local/opt/git/etc/bash_completion.d"
+	BREW_GIT="/usr/local/opt/git"
+	if [ -d ${BREW_GIT}/etc/bash_completion.d ]; then
+		GIT_COMPLETION_PATH="${BREW_GIT}/etc/bash_completion.d"
+	fi
+	if [ ! -h ${HOME}/bin/diff-highlight ]; then
+		echo "linking diff highlight"
+		ln -s ${BREW_GIT}/share/git-core/contrib/diff-highlight/diff-highlight ${HOME}/bin/diff-highlight
 	fi
 	;;
 linux*)
@@ -370,11 +374,10 @@ fi
 #
 case "${OSTYPE}" in
 darwin*)
-	# The next line updates PATH for the Google Cloud SDK.
-	source '/Users/lowply/google-cloud-sdk/path.bash.inc'
-
-	# The next line enables shell command completion for gcloud.
-	source '/Users/lowply/google-cloud-sdk/completion.bash.inc'
+	if [ -d ${HOME}/google-cloud-sdk ]; then
+		source "${HOME}/google-cloud-sdk/path.bash.inc"
+		source "${HOME}/google-cloud-sdk/completion.bash.inc"
+	fi
 	;;
 esac
 
@@ -416,7 +419,9 @@ fi
 #
 # acme.sh
 #
-. "/Users/lowply/.acme.sh/acme.sh.env"
+if [ -d ${HOME}/.acme.sh ]; then
+	. "${HOME}/.acme.sh/acme.sh.env"
+fi
 
 #
 # psone
