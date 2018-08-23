@@ -82,3 +82,6 @@ build = 'make'
 
 [[plugins]]
 repo = 'jiangmiao/auto-pairs'
+
+[[plugins]]
+repo = 'prettier/vim-prettier'
