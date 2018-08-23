@@ -20,5 +20,7 @@
   "go-plus":
     config: {}
   minimap: {}
+  teletype:
+    askBeforeJoiningPortalViaExternalApp: false
   welcome:
     showOnStartup: false
