@@ -151,6 +151,7 @@ alias nstanp='lsof -nP -iTCP'
 alias lsdsstr='find . -name .DS_Store -print'
 alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 alias ag='ag --ignore-case --hidden --ignore .git'
+alias make='gmake'
 
 if has nvim; then
 	alias vim='nvim'
@@ -159,6 +160,7 @@ fi
 has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
+has ggrep && alias grep='ggrep'
 
 
 # Use the latest openssl
