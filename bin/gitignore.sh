@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. $(dirname $0)/lib.sh
+
 IGNORE_LIB="${HOME}/src/github.com/github/gitignore"
 IGNORE_PATH="${HOME}/dotfiles/symlinks/.config/git/ignore"
 
@@ -12,6 +14,8 @@ LIST="
 	Ruby.gitignore
 	Go.gitignore
 "
+
+[ -d ${IGNORE_LIB} ] || abort "Please clone github/gitignore to ${IGNORE_LIB}"
 
 echo "" > ${IGNORE_PATH}
 

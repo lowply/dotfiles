@@ -31,3 +31,9 @@ mysql -e "select table_name, table_schema, engine from information_schema.tables
 
 # open port on macOS
 sudo lsof -PiTCP -sTCP:LISTEN | grep "IPv4"
+
+# reset DNS cache on macOS
+sudo killall -HUP mDNSResponder
+
+# start docker-unbound
+docker ps && docker start unbound && docker ps

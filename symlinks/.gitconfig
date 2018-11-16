@@ -116,5 +116,3 @@
 [diff]
 	compactionHeuristic = true
 	submodule = log
-[ghq]
-	root = ~/src

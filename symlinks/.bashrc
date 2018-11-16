@@ -18,7 +18,7 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME
 # functions
 #
 addpath(){
-	# [ -d ${1} ] || { echo "[addpath] ${1} does not exist."; return; }
+	[ -d ${1} ] || return
 	if [ "${2}" == "man" ]; then
 		# for MANPATH
 		export MANPATH=${1}:${MANPATH//$1:/}
@@ -38,16 +38,6 @@ error(){
 	return 1
 }
 
-mcd(){
-	mkdir ${1} && cd ${1}
-}
-
-mksha512(){
-	has "pip" || { echo "Please install pip"; return; }
-	python -c "from passlib.hash import sha512_crypt" > /dev/null 2>&1 || { echo "Please run \"pip install passlib\""; return; }
-	python -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.encrypt(getpass.getpass()))"
-}
-
 peco-run-cmd(){
 	if [ -n "$1" ] ; then
 		# Replace the last entry, with $1
@@ -64,23 +54,10 @@ peco-run-cmd(){
 peco-src () {
 	has "peco" || error "peco is not installed"
 	has "ghq" || error "ghq is not installed"
-	[ -z "${GOPATH}" ] && error '$GOPATH is empty'
-	local DIR="$(ghq list -p | sed -e "s|${GOPATH}/src/||g" | peco)"
+	local DIR="$(ghq list -p | sed -e "s|${HOME}/.ghq/||g" | peco)"
 	if [ ! -z "${DIR}" ]; then
-		cd "${GOPATH}/src/${DIR}"
+		cd "${HOME}/.ghq/${DIR}"
 	fi
-}
-
-pero(){
-	has "peco-beta" || { echo "peco-beta is not installed"; return 1; }
-	has "pt" || { echo "pt is not installed"; return 1; }
-	exec pt "$@" . | peco-beta --exec 'awk -F : '"'"'{print "+" $2 " " $1}'"'"' | xargs less '
-}
-
-pyhttp(){
-	has "python3" || { echo "python3 is not installed"; return 1; }
-	[ $# -eq 1 ] || { echo "pyhttp <port>"; return 1; }
-	python3 -m http.server $1
 }
 
 # ~/.inputrc
@@ -162,9 +139,6 @@ has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has ggrep && alias grep='ggrep'
 
-
-# Use the latest openssl
-# [ -f /usr/local/opt/openssl/bin/openssl ] && alias openssl='/usr/local/opt/openssl/bin/openssl'
 
 #
 # LANG
@@ -297,6 +271,12 @@ darwin*)
 	# For Python 3
 	#
 	export LC_ALL="en_US.UTF-8"
+
+	# Use OpenSSL
+	if [ -d /usr/local/opt/openssl ]; then
+		addpath /usr/local/opt/openssl/bin
+	fi
+
 	;;
 linux*)
 	#
@@ -367,8 +347,8 @@ has aws_completer && complete -C aws_completer aws
 #
 # golang
 #
-if has go; then
-	export GOPATH=${HOME}
+if [ -d ${HOME}/go ] ; then
+	addpath ${HOME}/go/bin
 fi
 
 #
