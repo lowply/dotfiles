@@ -6,7 +6,7 @@
 #/ Subcommands:
 #/ 
 #/ install.sh          # create symlinks
-#/ install.sh cleanup  # cleanup symlinks
+#/ install.sh clean    # cleanup symlinks
 #/
 
 usage() {
