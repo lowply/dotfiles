@@ -143,7 +143,8 @@ syntax on
 let g:solarized_termtrans=1
 
 set termguicolors
-colorscheme solarized8_dark
+set background=dark
+colorscheme solarized8
 
 "======================================================
 " Display:
