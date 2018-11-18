@@ -1,12 +1,13 @@
 #!/bin/bash
 
-. $(dirname $0)/lib.sh
+. $(dirname $0)/bin/lib.sh
 
 #/
 #/ Subcommands:
 #/ 
-#/ install.sh          # create symlinks
-#/ install.sh clean    # cleanup symlinks
+#/ install.sh          # Show this help message
+#/ install.sh do       # Run install
+#/ install.sh clean    # Cleanup symlinks
 #/
 
 usage() {
@@ -22,7 +23,8 @@ backup(){
 }
 
 symlinks(){
-	cd ${HOME}/dotfiles/symlinks
+	cd ${WORKDIR}/symlinks
+
 	local LIST_DIRS=$(find . -mindepth 1 -type d | sed -e 's/^\.\///')
 	local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
 
@@ -51,7 +53,7 @@ symlinks(){
 }
 
 copies(){
-	cd ${HOME}/dotfiles/copies
+	cd ${WORKDIR}/copies
 	local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
 	
 	for F in ${LIST_FILES}; do
@@ -67,7 +69,7 @@ copies(){
 }
 
 unlink(){
-	cd ${HOME}/dotfiles/symlinks
+	cd ${WORKDIR}/symlinks
 	local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
 
 	for F in ${LIST_FILES}; do
@@ -84,14 +86,16 @@ unlink(){
 main(){
 	[ $# -gt 1 ] && usage
 
+	WORKDIR=$(cd $(dirname $0); pwd)
+
 	case "${OSTYPE}" in
 	darwin*)
 		[ -d /usr/local/opt/coreutils ] || { echo "Install coreutils first."; exit 1; }
-		export PATH=$PATH:/usr/local/opt/coreutils/libexec/gnubin
+		export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 	esac
 
 	case "${1}" in
-		"")
+		"do")
 			symlinks
 			copies
 		;;

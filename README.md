@@ -3,10 +3,12 @@
 ## Install
 
 ```bash
-$ cd
+$ cd /path/to/anywhere
 $ git clone https://github.com/lowply/dotfiles.git
-$ ./dotfiles/bin/install.sh
+$ ./dotfiles/install do
 ```
+
+If you use [ghq](https://github.com/motemen/ghq) for repository management, dotfiles will be stored in `~/.ghq/github.com/lowply/dotfiles`
 
 ## Post install - macOS
 
@@ -25,3 +27,11 @@ $ cd ~/dotfiles && brew bundle
 ## Post install - CentOS
 
 See [lowply/kickstart](https://github.com/lowply/kickstart/) for install scripts.
+
+## Development
+
+Running a test in a container:
+
+```
+docker run -v $(pwd):/root/dotfiles -it --rm centos:latest /bin/bash
+```
