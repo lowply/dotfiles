@@ -1,9 +1,6 @@
 [[plugins]]
 repo = 'Shougo/dein.vim'
 
-# [[plugins]]
-# repo = 'Shougo/neocomplete.vim'
-
 [[plugins]]
 repo = 'tpope/vim-commentary'
 
