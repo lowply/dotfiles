@@ -302,9 +302,9 @@ darwin*)
 	if [ -d ${BREW_GIT}/etc/bash_completion.d ]; then
 		GIT_COMPLETION_PATH="${BREW_GIT}/etc/bash_completion.d"
 	fi
-	if [ ! -h ${HOME}/bin/diff-highlight ]; then
+	if [ ! -h /usr/local/bin/diff-highlight ]; then
 		echo "linking diff highlight"
-		ln -s ${BREW_GIT}/share/git-core/contrib/diff-highlight/diff-highlight ${HOME}/bin/diff-highlight
+		ln -s ${BREW_GIT}/share/git-core/contrib/diff-highlight/diff-highlight /usr/local/bin/
 	fi
 	;;
 linux*)
