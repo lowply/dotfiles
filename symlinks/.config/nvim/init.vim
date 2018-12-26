@@ -36,7 +36,7 @@ filetype plugin indent on
 
 " If you want to install not installed plugins on startup.
 if dein#check_install()
-  call dein#install()
+	call dein#install()
 endif
 
 "======================================================
@@ -74,7 +74,7 @@ au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 autocmd FileType go nnoremap <Leader>r :w<CR>:GoRun<CR>
 
 " http://goo.gl/bHmCf5
-autocmd FileType go :highlight goErr ctermfg=210
+autocmd FileType go :highlight goErr guifg=#f69500
 autocmd FileType go :match goErr /\<err\>/
 
 " https://github.com/fatih/vim-go
@@ -94,11 +94,24 @@ if has('nvim')
 	let g:deoplete#sources#go#package_dot = 1
 endif
 
+if executable('golsp')
+	augroup LspGo
+		au!
+		autocmd User lsp_setup call lsp#register_server({
+				\ 'name': 'go-lang',
+				\ 'cmd': {server_info->['golsp', '-mode', 'stdio']},
+				\ 'whitelist': ['go'],
+				\ })
+		autocmd FileType go setlocal omnifunc=lsp#complete
+	augroup END
+endif
+let g:lsp_async_completion = 1
+
 "======================================================
 " SCSS:
 "======================================================
 augroup fileTypeIndent
-    autocmd!
+	autocmd!
 	autocmd FileType scss setlocal tabstop=2 softtabstop=2 shiftwidth=2
 augroup END
 
@@ -110,7 +123,7 @@ if has('nvim')
 	" deoplete:
 	let g:deoplete#enable_at_startup = 1
 	let g:deoplete#enable_ignore_case = 1
-    let g:deoplete#enable_smart_case = 1
+	let g:deoplete#enable_smart_case = 1
 
 	" With deoplete.nvim
 	let g:monster#completion#rcodetools#backend = "async_rct_complete"
@@ -120,14 +133,14 @@ if has('nvim')
 
 	" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 	" <TAB>: completion.
-    imap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<TAB>" : deoplete#mappings#manual_complete()
-    function! s:check_back_space() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~ '\s'
-    endfunction
+	imap <silent><expr> <TAB> pumvisible() ? "\<C-n>" : <SID>check_back_space() ? "\<TAB>" : deoplete#mappings#manual_complete()
+	function! s:check_back_space() abort
+		let col = col('.') - 1
+		return !col || getline('.')[col - 1]  =~ '\s'
+	endfunction
 
-    " <S-TAB>: completion back.
-    inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
+	" <S-TAB>: completion back.
+	inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
 
 	" inoremap <expr><BS> deoplete#mappings#smart_close_popup()."\<C-h>"
 endif
@@ -193,36 +206,36 @@ let g:lightline = {
 			"\   'ctrlpmark': 'CtrlPMark',
 
 function! MyModified()
-  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+	return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! MyReadonly()
-  return &ft !~? 'help' && &readonly ? 'RO' : ''
+	return &ft !~? 'help' && &readonly ? 'RO' : ''
 endfunction
 
 function! MyFilename()
 	let fname = expand('%:t')
 	return fname == 'ControlP' ? g:lightline.ctrlp_item :
-	        \ fname == '__Tagbar__' ? g:lightline.fname :
-	        \ fname =~ '__Gundo\|NERD_tree' ? '' :
-	        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
-	        \ &ft == 'unite' ? unite#get_status_string() :
-	        \ &ft == 'vimshell' ? vimshell#get_status_string() :
-	        \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-	        \ ('' != fname ? fname : '[No Name]') .
-	        \ ('' != MyModified() ? ' ' . MyModified() : '')
+		\ fname == '__Tagbar__' ? g:lightline.fname :
+		\ fname =~ '__Gundo\|NERD_tree' ? '' :
+		\ &ft == 'vimfiler' ? vimfiler#get_status_string() :
+		\ &ft == 'unite' ? unite#get_status_string() :
+		\ &ft == 'vimshell' ? vimshell#get_status_string() :
+		\ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+		\ ('' != fname ? fname : '[No Name]') .
+		\ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyFugitive()
-  try
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
-      let mark = ''  " edit here for cool mark
-      let _ = fugitive#head()
-      return strlen(_) ? mark._ : ''
-    endif
-  catch
-  endtry
-  return ''
+	try
+		if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+			let mark = '' " edit here for cool mark
+			let _ = fugitive#head()
+			return strlen(_) ? mark._ : ''
+		endif
+	catch
+	endtry
+	return ''
 endfunction
 
 function! MyFileformat()
@@ -242,29 +255,29 @@ function! MyMode()
 endfunction
 
 function! CtrlPMark()
-  if expand('%:t') =~ 'ControlP'
-    call lightline#link('iR'[g:lightline.ctrlp_regex])
-    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item, g:lightline.ctrlp_next], 0)
-  else
-    return ''
-  endif
+	if expand('%:t') =~ 'ControlP'
+		call lightline#link('iR'[g:lightline.ctrlp_regex])
+		return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item, g:lightline.ctrlp_next], 0)
+	else
+		return ''
+	endif
 endfunction
 
 let g:ctrlp_status_func = {
-  \ 'main': 'CtrlPStatusFunc_1',
-  \ 'prog': 'CtrlPStatusFunc_2',
-  \ }
+	\ 'main': 'CtrlPStatusFunc_1',
+	\ 'prog': 'CtrlPStatusFunc_2',
+	\ }
 
 function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
-  let g:lightline.ctrlp_regex = a:regex
-  let g:lightline.ctrlp_prev = a:prev
-  let g:lightline.ctrlp_item = a:item
-  let g:lightline.ctrlp_next = a:next
-  return lightline#statusline(0)
+	let g:lightline.ctrlp_regex = a:regex
+	let g:lightline.ctrlp_prev = a:prev
+	let g:lightline.ctrlp_item = a:item
+	let g:lightline.ctrlp_next = a:next
+	return lightline#statusline(0)
 endfunction
 
 function! CtrlPStatusFunc_2(str)
-  return lightline#statusline(0)
+	return lightline#statusline(0)
 endfunction
 
 
