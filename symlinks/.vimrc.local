@@ -1,0 +1,228 @@
+"======================================================
+" Basic Mappings:
+"======================================================
+
+" http://bit.ly/2RoiWuU
+" ---------------------
+
+" Use space as the map leader
+let mapleader = "\<Space>"
+
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+
+nmap <Leader><Leader> V
+vmap <Leader><Leader> V
+
+" http://bit.ly/2CBizVF
+" ---------------------
+
+" Map two escs to nohlsearch
+nnoremap <Esc><Esc> :nohlsearch<CR><Esc>
+
+" Disable unsafe keys
+nnoremap ZZ <Nop>
+nnoremap ZQ <Nop>
+
+" Map jk to esc
+inoremap jk <esc>
+
+" Map gs to search and replace
+nnoremap gs  :<C-u>%s///g<Left><Left><Left>
+vnoremap gs  :s///g<Left><Left><Left>
+
+" Use arrow keys to resize windows
+nnoremap <Right> :vertical resize +5<CR>
+nnoremap <Left> :vertical resize -5<CR>
+nnoremap <Up> :resize -5<CR>
+nnoremap <Down> :resize +5<CR>
+
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>Q :q!<CR>
+
+" http://bit.ly/2Alh10w
+" ---------------------
+
+" Use x as a register untouch d
+nnoremap x "_x
+vnoremap x "_x
+nnoremap X "_X
+vnoremap X "_X
+
+" http://bit.ly/2SpX9jY
+" ---------------------
+
+nnoremap Y y$
+set display=lastline
+set pumheight=10
+set showmatch
+set matchtime=1
+nnoremap + <C-a>
+nnoremap - <C-x>
+augroup swapchoice-readonly
+	autocmd!
+	autocmd SwapExists * let v:swapchoice = 'o'
+augroup END
+
+" http://bit.ly/2TfFjA1
+" ---------------------
+
+" map q: and q/ 
+nnoremap <F5> <CR>q:
+nnoremap <F6> <CR>q/
+
+" disable q:、q/、q?
+nnoremap q: <NOP>
+nnoremap q/ <NOP>
+nnoremap q? <NOP>
+
+" http://bit.ly/2AiqSEm
+" ---------------------
+
+" Use F11 for toggling paste mode
+set pastetoggle=<F11>
+
+" Original config
+" ---------------------
+
+" Map Q to auto indent
+nnoremap Q gg=G
+noremap \ ,
+
+" Search repeatedly
+set wrapscan
+
+" Stop recording
+nnoremap q <NOP>
+
+" Stop recording
+nnoremap qq :q!<CR>
+
+" Make cursor movable between lines
+set whichwrap=b,s,h,l,<,>,[,]
+
+" Make indent smart
+set autoindent
+set smartindent
+
+" Disable builtin matchparen
+" http://bit.ly/2RjLs0N
+let loaded_matchparen = 1
+
+"======================================================
+" CamelCaseMotion:
+"======================================================
+
+map <silent> w <Plug>CamelCaseMotion_w
+map <silent> b <Plug>CamelCaseMotion_b
+map <silent> e <Plug>CamelCaseMotion_e
+map <silent> ge <Plug>CamelCaseMotion_ge
+sunmap w
+sunmap b
+sunmap e
+sunmap ge
+
+"======================================================
+" Auto Complete:
+"======================================================
+
+" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Go
+if executable('golsp')
+	au User lsp_setup call lsp#register_server({
+		\ 'name': 'golsp',
+		\ 'cmd': {server_info->['golsp', '-mode', 'stdio']},
+		\ 'whitelist': ['go'],
+		\ })
+endif
+" //
+
+autocmd FileType go setlocal omnifunc=lsp#complete
+let g:lsp_async_completion = 1
+
+" https://github.com/prabirshrestha/asyncomplete.vim#auto-popup
+let g:asyncomplete_auto_popup = 1
+
+function! s:check_back_space() abort
+let col = col('.') - 1
+	return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+	\ pumvisible() ? "\<C-n>" :
+	\ <SID>check_back_space() ? "\<TAB>" :
+	\ asyncomplete#force_refresh()
+
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" //
+
+set completeopt-=preview
+
+"======================================================
+" CtrlP:
+"======================================================
+
+" Use cpsm as the matcher
+" https://github.com/nixprime/cpsm
+let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
+let g:ctrlp_working_path_mode = 'a'
+
+" Use files to list files
+" https://github.com/mattn/files
+if executable('files')
+	let g:ctrlp_user_command = 'files -A %s'
+endif
+
+"======================================================
+" Windows and Tabs:
+"======================================================
+
+nnoremap s <Nop>
+
+" Easier split
+nnoremap ss :split<CR>
+nnoremap sv :vsplit<CR>
+
+"======================================================
+" Backup:
+" http://bit.ly/2GWrDJh
+"======================================================
+
+set backup
+set backupdir=~/.vim_tmp
+
+set swapfile
+set directory=~/.vim_tmp
+
+set undofile
+set undodir=~/.vim_tmp
+
+set viminfo+=n~/.vim_tmp
+
+"======================================================
+" Markdown:
+"======================================================
+
+au FileType markdown setl wrap
+
+" https://github.com/plasticboy/vim-markdown#syntax-concealing
+let g:vim_markdown_conceal = 0
+
+"======================================================
+" Ruby:
+"======================================================
+
+au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
+
+"======================================================
+" SCSS:
+"======================================================
+
+augroup fileTypeIndent
+	autocmd!
+	autocmd FileType scss setlocal tabstop=2 softtabstop=2 shiftwidth=2
+augroup END

@@ -130,9 +130,9 @@ alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 alias ag='ag --ignore-case --hidden --ignore .git'
 alias make='gmake'
 
-if has nvim; then
-	alias vim='nvim'
-fi
+# if has nvim; then
+# 	alias vim='nvim'
+# fi
 
 has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
