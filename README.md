@@ -19,10 +19,6 @@ $ cd ~/dotfiles && brew bundle
 ```
 
 - Don't forget `diff-highlight`
-- Make sure you have `python3` in `/usr/local/bin`
-- `pip3 install neovim` for [neovim](https://neovim.io/)
-- [dein.vim](https://github.com/Shougo/dein.vim) for neovim  
-- [Docker for Mac](https://www.docker.com/docker-mac)
 
 ## Post install - CentOS
 
