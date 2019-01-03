@@ -130,10 +130,6 @@ alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 alias ag='ag --ignore-case --hidden --ignore .git'
 alias make='gmake'
 
-# if has nvim; then
-# 	alias vim='nvim'
-# fi
-
 has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
@@ -178,7 +174,6 @@ fi
 #
 [ -x "/usr/bin/vim" ] && export EDITOR=/usr/bin/vim
 [ -x "/usr/local/bin/vim" ] && export EDITOR=/usr/local/bin/vim
-[ -x "/usr/local/bin/nvim" ] && export EDITOR=/usr/local/bin/nvim
 has less && export PAGER=/usr/bin/less
 
 #
