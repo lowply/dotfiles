@@ -131,6 +131,10 @@ sunmap ge
 " Auto Complete:
 "======================================================
 
+" Override <tab>
+let g:UltiSnipsExpandTrigger="<F9>"
+let g:UltiSnipsJumpForwardTrigger="<F9>"
+
 " https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Go
 if executable('golsp')
 	au User lsp_setup call lsp#register_server({
