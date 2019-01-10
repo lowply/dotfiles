@@ -93,7 +93,7 @@
 	process = git-lfs filter-process
 [core]
 	pager = less -FMRiX
-	editor = nvim
+	editor = vim
 [push]
 	default = simple
 [github]
