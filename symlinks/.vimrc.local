@@ -230,3 +230,9 @@ augroup fileTypeIndent
 	autocmd!
 	autocmd FileType scss setlocal tabstop=2 softtabstop=2 shiftwidth=2
 augroup END
+
+"======================================================
+" Syntastic:
+"======================================================
+
+let g:syntastic_auto_loc_list=0
