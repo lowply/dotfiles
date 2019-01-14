@@ -12,7 +12,7 @@ fi
 #
 # reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 #
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:${HOME}/bin"
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 #
 # functions
@@ -323,11 +323,6 @@ esac
 
 . ${GIT_COMPLETION_PATH}/git-prompt.sh
 . ${GIT_COMPLETION_PATH}/git-completion.bash
-
-#
-# dotfiles
-#
-[ -d ${HOME}/dotfiles/bin ] && addpath ${HOME}/dotfiles/bin
 
 #
 # aws cli completion
