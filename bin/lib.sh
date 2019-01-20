@@ -13,7 +13,8 @@ DATE=$(date +%y%m%d_%H%M%S)
 logfile(){
 	LOGDIR="${HOME}/.log/$(basename $0)"
 	LOGFILE="${LOGDIR}/$(date +%y%m%d).log"
-	[ -d ${LOGDIR} ] || mkdir -p ${LOGDIR}
+
+	automkdir ${LOGDIR}
 	[ -f ${LOGFILE} ] || touch ${LOGFILE}
 	echo ${LOGFILE}
 }
@@ -25,7 +26,7 @@ logger(){
 
 logger_error(){
 	LOGFILE=$(logfile)
-	echo "$(date): [Error] ${1}" | tee -a ${LOGFILE} 1>&2 
+	echo "$(date): [Error] ${1}" | tee -a ${LOGFILE} 1>&2
 	exit 1
 }
 
@@ -39,7 +40,11 @@ has(){
 }
 
 automkdir(){
-	[ -d "${1}" ] || mkdir ${1}
+	[ -d "${1}" ] || mkdir -p ${1}
+}
+
+autotouchfile(){
+    [ -f ${1} ] || touch ${1}
 }
 
 check_args(){
