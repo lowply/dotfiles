@@ -32,7 +32,7 @@ install(){
 
 main(){
     check_dir "${HOME}/.acme.sh"
-    export PATH=${HOME}/.acme.sh/:${PATH}
+    export PATH=${HOME}/.acme.sh:/usr/sbin:${PATH}
 
     local CONFIG="${HOME}/.config/le_install.conf"
     autotouchfile ${CONFIG}
