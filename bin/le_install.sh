@@ -24,7 +24,7 @@ install(){
         acme.sh --install-cert -d ${DOMAIN} \
             --key-file ${SSLPATH}/${DOMAIN}/cert.pem \
             --fullchain-file ${SSLPATH}/${DOMAIN}/key.pem \
-            --reloadcmd "service nginx force-reload"
+            --reloadcmd "systemctl reload nginx"
 
         [ $? -eq 0 ] && logger "Installed certificate: ${DOMAIN}" || logger "Failed to install certificate: ${DOMAIN}"
     fi
@@ -32,7 +32,7 @@ install(){
 
 main(){
     check_dir "${HOME}/.acme.sh"
-    export PATH=${HOME}/.acme.sh:/usr/sbin:${PATH}
+    export PATH=${HOME}/.acme.sh:${PATH}
 
     local CONFIG="${HOME}/.config/le_install.conf"
     autotouchfile ${CONFIG}
