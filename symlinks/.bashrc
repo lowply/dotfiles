@@ -275,9 +275,9 @@ darwin*)
 	;;
 linux*)
 	#
-    # rbenv
-    #
-    [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
+	# rbenv
+	#
+	[ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
 
 	#
 	# n
@@ -294,12 +294,9 @@ case "${OSTYPE}" in
 darwin*)
 	# On macOS - installing git via homebrew will do most of the things
 	BREW_GIT="/usr/local/opt/git"
+	CONTRIB_PATH="${BREW_GIT}/share/git-core/contrib"
 	if [ -d ${BREW_GIT}/etc/bash_completion.d ]; then
 		GIT_COMPLETION_PATH="${BREW_GIT}/etc/bash_completion.d"
-	fi
-	if [ ! -h /usr/local/bin/diff-highlight ]; then
-		echo "linking diff highlight"
-		ln -s ${BREW_GIT}/share/git-core/contrib/diff-highlight/diff-highlight /usr/local/bin/
 	fi
 	;;
 linux*)
@@ -308,8 +305,12 @@ linux*)
 	if [ -d /usr/local/git ]; then
 		# Installed from source - expecting the contrib directory is in /usr/local/git
 		CONTRIB_PATH="/usr/local/git/contrib"
+	elif [ -d /usr/share/git-core ]; then
+		# Installed via package manager. Amazon Linux 2 for most cases
+		CONTRIB_PATH="/usr/share/git-core/contrib"
 	elif [ -d /usr/local/src/git-${GIT_VERSION} ]; then
 		# Installed via package manager and missing the contrib directory
+
 		# Downlaod git tarball to /usr/local/src and extract it
 		# Use the same version as the installed git, otherwise this won't work
 		# You don't have to install bash-completion
@@ -317,12 +318,19 @@ linux*)
 	fi
 
 	GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
-	[ -x "${CONTRIB_PATH}/diff-highlight/diff-highlight" ] || echo "Build diff-highlight in ${CONTRIB_PATH}/diff-highlight and create a symlink to /usr/local/bin/diff-highlight"
+
 	;;
 esac
 
+if [ ! -L "/usr/local/bin/diff-highlight" ]; then
+	echo "Looking for diff-highlight in the ${CONTRIB_PATH} dir..."
+	echo "============================================"
+	find /usr/share/git-core -type f -name "diff-highlight"
+	echo "============================================"
+	echo "Run ln -s <PATH> /usr/local/bin/ to create a symlink"
+fi
+
 . ${GIT_COMPLETION_PATH}/git-prompt.sh
-. ${GIT_COMPLETION_PATH}/git-completion.bash
 
 #
 # aws cli completion
