@@ -45,15 +45,6 @@ nnoremap <Leader>w :w<CR>
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>Q :q!<CR>
 
-" http://bit.ly/2Alh10w
-" ---------------------
-
-" Use x as a register untouch d
-nnoremap x "_x
-vnoremap x "_x
-nnoremap X "_X
-vnoremap X "_X
-
 " http://bit.ly/2SpX9jY
 " ---------------------
 
@@ -72,7 +63,6 @@ augroup END
 " http://bit.ly/2TfFjA1
 " ---------------------
 
-" map q: and q/ 
 nnoremap <F5> <CR>q:
 nnoremap <F6> <CR>q/
 
@@ -99,9 +89,6 @@ set wrapscan
 
 " Stop recording
 nnoremap q <NOP>
-
-" Stop recording
-nnoremap qq :q!<CR>
 
 " Make cursor movable between lines
 set whichwrap=b,s,h,l,<,>,[,]
@@ -201,9 +188,6 @@ set backupdir=~/.vim_tmp
 
 set swapfile
 set directory=~/.vim_tmp
-
-set undofile
-set undodir=~/.vim_tmp
 
 set viminfo+=n~/.vim_tmp
 
