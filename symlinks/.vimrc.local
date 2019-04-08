@@ -122,17 +122,17 @@ sunmap ge
 let g:UltiSnipsExpandTrigger="<F9>"
 let g:UltiSnipsJumpForwardTrigger="<F9>"
 
-" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Go
-if executable('golsp')
-	au User lsp_setup call lsp#register_server({
-		\ 'name': 'golsp',
-		\ 'cmd': {server_info->['golsp', '-mode', 'stdio']},
+" https://github.com/golang/go/wiki/gopls
+augroup LspGo
+	au!
+	autocmd User lsp_setup call lsp#register_server({
+		\ 'name': 'go-lang',
+		\ 'cmd': {server_info->['gopls']},
 		\ 'whitelist': ['go'],
 		\ })
-endif
-" //
+	autocmd FileType go setlocal omnifunc=lsp#complete
+augroup END
 
-autocmd FileType go setlocal omnifunc=lsp#complete
 let g:lsp_async_completion = 1
 
 " https://github.com/prabirshrestha/asyncomplete.vim#auto-popup
