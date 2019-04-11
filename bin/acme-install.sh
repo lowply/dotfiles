@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#
+# Use this in a crontab, like this:
+# 0 6 * * * LE_WORKING_DIR="/path/to/.acme.sh" ${HOME}/.ghq/github.com/lowply/dotfiles/bin/acme-install.sh > /dev/null
+#
+
 . $(dirname $0)/lib.sh
 
 install(){
@@ -7,13 +12,13 @@ install(){
     local SSLPATH="/etc/nginx/ssl"
     [ -d ${SSLPATH}/${DOMAIN} ] || mkdir ${SSLPATH}/${DOMAIN}
 
-    [ -f ${ACMEDIR}/${DOMAIN}/fullchain.cer ] || {
+    [ -f ${LE_WORKING_DIR}/${DOMAIN}/fullchain.cer ] || {
         logger "Missing issued certificate: ${DOMAIN}"
         return 0
     }
 
     [ -f ${SSLPATH}/${DOMAIN}/cert.pem ] && {
-        diff -q ${ACMEDIR}/${DOMAIN}/fullchain.cer ${SSLPATH}/${DOMAIN}/cert.pem > /dev/null 2>&1 && {
+        diff -q ${LE_WORKING_DIR}/${DOMAIN}/fullchain.cer ${SSLPATH}/${DOMAIN}/cert.pem > /dev/null 2>&1 && {
             # Certificate isn't updated, silently skip the installation
             return 0
         }
@@ -21,7 +26,7 @@ install(){
 
     logger "Installing certificate and reloading nginx..."
 
-    ${ACMEDIR}/acme.sh --install-cert -d ${DOMAIN} \
+    ${LE_WORKING_DIR}/acme.sh --install-cert -d ${DOMAIN} \
         --key-file ${SSLPATH}/${DOMAIN}/key.pem \
         --fullchain-file ${SSLPATH}/${DOMAIN}/cert.pem \
         --reloadcmd "systemctl reload nginx"
@@ -37,16 +42,14 @@ install(){
 
 main(){
     [ "$(whoami)" == "root" ] || abort "This command should be run by root."
-    [ $# -eq 1 ] || abort "Usage: acme-install.sh /path/to/.acme.sh"
-
-    ACMEDIR="${1}"
-    check_dir "${ACMEDIR}"
+    [ -z "$LE_WORKING_DIR" ] && abort "LE_WORKING_DIR is empty"
+    check_dir "${LE_WORKING_DIR}"
 
     CONFIGS=$(ls -1 /etc/nginx/conf.d/ | sed -e 's/\.conf//g')
 
     for DOMAIN in ${CONFIGS}
     do
-        [ -d ${ACMEDIR}/${DOMAIN} ] || continue
+        [ -d ${LE_WORKING_DIR}/${DOMAIN} ] || continue
         logger "Started installation for ${DOMAIN}"
         install ${DOMAIN}
     done
