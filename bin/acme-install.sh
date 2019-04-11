@@ -8,8 +8,8 @@ install(){
     [ -d ${SSLPATH}/${DOMAIN} ] || mkdir ${SSLPATH}/${DOMAIN}
 
     [ -f ${ACMEDIR}/${DOMAIN}/fullchain.cer ] || {
-        logger "Missing issued certificate"
-        return 1
+        logger "Missing issued certificate: ${DOMAIN}"
+        return 0
     }
 
     [ -f ${SSLPATH}/${DOMAIN}/cert.pem ] && {
@@ -37,19 +37,18 @@ install(){
 
 main(){
     [ "$(whoami)" == "root" ] || abort "This command should be run by root."
+    [ $# -eq 1 ] || abort "Usage: acme-install.sh /path/to/.acme.sh"
 
-    ACMEDIR="${HOME}/.acme.sh"
+    ACMEDIR="${1}"
     check_dir "${ACMEDIR}"
 
-    CONFIGS=$(ls -1 /etc/nginx/conf.d/ | sed -e 's/\.conf//g' )
+    CONFIGS=$(ls -1 /etc/nginx/conf.d/ | sed -e 's/\.conf//g')
 
     for DOMAIN in ${CONFIGS}
     do
         [ -d ${ACMEDIR}/${DOMAIN} ] || continue
         logger "Started installation for ${DOMAIN}"
-        install ${DOMAIN} || {
-            exit 1
-        }
+        install ${DOMAIN}
     done
 
     logger "Done installation"
