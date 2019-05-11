@@ -184,12 +184,12 @@ nnoremap sv :vsplit<CR>
 "======================================================
 
 set backup
-set backupdir=~/.vim_tmp
+set backupdir=~/.vim_tmp/backup
 
 set swapfile
-set directory=~/.vim_tmp
+set directory=~/.vim_tmp/swap
 
-set viminfo+=n~/.vim_tmp
+set viminfo+=n~/.vim_tmp/info
 
 "======================================================
 " Markdown:
