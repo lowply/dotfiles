@@ -288,6 +288,13 @@ linux*)
 esac
 
 #
+# All
+#
+if [ -d ${HOME}/bin ] ; then
+	addpath ${HOME}/bin
+fi
+
+#
 # git prompt and bash completion
 #
 case "${OSTYPE}" in
