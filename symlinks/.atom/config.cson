@@ -15,6 +15,9 @@
   "exception-reporting":
     userId: "9ee1121b-79db-9c30-7f90-e9bdacbeff2f"
   "file-icons": {}
+  "fuzzy-finder":
+    scoringSystem: "fast"
+    useRipGrep: true
   github:
     gitDiagnostics: true
   "go-plus":
