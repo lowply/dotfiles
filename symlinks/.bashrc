@@ -208,19 +208,7 @@ psone(){
 		echo "\\[\\e[0m\\]"
 	}
 
-	# load color config if exists
-	if [ -f ${HOME}/.bash_color ]; then
-		. ${HOME}/.bash_color
-	else
-		local BACKGROUND=0
-		local UNAME=252
-		local SYMBOL=3
-		local HOST=252
-		local DIRNAME=252
-		local PROMPT=3
-		local BRANCH=33
-	fi
-
+	# color config
 	if [ $(id -u) == 0 ]; then
 		local BACKGROUND=0
 		local UNAME=196
@@ -229,12 +217,24 @@ psone(){
 		local DIRNAME=196
 		local PROMPT=196
 		local BRANCH=226
+    else
+        if [ -f ${HOME}/.bash_color ]; then
+            . ${HOME}/.bash_color
+        else
+            local BACKGROUND=0
+            local UNAME=252
+            local SYMBOL=3
+            local HOST=252
+            local DIRNAME=252
+            local PROMPT=3
+            local BRANCH=33
+        fi
 	fi
 
 	GIT_PS1_SHOWDIRTYSTATE=true
 
 	# set PS1
-	export PS1="$(bgcolor $BACKGROUND)\t:$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)\n\$ $(resetcolor)"
+	export PS1="\t:$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)\n\$ $(resetcolor)"
 }
 
 #
