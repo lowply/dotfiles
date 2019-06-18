@@ -8,6 +8,12 @@ $ git clone https://github.com/lowply/dotfiles.git
 $ ./dotfiles/install do
 ```
 
+For VSCode, symlink the `settings.json` after the install:
+
+```
+ln -s ~/.vscode/settings.json ~/Library/Application\ Support/Code/User/settings.json
+```
+
 If you use [ghq](https://github.com/motemen/ghq) for repository management, dotfiles will be stored in `~/.ghq/github.com/lowply/dotfiles`
 
 ## Post install - macOS
