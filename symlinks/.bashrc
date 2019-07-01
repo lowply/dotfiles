@@ -134,7 +134,8 @@ has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has ggrep && alias grep='ggrep'
-
+has code && alias code='code . -r'
+has nvim && alias vim='nvim'
 
 #
 # LANG
@@ -174,6 +175,7 @@ fi
 #
 [ -x "/usr/bin/vim" ] && export EDITOR=/usr/bin/vim
 [ -x "/usr/local/bin/vim" ] && export EDITOR=/usr/local/bin/vim
+[ -x "/usr/local/bin/nvim" ] && export EDITOR=/usr/local/bin/nvim
 has less && export PAGER=/usr/bin/less
 
 #
@@ -386,6 +388,7 @@ if has files; then
 		\.rbenv
 		\.gem
 		\.vim_tmp
+		\.nvim_tmp
 		\.cache
 		\.node-gyp
 		\.apm
