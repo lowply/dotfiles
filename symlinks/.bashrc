@@ -54,9 +54,10 @@ peco-run-cmd(){
 peco-src () {
 	has "peco" || error "peco is not installed"
 	has "ghq" || error "ghq is not installed"
-	local DIR="$(ghq list -p | sed -e "s|${HOME}/.ghq/||g" | peco)"
+	local GHQDIR="${HOME}/.ghq"
+	local DIR="$(ghq list | peco)"
 	if [ ! -z "${DIR}" ]; then
-		cd "${HOME}/.ghq/${DIR}"
+		cd "${GHQDIR}/${DIR}"
 	fi
 }
 
