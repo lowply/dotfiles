@@ -2,7 +2,11 @@
 " Python3:
 "======================================================
 
-let g:python3_host_prog  = '/usr/local/bin/python3'
+if has("mac")
+    let g:python3_host_prog  = '/usr/local/bin/python3'
+elseif has("unix")
+    let g:python3_host_prog  = '/usr/bin/python3'
+endif
 
 "======================================================
 " Basic Mappings:
