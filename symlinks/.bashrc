@@ -139,11 +139,6 @@ has code && alias code='code . -r'
 has nvim && alias vim='nvim'
 
 #
-# LANG
-#
-export LANG=en_US.UTF-8
-
-#
 # History size & format
 #
 export HISTCONTROL=ignoredups:ignorespace
@@ -245,18 +240,12 @@ psone(){
 #
 case "${OSTYPE}" in
 darwin*)
-	#
-	# htop
-	#
-	if has htop; then
-		alias htop='sudo htop'
-	fi
-
-	#
 	# coreutils
-	#
-	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnubin
-	[ -d /usr/local/opt/coreutils ] && addpath /usr/local/opt/coreutils/libexec/gnuman man
+	addpath /usr/local/opt/coreutils/libexec/gnubin
+	addpath /usr/local/opt/coreutils/libexec/gnuman man
+
+	# Use OpenSSL
+	addpath /usr/local/opt/openssl/bin
 
 	#
 	# bash completion (need brew install bash-completion)
@@ -264,38 +253,28 @@ darwin*)
 	if [ -f $(brew --prefix)/etc/bash_completion ]; then
 		. $(brew --prefix)/etc/bash_completion
 	fi
-
-	#
-	# For Python 3
-	#
-	export LC_ALL="en_US.UTF-8"
-
-	# Use OpenSSL
-	if [ -d /usr/local/opt/openssl ]; then
-		addpath /usr/local/opt/openssl/bin
-	fi
-
 	;;
 linux*)
-	#
 	# rbenv
-	#
-	[ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin
+	addpath ${HOME}/.rbenv/bin
 
-	#
 	# n
-	#
 	export N_PREFIX="$HOME/n"
-	[ -d ${N_PREFIX} ] && addpath ${N_PREFIX}/bin
+	addpath ${N_PREFIX}/bin
 	;;
 esac
 
-#
-# All
-#
-if [ -d ${HOME}/bin ] ; then
-	addpath ${HOME}/bin
-fi
+# dotfiles/bin
+addpath ${HOME}/.ghq/github.com/lowply/dotfiles/bin
+
+# ~/bin
+addpath ${HOME}/bin
+
+# golang
+addpath ${HOME}/go/bin
+
+## rust
+addpath ${HOME}/.cargo/bin
 
 #
 # git prompt and bash completion
@@ -351,13 +330,6 @@ has aws_completer && complete -C aws_completer aws
 # rbenv
 #
 [ -d ${HOME}/.rbenv ] && eval "$(rbenv init -)"
-
-#
-# golang
-#
-if [ -d ${HOME}/go ] ; then
-	addpath ${HOME}/go/bin
-fi
 
 #
 # GCP
