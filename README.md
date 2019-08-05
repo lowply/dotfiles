@@ -21,7 +21,7 @@ If you use [ghq](https://github.com/motemen/ghq) for repository management, dotf
 Install [Homebrew](https://brew.sh/), `brew tap Homebrew/bundle` and run:
 
 ```
-$ cd ~/dotfiles && brew bundle
+$ brew bundle --global
 ```
 
 - Don't forget `diff-highlight`
