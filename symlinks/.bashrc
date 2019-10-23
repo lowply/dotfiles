@@ -101,12 +101,9 @@ backup() {
 
 # Docker
 
-clean_docker_images(){
-	for x in $(docker images | grep "<none>" | awk '{print $3}'); do docker rmi $x; done
-}
-
-clean_docker_containers(){
+docker_cleanup(){
 	for x in $(docker ps -a | grep Exited | awk '{print $1}'); do docker rm $x; done
+	for x in $(docker images | grep "<none>" | awk '{print $3}'); do docker rmi $x; done
 }
 
 #
