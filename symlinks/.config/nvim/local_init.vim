@@ -2,12 +2,12 @@
 " Python3:
 "======================================================
 
-if executable("/usr/bin/python3")
-    " For Linux systems that use default package manager to install python3
-    let g:python3_host_prog  = '/usr/bin/python3'
-elseif executable("/usr/local/bin/python3")
+if executable("/usr/local/bin/python3")
     " For macs (homebrew) and Linux systems that have python3 installed from the tarball
     let g:python3_host_prog  = '/usr/local/bin/python3'
+elseif executable("/usr/bin/python3")
+    " For Linux systems that use default package manager to install python3
+    let g:python3_host_prog  = '/usr/bin/python3'
 endif
 
 "======================================================
