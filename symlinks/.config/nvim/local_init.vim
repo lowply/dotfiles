@@ -204,27 +204,7 @@ augroup fileTypeIndent
 augroup END
 
 "======================================================
-" Deoplete:
-"======================================================
-
-" let g:deoplete#enable_at_startup = 1
-" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-"======================================================
-" Gopls:
-"======================================================
-
-" " https://github.com/golang/go/wiki/gopls
-" let g:go_def_mode='gopls'
-" let g:go_info_mode='gopls'
-
-" Disable gocode features in vim-go
-" http://bit.ly/2XkW1oc
-let g:go_def_mapping_enabled = 0
-let g:go_doc_keywordprg_enabled = 0
-
-"======================================================
-" CoC:
+" CoC and Gopls:
 " Some configurations are taken from
 " https://github.com/neoclide/coc.nvim#example-vim-configuration
 "======================================================
@@ -271,5 +251,5 @@ function! s:show_documentation()
   endif
 endfunction
 
-" https://github.com/golang/go/wiki/gopls
+" https://github.com/golang/tools/blob/master/gopls/doc/vim.md#cocnvim
 autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')

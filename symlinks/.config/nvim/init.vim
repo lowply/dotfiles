@@ -41,7 +41,11 @@ Plug 'majutsushi/tagbar'
 Plug 'w0rp/ale'
 Plug 'Yggdroot/indentLine'
 Plug 'avelino/vim-bootstrap-updater'
-Plug 'sheerun/vim-polyglot'
+"*****************************************************************************
+" put polyglot after vim-go, otherwise vim-go fails:
+" https://github.com/fatih/vim-go/issues/2262
+"*****************************************************************************
+" Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
 
 if isdirectory('/usr/local/opt/fzf')
@@ -531,3 +535,9 @@ else
   let g:airline_symbols.readonly = ''
   let g:airline_symbols.linenr = ''
 endif
+
+"*****************************************************************************
+" moving polyglot at the end
+"*****************************************************************************
+
+Plug 'sheerun/vim-polyglot'
