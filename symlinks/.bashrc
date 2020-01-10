@@ -133,7 +133,6 @@ has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has ggrep && alias grep='ggrep'
 has code && alias code='code . -r'
-has nvim && alias vim='/usr/local/bin/nvim'
 
 #
 # History size & format
