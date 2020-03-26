@@ -49,12 +49,6 @@ call plug#end()
 " Basic configuration
 "======================================================
 
-" ---------------------- HERE ---------------------------
-" ---------------------- HERE ---------------------------
-" ---------------------- HERE ---------------------------
-" ---------------------- HERE ---------------------------
-" ---------------------- HERE ---------------------------
-
 filetype plugin indent on
 
 "" Encoding
@@ -89,31 +83,19 @@ else
     set shell=/bin/sh
 endif
 
-" session management
-let g:session_directory = "~/.vim/session"
-let g:session_autoload = "no"
-let g:session_autosave = "no"
-let g:session_command_aliases = 1
-
-"*****************************************************************************
-"" Visual Settings
-"*****************************************************************************
+"======================================================
+" Visual Settings
+"======================================================
 syntax on
 set ruler
 set number
 
 let no_buffers_menu=1
-silent! colorscheme molokai
 
 set mousemodel=popup
 set t_Co=256
 set guioptions=egmrti
 set gfn=Monospace\ 10
-
-if &term =~ '256color'
-  set t_ut=
-endif
-
 
 "" Disable the blinking cursor.
 set gcr=a:blinkon0
@@ -135,26 +117,19 @@ set titlestring=%F
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
-
-" grep.vim
-nnoremap <silent> <leader>f :Rgrep<CR>
-let Grep_Default_Options = '-IR'
-let Grep_Skip_Files = '*.log *.db'
-let Grep_Skip_Dirs = '.git node_modules'
-
 " terminal emulation
 nnoremap <silent> <leader>sh :terminal<CR>
 
 
-"*****************************************************************************
-"" Commands
-"*****************************************************************************
+"======================================================
+" Commands
+"======================================================
 " remove trailing whitespaces
 command! FixWhitespace :%s/\s\+$//e
 
-"*****************************************************************************
-"" Functions
-"*****************************************************************************
+"======================================================
+" Functions
+"======================================================
 if !exists('*s:setupWrapping')
   function s:setupWrapping()
     set wrap
@@ -163,9 +138,9 @@ if !exists('*s:setupWrapping')
   endfunction
 endif
 
-"*****************************************************************************
-"" Autocmd Rules
-"*****************************************************************************
+"======================================================
+" Autocmd Rules
+"======================================================
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
 augroup vimrc-sync-fromstart
   autocmd!
@@ -193,9 +168,13 @@ augroup END
 
 set autoread
 
-"*****************************************************************************
-"" Mappings
-"*****************************************************************************
+"======================================================
+" Mappings
+"======================================================
+
+" Use space as the map leader
+" https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+let mapleader = "\<Space>"
 
 "" Split
 noremap <Leader>h :<C-u>split<CR>
@@ -211,12 +190,6 @@ noremap <Leader>gb :Gblame<CR>
 noremap <Leader>gd :Gvdiff<CR>
 noremap <Leader>gr :Gremove<CR>
 
-" session management
-nnoremap <leader>so :OpenSession<Space>
-nnoremap <leader>ss :SaveSession<Space>
-nnoremap <leader>sd :DeleteSession<CR>
-nnoremap <leader>sc :CloseSession<CR>
-
 "" Tabs
 nnoremap <Tab> gt
 nnoremap <S-Tab> gT
@@ -231,29 +204,6 @@ noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 "" Opens a tab edit command with the path of the currently edited file filled
 noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
 
-"" fzf.vim
-set wildmode=list:longest,list:full
-set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,__pycache__
-let $FZF_DEFAULT_COMMAND =  "find * -path '*/\.*' -prune -o -path 'node_modules/**' -prune -o -path 'target/**' -prune -o -path 'dist/**' -prune -o  -type f -print -o -type l -print 2> /dev/null"
-
-" The Silver Searcher
-if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-  set grepprg=ag\ --nogroup\ --nocolor
-endif
-
-" ripgrep
-if executable('rg')
-  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
-  set grepprg=rg\ --vimgrep
-  command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
-endif
-
-cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
-nnoremap <silent> <leader>b :Buffers<CR>
-nnoremap <silent> <leader>e :FZF -m<CR>
-"Recovery commands from history through FZF
-nmap <leader>y :History:<CR>
 
 " snippets
 " To make C-Space work:
@@ -262,9 +212,6 @@ let g:UltiSnipsExpandTrigger="<C-Space>"
 " let g:UltiSnipsJumpForwardTrigger="<c-tab>"
 " let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 let g:UltiSnipsEditSplit="vertical"
-
-" ale
-" let g:ale_linters = {}
 
 " Tagbar
 nmap <silent> <F4> :TagbarToggle<CR>
@@ -320,20 +267,17 @@ vnoremap K :m '<-2<CR>gv=gv
 "" Open current line on GitHub
 nnoremap <Leader>o :.Gbrowse<CR>
 
-
-"*****************************************************************************
-"" Custom settings
-"*****************************************************************************
+"======================================================
+" Colorscheme:
+"======================================================
 
 " https://github.com/lifepillar/vim-solarized8
 set background=dark
 colorscheme solarized8
 
-" http://bit.ly/2RoiWuU
-" ---------------------
-
-" Use space as the map leader
-let mapleader = "\<Space>"
+"======================================================
+"" Custom configs
+"======================================================
 
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
@@ -425,6 +369,12 @@ set smartindent
 " Disable builtin matchparen
 " http://bit.ly/2RjLs0N
 let loaded_matchparen = 1
+
+"======================================================
+" vim-json:
+"======================================================
+
+let g:vim_json_syntax_conceal = 0
 
 "======================================================
 " CamelCaseMotion:
@@ -531,7 +481,7 @@ augroup fileTypeIndent
 augroup END
 
 "======================================================
-" lightline
+" lightline:
 "======================================================
 "
 let g:lightline = {
@@ -619,3 +569,24 @@ function! s:show_documentation()
   endif
 endfunction
 
+"======================================================
+" https://superuser.com/questions/399296/256-color-support-for-vim-background-in-tmux
+" A workaround
+"======================================================
+
+if &term =~ '256color'
+  set t_ut=
+endif
+
+"======================================================
+" grep.vim
+"======================================================
+
+nnoremap <silent> <leader>f :Rgrep<CR>
+let Grep_Default_Options = '-IR'
+let Grep_Skip_Files = '*.log *.db'
+let Grep_Skip_Dirs = '.git node_modules'
+
+"======================================================
+" END:
+"======================================================
