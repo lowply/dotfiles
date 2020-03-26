@@ -254,7 +254,7 @@ linux*)
 esac
 
 # dotfiles/bin
-addpath ${HOME}/.ghq/github.com/lowply/dotfiles/bin
+addpath ${HOME}/ghq/github.com/lowply/dotfiles/bin
 
 # ~/bin
 addpath ${HOME}/bin
