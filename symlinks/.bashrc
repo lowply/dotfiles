@@ -51,20 +51,18 @@ peco-run-cmd(){
 	fi
 }
 
-peco-src () {
+# See ~/.inputrc
+peco-ghq () {
 	has "peco" || error "peco is not installed"
 	has "ghq" || error "ghq is not installed"
-	local GHQDIR="${HOME}/.ghq"
+	local GHQDIR="${HOME}/ghq"
 	local DIR="$(ghq list | peco)"
 	if [ ! -z "${DIR}" ]; then
 		cd "${GHQDIR}/${DIR}"
 	fi
 }
 
-# ~/.inputrc
-# "\C-]":"peco-src\n"
-
-# http://qiita.com/yungsang/items/09890a06d204bf398eea
+# See ~/.inputrc
 peco-history() {
 	has "peco" || return
 	local NUM=$(history | wc -l)
@@ -82,18 +80,13 @@ peco-history() {
 	unset LC_ALL
 }
 
-# ~/.inputrc
-# "\C-r":"peco-history\n"
-
+# See ~/.inputrc
 peco-snippets() {
 	has "peco" || return
 	[ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
 	local CMD=$(grep -v "^#" ~/.snippets | sed '/^$/d' | peco)
 	peco-run-cmd "$CMD"
 }
-
-# ~/.inputrc
-# "\C-s":"peco-snippets\n"
 
 backup() {
 	cp -a $1{,.$(date +%y%m%d_%H%M%S)}
@@ -133,7 +126,6 @@ has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has ggrep && alias grep='ggrep'
 has code && alias code='code . -r'
-has nvim && alias vim='/usr/local/bin/nvim'
 
 #
 # History size & format
@@ -262,7 +254,7 @@ linux*)
 esac
 
 # dotfiles/bin
-addpath ${HOME}/.ghq/github.com/lowply/dotfiles/bin
+addpath ${HOME}/ghq/github.com/lowply/dotfiles/bin
 
 # ~/bin
 addpath ${HOME}/bin

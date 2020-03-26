@@ -1,5 +1,5 @@
 $if Bash
 	"\C-r": "peco-history\n"
-	"\C-]": "peco-src\n"
+	"\C-]": "peco-ghq\n"
 	"\C-s": "peco-snippets\n"
 $endif
