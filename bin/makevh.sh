@@ -44,7 +44,7 @@ if [ ! -d "/home/$_VH" ]; then
     cp -p /var/www/error/noindex.html /home/$_VH/htdocs/index.html
     chmod -R 775 /home/$_VH
     chown -R apache:apache /home/$_VH
-	chmod g+s /home/$_VH/htdocs
+    chmod g+s /home/$_VH/htdocs
     echo "Create directory /home/$_VH/htdocs"
 else
     echo "/home/$_VH/htdocs Already exsits."
@@ -72,7 +72,7 @@ cat << EOF >> /etc/httpd/conf.v/$_VH.conf
         DirectoryIndex index.html index.php
         Options FollowSymLinks
         AllowOverride All
-		Require all granted
+        Require all granted
     </Directory>
 </VirtualHost>
 EOF
@@ -111,7 +111,7 @@ cat << EOF >> /etc/httpd/conf.v/$_VH.conf
         DirectoryIndex index.html index.php
         Options FollowSymLinks
         AllowOverride All
-		Require all granted
+        Require all granted
     </Directory>
     LogLevel warn
     SSLEngine on
