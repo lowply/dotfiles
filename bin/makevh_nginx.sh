@@ -28,6 +28,7 @@ if [ ! -d "${DOCROOT}" ]; then
 	echo "" > ${DOCROOT}/htdocs/index.html
 	chmod 775 ${DOCROOT}
 	chown -R nginx:nginx ${DOCROOT}
+	chmod g+s ${DOCROOT}
 	echo "Created directory ${DOCROOT}/htdocs"
 else
 	echo "${DOCROOT} Already exsits."
