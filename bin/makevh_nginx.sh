@@ -51,18 +51,44 @@ cat << EOF > ${CONFFILE}
 #
 
 server {
-	listen       80;
-	server_name  ${HOSTNAME};
-	root         ${DOCROOT}/htdocs;
-	index        index.php index.html index.htm;
+    listen       80;
+    server_name  ${HOSTNAME};
 
-	access_log   ${LOGDIR}/access.log  main;
-	error_log    ${LOGDIR}/error.log  warn;
+    # ===================================
+    # This can be deleted after the first certificate issued
+    # using the HTTP-01 challenge.
+    root         /home/www/${HOSTNAME}/htdocs;
+    index        index.html;
+    location /.well-known/acme-challenge {
+        # Do nothing.
+    }
+    # ===================================
 
-	include basic.conf;
-	#include wordpress.conf;
+    location / {
+        rewrite ^ https://${HOSTNAME}$request_uri? permanent;
+    }
+
+    access_log   ${LOGDIR}/access.log main;
+    error_log    ${LOGDIR}/error.log warn;
+}
+
+server {
+    listen       443 ssl;
+    server_name  ${HOSTNAME};
+    root         ${DOCROOT}/htdocs;
+    index        index.php index.html index.htm;
+
+    ssl_certificate      /etc/nginx/ssl/${HOSTNAME}/cert.pem;
+    ssl_certificate_key  /etc/nginx/ssl/${HOSTNAME}/key.pem;
+
+    access_log   ${LOGDIR}/access.log main;
+    error_log    ${LOGDIR}/error.log warn;
+
+    # include basic.conf;
+    # include wordpress.conf;
 }
 EOF
+
 echo "Created ${CONFFILE}. Please restart nginx."
 
 echo -e "\nVirtual Host \"${HOSTNAME}\" has created.\n"
