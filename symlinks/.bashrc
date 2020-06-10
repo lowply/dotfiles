@@ -125,7 +125,6 @@ has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has ggrep && alias grep='ggrep'
-has code && alias code='code . -r'
 
 #
 # History size & format
@@ -204,18 +203,18 @@ psone(){
 		local DIRNAME=196
 		local PROMPT=196
 		local BRANCH=226
-    else
-        if [ -f ${HOME}/.bash_color ]; then
-            . ${HOME}/.bash_color
-        else
-            local BACKGROUND=0
-            local UNAME=252
-            local SYMBOL=3
-            local HOST=252
-            local DIRNAME=252
-            local PROMPT=3
-            local BRANCH=33
-        fi
+	else
+		if [ -f ${HOME}/.bash_color ]; then
+			. ${HOME}/.bash_color
+		else
+			local BACKGROUND=0
+			local UNAME=252
+			local SYMBOL=3
+			local HOST=252
+			local DIRNAME=252
+			local PROMPT=3
+			local BRANCH=33
+		fi
 	fi
 
 	GIT_PS1_SHOWDIRTYSTATE=true
@@ -262,14 +261,14 @@ addpath ${HOME}/bin
 # golang
 addpath ${HOME}/go/bin
 
-## rust
-addpath ${HOME}/.cargo/bin
-
 #
 # git prompt and bash completion
 #
 case "${OSTYPE}" in
 darwin*)
+	# On macOS - https://support.apple.com/en-us/HT208050
+	export BASH_SILENCE_DEPRECATION_WARNING=1
+
 	# On macOS - installing git via homebrew will do most of the things
 	BREW_GIT="/usr/local/opt/git"
 	CONTRIB_PATH="${BREW_GIT}/share/git-core/contrib"
