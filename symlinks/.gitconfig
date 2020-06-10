@@ -1,81 +1,81 @@
 [include]
-    path = ~/.gitconfig.local
+	path = ~/.gitconfig.local
 
 [color]
-    status = auto
-    diff = auto
-    branch = auto
-    interactive = auto
-    grep = auto
-    ui = auto
+	status = auto
+	diff = auto
+	branch = auto
+	interactive = auto
+	grep = auto
+	ui = auto
 
 [merge]
-    ff = false
+	ff = false
 
 [pull]
-    rebase = true
+	rebase = true
 
 [grep]
-    lineNumber = true
+	lineNumber = true
 
 [alias]
-    s = status
-    b = branch
-    co = checkout
-    d = diff
-    l = log --graph -n 20 --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(green)- %an, %cr%Creset'
+	s = status
+	b = branch
+	co = checkout
+	d = diff
+	l = log --graph -n 20 --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(green)- %an, %cr%Creset'
 
-    # http://blog.blindgaenger.net/advanced_git_aliases.html
-    this = !git init && git add . && git commit -m \"Initial commit\"
-    r = !git ls-files -z --deleted | xargs -0 git rm
-    alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
-    ignore = !([ ! -e .gitignore ] && touch .gitignore) | echo $1 >>.gitignore
+	# http://blog.blindgaenger.net/advanced_git_aliases.html
+	this = !git init && git add . && git commit -m \"Initial commit\"
+	r = !git ls-files -z --deleted | xargs -0 git rm
+	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
+	ignore = !([ ! -e .gitignore ] && touch .gitignore) | echo $1 >>.gitignore
 
 [filter "media"]
-    clean = git-media-clean -- %f
-    smudge = git-media-smudge -- %f
+	clean = git-media-clean -- %f
+	smudge = git-media-smudge -- %f
 
 [docc]
-    cmd = more
+	cmd = more
 
 [filter "lfs"]
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-    required = true
-    process = git-lfs filter-process
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true
+	process = git-lfs filter-process
 
 [core]
-    pager = less -FMRiX
-    editor = vim
+	pager = less -FMRiX
+	editor = vim
 
 [push]
-    default = simple
+	default = simple
 
 [github]
-    user = lowply
+	user = lowply
 
 [credential]
-    helper = osxkeychain
+	helper = osxkeychain
 
 [user]
-    signingkey = 0D9BE6E9F8C77C48
-    username = lowply
-    name = Sho Mizutani
-    email = lowply@github.com
+	signingkey = 0D9BE6E9F8C77C48
+	username = lowply
+	name = Sho Mizutani
+	email = lowply@github.com
 
 [commit]
-    verbose = true
+	verbose = true
 
 [pager]
-    log = diff-highlight | less
-    show = diff-highlight | less
-    diff = diff-highlight | less
+	log = diff-highlight | less
+	show = diff-highlight | less
+	diff = diff-highlight | less
 
 [interactive]
-    diffFilter = diff-highlight
+	diffFilter = diff-highlight
 
 [diff]
-    compactionHeuristic = true
-    submodule = log
+	compactionHeuristic = true
+	submodule = log
 [rebase]
 	autosquash = true
