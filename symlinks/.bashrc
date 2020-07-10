@@ -63,24 +63,6 @@ peco-ghq () {
 }
 
 # See ~/.inputrc
-peco-history() {
-	has "peco" || return
-	local NUM=$(history | wc -l)
-	local FIRST=$((-1*(NUM-1)))
-
-	if [ $FIRST -eq 0 ] ; then
-		# Remove the last entry, "peco-history"
-		history -d $((HISTCMD-1))
-		echo "No history" >&2
-		return
-	fi
-	export LC_ALL='C'
-	local CMD=$(fc -l $FIRST | sort -k 2 -k 1nr | uniq -f 1 | sort -nr | sed -r 's/^[0-9]+//' | peco | head -n 1)
-	peco-run-cmd "$CMD"
-	unset LC_ALL
-}
-
-# See ~/.inputrc
 peco-snippets() {
 	has "peco" || return
 	[ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
