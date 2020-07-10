@@ -13,7 +13,7 @@
 	ff = false
 
 [pull]
-	rebase = true
+	ff = only
 
 [grep]
 	lineNumber = true
