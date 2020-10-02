@@ -54,9 +54,6 @@
 [github]
 	user = lowply
 
-[credential]
-	helper = osxkeychain
-
 [user]
 	signingkey = 0D9BE6E9F8C77C48
 	username = lowply
@@ -77,5 +74,9 @@
 [diff]
 	compactionHeuristic = true
 	submodule = log
+
 [rebase]
 	autosquash = true
+
+[credential]
+	helper = manager-core
