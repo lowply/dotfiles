@@ -81,6 +81,14 @@ docker_cleanup(){
 	for x in $(docker images | grep "<none>" | awk '{print $3}'); do docker rmi $x; done
 }
 
+epoch () {
+	if [ "$1" == "now" ]; then
+		/bin/date -ju '+%F %T %Z';
+	else
+		/bin/date -jur $1 '+%F %T %Z';
+	fi
+}
+
 #
 # aliases
 #
@@ -107,6 +115,7 @@ has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has ggrep && alias grep='ggrep'
+has gfind && alias find='gfind'
 
 #
 # History size & format
@@ -119,7 +128,7 @@ export HISTTIMEFORMAT="%F %T : "
 # http://kazmax.zpp.jp/cmd/l/less.1.html
 # http://qiita.com/hatchinee/items/586fb1c4915e2bb5c03b
 #
-export LESS='-X -R -i -P ?f%f:(stdin).  ?lb%lb?L/%L..  [?eEOF:?pb%pb\%..]'
+export LESS='-X -R -i -P ?f%f:(stdin).	?lb%lb?L/%L..	[?eEOF:?pb%pb\%..]'
 
 #
 # for Mac, brew install source-highlight
@@ -217,6 +226,9 @@ darwin*)
 	# Use OpenSSL
 	addpath /usr/local/opt/openssl/bin
 
+	# Ruby
+	addpath /usr/local/opt/ruby/bin
+
 	#
 	# bash completion (need brew install bash-completion)
 	#
@@ -226,7 +238,7 @@ darwin*)
 	;;
 linux*)
 	# rbenv
-	addpath ${HOME}/.rbenv/bin
+	[ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin && eval "$(rbenv init -)"
 
 	# n
 	export N_PREFIX="$HOME/n"
@@ -295,11 +307,6 @@ fi
 # aws cli completion
 #
 has aws_completer && complete -C aws_completer aws
-
-#
-# rbenv
-#
-[ -d ${HOME}/.rbenv ] && eval "$(rbenv init -)"
 
 #
 # GCP
