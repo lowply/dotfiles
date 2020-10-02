@@ -228,6 +228,7 @@ darwin*)
 
 	# Ruby
 	addpath /usr/local/opt/ruby/bin
+	addpath /usr/local/lib/ruby/gems/2.7.0/bin
 
 	#
 	# bash completion (need brew install bash-completion)
