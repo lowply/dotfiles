@@ -128,17 +128,6 @@ nnoremap <silent> <leader>sh :terminal<CR>
 command! FixWhitespace :%s/\s\+$//e
 
 "======================================================
-" Functions
-"======================================================
-if !exists('*s:setupWrapping')
-  function s:setupWrapping()
-    set wrap
-    set wm=2
-    set textwidth=79
-  endfunction
-endif
-
-"======================================================
 " Autocmd Rules
 "======================================================
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
@@ -151,12 +140,6 @@ augroup END
 augroup vimrc-remember-cursor-position
   autocmd!
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-augroup END
-
-"" txt
-augroup vimrc-wrapping
-  autocmd!
-  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
 augroup END
 
 "" make/cmake
