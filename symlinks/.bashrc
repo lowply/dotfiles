@@ -9,6 +9,11 @@ fi
 # Original Setting
 # ---------------------------------------------------------------
 
+# To make tmux work on kitty. Just can't make full swich to
+# kitty's window management style, so for now I'll continue tmux...
+# https://sw.kovidgoyal.net/kitty/faq.html#i-am-using-tmux-and-have-a-problem
+export TERM=xterm-256color
+
 #
 # reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 #
@@ -320,42 +325,6 @@ darwin*)
 	fi
 	;;
 esac
-
-#
-# files
-#
-if has files; then
-	# https://github.com/mattn/files/blob/master/files.go#L15
-	FILES_IGNORE_PATTERN_LIST="
-		\.git
-		\.hg
-		\.svn
-		\.bzr
-		\.keep
-		\.sass-cache
-		\.npm
-		\.mozilla
-		\.local
-		\.rbenv
-		\.gem
-		\.vim_tmp
-		\.nvim_tmp
-		\.cache
-		\.node-gyp
-		\.apm
-		_darcs
-		node_modules
-		n
-		backup
-		dotfiles
-		pkg
-		bin
-		compile-cache
-		vendor
-		packages
-	"
-	export FILES_IGNORE_PATTERN="^($(echo ${FILES_IGNORE_PATTERN_LIST} | tr ' ', '|'))$"
-fi
 
 #
 # acme.sh
