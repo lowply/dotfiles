@@ -7,5 +7,7 @@
     "go.useLanguageServer": true,
     "git.confirmSync": false,
     "git.enableSmartCommit": true,
-    "workbench.colorTheme": "GitHub Dark"
+    "workbench.colorTheme": "GitHub Dark",
+    "editor.formatOnSave": true,
+    "explorer.confirmDragAndDrop": false
 }
