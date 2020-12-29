@@ -1,6 +1,10 @@
 #!/bin/sh
 
 #
+# version : 1.30 (2020-12-29)
+# - Update CustomLog for SSL
+# - Add Let's Encrypt support
+#
 # version : 1.20 (2012/07/31)
 # - Added Directory directive to SSL VH.
 #
@@ -66,6 +70,10 @@ cat << EOF >> /etc/httpd/conf.v/$_VH.conf
 <VirtualHost *:80>
     ServerName $_VH
     DocumentRoot /home/$_VH/htdocs
+    RewriteEngine on
+    RewriteCond %{HTTP_HOST} ^$_VH
+    RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+    RewriteRule ^/(.*)$ https://$_VH/\$1 [R=301,L]
     ErrorLog  "|/usr/sbin/rotatelogs /var/log/httpd/$_VH/error_log.%Y%m%d 86400 540"
     CustomLog "|/usr/sbin/rotatelogs /var/log/httpd/$_VH/access_log.%Y%m%d 86400 540" combined
     <Directory /home/$_VH/htdocs>
@@ -106,7 +114,7 @@ cat << EOF >> /etc/httpd/conf.v/$_VH.conf
     DocumentRoot /home/$_VH/htdocs
     ErrorLog  "|/usr/sbin/rotatelogs /var/log/httpd/$_VH/ssl_error_log.%Y%m%d 86400 540"
     CustomLog "|/usr/sbin/rotatelogs /var/log/httpd/$_VH/ssl_access_log.%Y%m%d 86400 540" combined
-    CustomLog /var/log/httpd/$_VH/ssl_request_log "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+    CustomLog "|/usr/sbin/rotatelogs /var/log/httpd/$_VH/ssl_request_log.%Y%m%d 86400 540" "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
     <Directory /home/$_VH/htdocs>
         DirectoryIndex index.html index.php
         Options FollowSymLinks
