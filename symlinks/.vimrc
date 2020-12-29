@@ -389,14 +389,11 @@ set completeopt-=preview
 " Use cpsm as the matcher
 " https://github.com/nixprime/cpsm
 let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
-let g:ctrlp_working_path_mode = 'a'
+let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_match_window = 'bottom,order:btt,min:30,max:50,results:50'
 
-" Use files to list files
-" https://github.com/mattn/files
-if executable('files')
-	let g:ctrlp_user_command = 'files -A %s'
-endif
+" https://github.com/ctrlpvim/ctrlp.vim
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
 "======================================================
 " Windows and Tabs:
