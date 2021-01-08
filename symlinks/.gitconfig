@@ -55,13 +55,14 @@
 	user = lowply
 
 [user]
-	signingkey = 0D9BE6E9F8C77C48
+	signingkey = lowply@github.com
 	username = lowply
 	name = Sho Mizutani
 	email = lowply@github.com
 
 [commit]
 	verbose = true
+	gpgsign = false
 
 [pager]
 	log = diff-highlight | less
@@ -78,5 +79,9 @@
 [rebase]
 	autosquash = true
 
+[gpg]
+	program = gpg
+[tag]
+	gpgSign = true
 [credential]
 	helper = manager-core
