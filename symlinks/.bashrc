@@ -122,6 +122,7 @@ has gls && alias ls='ls -v --color=auto'
 has ggrep && alias grep='ggrep'
 has gfind && alias find='gfind'
 has gh && alias openw='gh repo view --web'
+has code && alias cr='code . -r'
 
 #
 # History size & format
