@@ -8,27 +8,13 @@ $ git clone https://github.com/lowply/dotfiles.git
 $ ./dotfiles/install do
 ```
 
-For VSCode, symlink the `settings.json` after the install:
+## Visual Studio Code
+
+After running the install script, manually symlink the `settings.json`:
 
 ```
 ln -s ~/.vscode/settings.json ~/Library/Application\ Support/Code/User/settings.json
 ```
-
-If you use [ghq](https://github.com/motemen/ghq) for repository management, dotfiles will be stored in `~/.ghq/github.com/lowply/dotfiles`
-
-## Post install - macOS
-
-Install [Homebrew](https://brew.sh/), `brew tap Homebrew/bundle` and run:
-
-```
-$ brew bundle --global
-```
-
-- Don't forget `diff-highlight`
-
-## Post install - CentOS
-
-See [lowply/kickstart](https://github.com/lowply/kickstart/) for install scripts.
 
 ## Development
 
