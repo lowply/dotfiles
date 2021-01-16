@@ -12,9 +12,24 @@ fi
 
 HOSTNAME=${1}
 DATE=$(date +%c)
-DOCROOT="/home/www/${HOSTNAME}"
+WEBDIR="/home/www"
+DOCROOT="${WEBDIR}/${HOSTNAME}/htdocs"
 LOGDIR="/var/log/nginx/${HOSTNAME}"
 CONFFILE="/etc/nginx/conf.d/${HOSTNAME}.conf"
+
+# Check /etc/ssl/dhparam.pem
+if [ ! -f /etc/ssl/dhparam.pem ]; then
+	echo "/etc/ssl/dhparam.pem not found."
+	echo "Please run:"
+	echo "openssl dhparam -out /etc/ssl/dhparam.pem 2048"
+	exit 1
+fi
+
+# Check /etc/ssl/certs/ca-bundle.crt
+if [ ! -f /etc/ssl/certs/ca-bundle.crt ]; then
+	echo "/etc/ssl/certs/ca-bundle.crt not found."
+	exit 1
+fi
 
 # config check
 if [ -f ${CONFFILE} ]; then
@@ -22,14 +37,20 @@ if [ -f ${CONFFILE} ]; then
 	exit 1
 fi
 
+if [ ! -d ${WEBDIR} ]; then
+    mkdir -p ${WEBDIR}
+    chown -R nginx:nginx ${WEBDIR}
+	echo "Created ${WEBDIR}"
+fi
+
 # make docroot
-if [ ! -d "${DOCROOT}" ]; then
-	mkdir -p ${DOCROOT}/htdocs
-	echo "" > ${DOCROOT}/htdocs/index.html
+if [ ! -d ${DOCROOT} ]; then
+	mkdir -p ${DOCROOT}
+	echo "" > ${DOCROOT}/index.html
 	chmod 775 ${DOCROOT}
-	chown -R nginx:nginx ${DOCROOT}
 	chmod g+s ${DOCROOT}
-	echo "Created directory ${DOCROOT}/htdocs"
+	chown -R nginx:nginx ${DOCROOT}
+	echo "Created directory ${DOCROOT}"
 else
 	echo "${DOCROOT} Already exsits."
 fi
@@ -52,43 +73,53 @@ cat << EOF > ${CONFFILE}
 
 server {
     listen       80;
+    listen       [::]:80;
     server_name  ${HOSTNAME};
 
-    # ===================================
-    # This can be deleted after the first certificate issued
-    # using the HTTP-01 challenge.
-    root         /home/www/${HOSTNAME}/htdocs;
-    index        index.html;
-    location /.well-known/acme-challenge {
-        # Do nothing.
+    # For HTTP-01 challenge
+    location ^~ /.well-known/acme-challenge/ {
+        root    ${DOCROOT};
+        index   index.html;
     }
-    # ===================================
 
     location / {
-        rewrite ^ https://${HOSTNAME}$request_uri? permanent;
+        return 301 https://\$host\$request_uri;
     }
-
-    access_log   ${LOGDIR}/access.log main;
-    error_log    ${LOGDIR}/error.log warn;
 }
 
 server {
-    listen       443 ssl;
+    listen       443 ssl http2;
+    listen       [::]:443 ssl http2;
     server_name  ${HOSTNAME};
-    root         ${DOCROOT}/htdocs;
+
+    root         ${DOCROOT};
     index        index.php index.html index.htm;
 
     ssl_certificate      /etc/nginx/ssl/${HOSTNAME}/cert.pem;
     ssl_certificate_key  /etc/nginx/ssl/${HOSTNAME}/key.pem;
 
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:MozSSL:10m;
+    ssl_session_tickets off;
+
+    ssl_dhparam /etc/ssl/dhparam.pem;
+
+    ssl_protocols TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384;
+
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_trusted_certificate /etc/ssl/certs/ca-bundle.crt;
+
     access_log   ${LOGDIR}/access.log main;
     error_log    ${LOGDIR}/error.log warn;
 
+    # client_max_body_size 20M;
     # include basic.conf;
     # include wordpress.conf;
 }
 EOF
 
 echo "Created ${CONFFILE}. Please restart nginx."
-
-echo -e "\nVirtual Host \"${HOSTNAME}\" has created.\n"
+echo "Virtual Host \"${HOSTNAME}\" has been created."
