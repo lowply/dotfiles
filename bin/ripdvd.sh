@@ -4,40 +4,26 @@
 
 usage(){
 	echo "Usage:"
-	echo "    ${0} name"
+	echo "    WORKDIR=/path/to/dir ${0} name"
 	exit 1
 }
 
-convert_mp4(){
-	local HBBIN=/Applications/HandBrakeCLI
-	local DEVICE=${1}
-	local TITLE=${2}
-
-	[ -x ${HBBIN} ] || abort "HandBrakeCLI is not installed."
-	[ -z ${TITLE} ] && abort "Title is not provided."
-	[ -z ${DEVICE} ] && abort "Device is not provided."
-	[ -f "${WORKDIR}/${TITLE}.mp4" ] && abort "${WORKDIR}/${TITLE} already exists."
-
-	${HBBIN} -i ${DEVICE} -Z "High Profile" -s Japanese -o ${WORKDIR}/${TITLE}.mp4
-}
-
-check_conf(){
-	if [ -f ${CONF} ]; then
-		. ${CONF}
-		[ -z ${WORKDIR} ] && abort "WORKDIR is empty. Please update ${CONF}"
-	else
-		cat <<- EOF > ${CONF}
-			# Example: WORKDIR="/Volumes/Storage/DVD"
-			WORKDIR=
-		EOF
-		abort "${CONF} is created. Please update it."
-	fi
-}
+# convert_mp4(){
+# 	local HBBIN=/Applications/HandBrakeCLI
+# 	local DEVICE=${1}
+# 	local TITLE=${2}
+# 
+# 	[ -x ${HBBIN} ] || abort "HandBrakeCLI is not installed."
+# 	[ -z ${TITLE} ] && abort "Title is not provided."
+# 	[ -z ${DEVICE} ] && abort "Device is not provided."
+# 	[ -f "${WORKDIR}/${TITLE}.mp4" ] && abort "${WORKDIR}/${TITLE} already exists."
+# 
+# 	${HBBIN} -i ${DEVICE} -Z "High Profile" -s Japanese -o ${WORKDIR}/${TITLE}.mp4
+# }
 
 main(){
-	CONF=${HOME}/.config/ripdvd.conf
-	check_conf
 	has dvdbackup
+    [ -z "${WORKDIR}" ] && usage
 	[ $# -ne 1 ] && usage
 
 	TITLE=${1}
