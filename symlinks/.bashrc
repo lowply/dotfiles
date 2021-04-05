@@ -113,7 +113,6 @@ alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
 alias nstanp='lsof -nP -iTCP'
 alias lsdsstr='find . -name .DS_Store -print'
 alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
-alias ag='ag --ignore-case --hidden --ignore .git'
 alias make='gmake'
 
 has gsed && alias sed='gsed'
