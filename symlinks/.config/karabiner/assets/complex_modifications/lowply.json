@@ -105,7 +105,7 @@
             ]
         },
         {
-            "description": "Control + HJKL to allow keys",
+            "description": "Control + HJKL to arrow keys",
             "manipulators": [
                 {
                     "type": "basic",
