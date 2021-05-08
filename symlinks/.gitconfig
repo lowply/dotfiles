@@ -85,3 +85,5 @@
 	gpgSign = true
 [credential]
 	helper = manager-core
+[init]
+	defaultBranch = main
