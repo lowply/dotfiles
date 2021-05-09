@@ -2,4 +2,4 @@
 
 export PATH=/usr/local/bin:$PATH
 cd $(dirname $0) && cd ..
-git pull -q --rebase origin master
+git pull -q --rebase origin main
