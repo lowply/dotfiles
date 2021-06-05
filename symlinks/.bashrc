@@ -2,7 +2,7 @@
 
 # Source global definitions
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+    . /etc/bashrc
 fi
 
 # ---------------------------------------------------------------
@@ -23,75 +23,75 @@ export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 # functions
 #
 addpath(){
-	[ -d ${1} ] || return
-	if [ "${2}" == "man" ]; then
-		# for MANPATH
-		export MANPATH=${1}:${MANPATH//$1:/}
-	else
-		# for PATH
-		export PATH=${1}:${PATH//$1:/}
-	fi
+    [ -d ${1} ] || return
+    if [ "${2}" == "man" ]; then
+        # for MANPATH
+        export MANPATH=${1}:${MANPATH//$1:/}
+    else
+        # for PATH
+        export PATH=${1}:${PATH//$1:/}
+    fi
 }
 
 has(){
-	type ${1} > /dev/null 2>&1
-	return $?
+    type ${1} > /dev/null 2>&1
+    return $?
 }
 
 error(){
-	echo "${1}"
-	return 1
+    echo "${1}"
+    return 1
 }
 
 peco-run-cmd(){
-	if [ -n "$1" ] ; then
-		# Replace the last entry, with $1
-		history -s $1
-		# Execute it
-		echo $1 >&2
-		eval $1
-	else
-		# Remove the last entry
-		history -d $((HISTCMD-1))
-	fi
+    if [ -n "$1" ] ; then
+        # Replace the last entry, with $1
+        history -s $1
+        # Execute it
+        echo $1 >&2
+        eval $1
+    else
+        # Remove the last entry
+        history -d $((HISTCMD-1))
+    fi
 }
 
 # See ~/.inputrc
 peco-ghq () {
-	has "peco" || error "peco is not installed"
-	has "ghq" || error "ghq is not installed"
-	local GHQDIR="${HOME}/ghq"
-	local DIR="$(ghq list | peco)"
-	if [ ! -z "${DIR}" ]; then
-		cd "${GHQDIR}/${DIR}"
-	fi
+    has "peco" || error "peco is not installed"
+    has "ghq" || error "ghq is not installed"
+    local GHQDIR="${HOME}/ghq"
+    local DIR="$(ghq list | peco)"
+    if [ ! -z "${DIR}" ]; then
+        cd "${GHQDIR}/${DIR}"
+    fi
 }
 
 # See ~/.inputrc
 peco-snippets() {
-	has "peco" || return
-	[ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
-	local CMD=$(grep -v "^#" ~/.snippets | sed '/^$/d' | peco)
-	peco-run-cmd "$CMD"
+    has "peco" || return
+    [ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
+    local CMD=$(grep -v "^#" ~/.snippets | sed '/^$/d' | peco)
+    peco-run-cmd "$CMD"
 }
 
 backup() {
-	cp -a $1{,.$(date +%y%m%d_%H%M%S)}
+    cp -a $1{,.$(date +%y%m%d_%H%M%S)}
 }
 
 # Docker
 
 docker_cleanup(){
-	for x in $(docker ps -a | grep Exited | awk '{print $1}'); do docker rm $x; done
-	for x in $(docker images | grep "<none>" | awk '{print $3}'); do docker rmi $x; done
+    for x in $(docker ps -a | grep Exited | awk '{print $1}'); do docker rm $x; done
+    for x in $(docker images | grep "<none>" | awk '{print $3}'); do docker rmi $x; done
 }
 
 epoch () {
-	if [ "$1" == "now" ]; then
-		/bin/date -ju '+%F %T %Z';
-	else
-		/bin/date -jur $1 '+%F %T %Z';
-	fi
+    if [ "$1" == "now" ]; then
+        /bin/date -ju '+%F %T %Z';
+    else
+        /bin/date -jur $1 '+%F %T %Z';
+    fi
 }
 
 #
@@ -134,21 +134,21 @@ export HISTTIMEFORMAT="%F %T : "
 # http://kazmax.zpp.jp/cmd/l/less.1.html
 # http://qiita.com/hatchinee/items/586fb1c4915e2bb5c03b
 #
-export LESS='-X -R -i -P ?f%f:(stdin).	?lb%lb?L/%L..	[?eEOF:?pb%pb\%..]'
+export LESS='-X -R -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
 
 #
 # for Mac, brew install source-highlight
 # for Linux, yum install source-highlight
 #
 if has source-highlight; then
-	if has src-hilite-lesspipe.sh; then
-		# CentOS / Mac
-		LESSPIPE=$(which src-hilite-lesspipe.sh)
-	elif [ -x "/usr/share/source-highlight/src-hilite-lesspipe.sh" ]; then
-		# Ubuntu
-		LESSPIPE="/usr/share/source-highlight/src-hilite-lesspipe.sh"
-	fi
-	export LESSOPEN="| $LESSPIPE %s"
+    if has src-hilite-lesspipe.sh; then
+        # CentOS / Mac
+        LESSPIPE=$(which src-hilite-lesspipe.sh)
+    elif [ -x "/usr/share/source-highlight/src-hilite-lesspipe.sh" ]; then
+        # Ubuntu
+        LESSPIPE="/usr/share/source-highlight/src-hilite-lesspipe.sh"
+    fi
+    export LESSOPEN="| $LESSPIPE %s"
 fi
 
 #
@@ -179,45 +179,45 @@ shopt -s checkwinsize
 # PS1
 #
 psone(){
-	bgcolor(){
-		echo "\\[\\033[48;5;"$1"m\\]"
-	}
+    bgcolor(){
+        echo "\\[\\033[48;5;"$1"m\\]"
+    }
 
-	fgcolor(){
-		echo "\\[\\033[38;5;"$1"m\\]"
-	}
+    fgcolor(){
+        echo "\\[\\033[38;5;"$1"m\\]"
+    }
 
-	resetcolor(){
-		echo "\\[\\e[0m\\]"
-	}
+    resetcolor(){
+        echo "\\[\\e[0m\\]"
+    }
 
-	# color config
-	if [ $(id -u) == 0 ]; then
-		local BACKGROUND=0
-		local UNAME=196
-		local SYMBOL=226
-		local HOST=196
-		local DIRNAME=196
-		local PROMPT=196
-		local BRANCH=226
-	else
-		if [ -f ${HOME}/.bash_color ]; then
-			. ${HOME}/.bash_color
-		else
-			local BACKGROUND=0
-			local UNAME=252
-			local SYMBOL=3
-			local HOST=252
-			local DIRNAME=252
-			local PROMPT=3
-			local BRANCH=33
-		fi
-	fi
+    # color config
+    if [ $(id -u) == 0 ]; then
+        local BACKGROUND=0
+        local UNAME=196
+        local SYMBOL=226
+        local HOST=196
+        local DIRNAME=196
+        local PROMPT=196
+        local BRANCH=226
+    else
+        if [ -f ${HOME}/.bash_color ]; then
+            . ${HOME}/.bash_color
+        else
+            local BACKGROUND=0
+            local UNAME=252
+            local SYMBOL=3
+            local HOST=252
+            local DIRNAME=252
+            local PROMPT=3
+            local BRANCH=33
+        fi
+    fi
 
-	GIT_PS1_SHOWDIRTYSTATE=true
+    GIT_PS1_SHOWDIRTYSTATE=true
 
-	# set PS1
-	export PS1="\t:$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)\n\$ $(resetcolor)"
+    # set PS1
+    export PS1="\t:$(fgcolor $UNAME)\u$(fgcolor $SYMBOL)@$(fgcolor $HOST)\h$(fgcolor $BRANCH)"'$(__git_ps1 ":(%s)")'"$(fgcolor $PROMPT)\n\$ $(resetcolor)"
 }
 
 #
@@ -225,35 +225,35 @@ psone(){
 #
 case "${OSTYPE}" in
 darwin*)
-	# coreutils
-	addpath /usr/local/opt/coreutils/libexec/gnubin
-	addpath /usr/local/opt/coreutils/libexec/gnuman man
+    # coreutils
+    addpath /usr/local/opt/coreutils/libexec/gnubin
+    addpath /usr/local/opt/coreutils/libexec/gnuman man
 
-	# Use OpenSSL
-	addpath /usr/local/opt/openssl/bin
+    # Use OpenSSL
+    addpath /usr/local/opt/openssl/bin
 
-	# Ruby
-	addpath /usr/local/opt/ruby/bin
-	addpath /usr/local/lib/ruby/gems/2.7.0/bin
+    # Ruby
+    addpath /usr/local/opt/ruby/bin
+    addpath /usr/local/lib/ruby/gems/2.7.0/bin
 
-	# curl
-	addpath /usr/local/opt/curl/bin
+    # curl
+    addpath /usr/local/opt/curl/bin
 
-	#
-	# bash completion (need brew install bash-completion)
-	#
-	if [ -f $(brew --prefix)/etc/bash_completion ]; then
-		. $(brew --prefix)/etc/bash_completion
-	fi
-	;;
+    #
+    # bash completion (need brew install bash-completion)
+    #
+    if [ -f $(brew --prefix)/etc/bash_completion ]; then
+        . $(brew --prefix)/etc/bash_completion
+    fi
+    ;;
 linux*)
-	# rbenv
-	[ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin && eval "$(rbenv init -)"
+    # rbenv
+    [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin && eval "$(rbenv init -)"
 
-	# n
-	export N_PREFIX="$HOME/n"
-	addpath ${N_PREFIX}/bin
-	;;
+    # n
+    export N_PREFIX="$HOME/n"
+    addpath ${N_PREFIX}/bin
+    ;;
 esac
 
 # dotfiles/bin
@@ -270,45 +270,45 @@ addpath ${HOME}/go/bin
 #
 case "${OSTYPE}" in
 darwin*)
-	# On macOS - https://support.apple.com/en-us/HT208050
-	export BASH_SILENCE_DEPRECATION_WARNING=1
+    # On macOS - https://support.apple.com/en-us/HT208050
+    export BASH_SILENCE_DEPRECATION_WARNING=1
 
-	# On macOS. Need to run: brew install bash-completion
-	BREW_GIT="/usr/local/opt/git"
-	CONTRIB_PATH="${BREW_GIT}/share/git-core/contrib"
-	if [ -d ${BREW_GIT}/etc/bash_completion.d ]; then
-		GIT_COMPLETION_PATH="${BREW_GIT}/etc/bash_completion.d"
-	fi
+    # On macOS. Need to run: brew install bash-completion
+    BREW_GIT="/usr/local/opt/git"
+    CONTRIB_PATH="${BREW_GIT}/share/git-core/contrib"
+    if [ -d ${BREW_GIT}/etc/bash_completion.d ]; then
+        GIT_COMPLETION_PATH="${BREW_GIT}/etc/bash_completion.d"
+    fi
 
     if [ ! -L "/usr/local/bin/diff-highlight" ]; then
         ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight /usr/local/bin/
     fi
 
-	;;
+    ;;
 linux*)
-	GIT_VERSION=$(git --version | sed -e "s/git version //")
+    GIT_VERSION=$(git --version | sed -e "s/git version //")
 
-	if [ -d /usr/local/git ]; then
-		# Installed from source - expecting the contrib directory is in /usr/local/git
-		CONTRIB_PATH="/usr/local/git/contrib"
-	elif [ -d /usr/share/git-core ]; then
-		# Installed via package manager. Amazon Linux 2 for most cases
-		CONTRIB_PATH="/usr/share/git-core/contrib"
-	elif [ -d /usr/local/src/git-${GIT_VERSION} ]; then
-		# Installed via package manager and missing the contrib directory
+    if [ -d /usr/local/git ]; then
+        # Installed from source - expecting the contrib directory is in /usr/local/git
+        CONTRIB_PATH="/usr/local/git/contrib"
+    elif [ -d /usr/share/git-core ]; then
+        # Installed via package manager. Amazon Linux 2 for most cases
+        CONTRIB_PATH="/usr/share/git-core/contrib"
+    elif [ -d /usr/local/src/git-${GIT_VERSION} ]; then
+        # Installed via package manager and missing the contrib directory
 
-		# Downlaod git tarball to /usr/local/src and extract it
-		# Use the same version as the installed git, otherwise this won't work
-		# You don't have to install bash-completion
-		CONTRIB_PATH="/usr/local/src/git-${GIT_VERSION}/contrib"
-	fi
+        # Downlaod git tarball to /usr/local/src and extract it
+        # Use the same version as the installed git, otherwise this won't work
+        # You don't have to install bash-completion
+        CONTRIB_PATH="/usr/local/src/git-${GIT_VERSION}/contrib"
+    fi
 
-	GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
+    GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
 
     if [ ! -L "/usr/local/bin/diff-highlight" ]; then
         echo "Look for diff-highlight in ${CONTRIB_PATH} and symlink into /usr/local/bin/"
     fi
-	;;
+    ;;
 esac
 
 . ${GIT_COMPLETION_PATH}/git-prompt.sh
@@ -323,18 +323,18 @@ has aws_completer && complete -C aws_completer aws
 #
 case "${OSTYPE}" in
 darwin*)
-	if [ -d ${HOME}/google-cloud-sdk ]; then
-		source "${HOME}/google-cloud-sdk/path.bash.inc"
-		source "${HOME}/google-cloud-sdk/completion.bash.inc"
-	fi
-	;;
+    if [ -d ${HOME}/google-cloud-sdk ]; then
+        source "${HOME}/google-cloud-sdk/path.bash.inc"
+        source "${HOME}/google-cloud-sdk/completion.bash.inc"
+    fi
+    ;;
 esac
 
 #
 # acme.sh
 #
 if [ -d ${HOME}/.acme.sh ]; then
-	. "${HOME}/.acme.sh/acme.sh.env"
+    . "${HOME}/.acme.sh/acme.sh.env"
 fi
 
 #
@@ -349,5 +349,5 @@ export LANG=en_US.UTF-8
 # env specific additions
 #
 if [ -f ${HOME}/.bashrc.local ]; then
-	. ${HOME}/.bashrc.local
+    . ${HOME}/.bashrc.local
 fi
