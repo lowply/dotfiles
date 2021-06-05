@@ -266,19 +266,24 @@ addpath ${HOME}/bin
 addpath ${HOME}/go/bin
 
 #
-# git prompt and bash completion
+# git prompt, bash completion and diff-highlight
 #
 case "${OSTYPE}" in
 darwin*)
 	# On macOS - https://support.apple.com/en-us/HT208050
 	export BASH_SILENCE_DEPRECATION_WARNING=1
 
-	# On macOS - installing git via homebrew will do most of the things
+	# On macOS. Need to run: brew install bash-completion
 	BREW_GIT="/usr/local/opt/git"
 	CONTRIB_PATH="${BREW_GIT}/share/git-core/contrib"
 	if [ -d ${BREW_GIT}/etc/bash_completion.d ]; then
 		GIT_COMPLETION_PATH="${BREW_GIT}/etc/bash_completion.d"
 	fi
+
+    if [ ! -L "/usr/local/bin/diff-highlight" ]; then
+        ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight /usr/local/bin/
+    fi
+
 	;;
 linux*)
 	GIT_VERSION=$(git --version | sed -e "s/git version //")
@@ -300,16 +305,11 @@ linux*)
 
 	GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
 
+    if [ ! -L "/usr/local/bin/diff-highlight" ]; then
+        echo "Look for diff-highlight in ${CONTRIB_PATH} and symlink into /usr/local/bin/"
+    fi
 	;;
 esac
-
-if [ ! -L "/usr/local/bin/diff-highlight" ]; then
-	echo "Looking for diff-highlight in the ${CONTRIB_PATH} dir..."
-	echo "============================================"
-	find /usr/share/git-core -type f -name "diff-highlight"
-	echo "============================================"
-	echo "Run ln -s <PATH> /usr/local/bin/ to create a symlink"
-fi
 
 . ${GIT_COMPLETION_PATH}/git-prompt.sh
 
