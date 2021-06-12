@@ -11,6 +11,12 @@ fi
 #
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
+# Add brew path for Apple Sillicon macs
+[[ ${OSTYPE} =~ ^darwin && ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
+
+# Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
+[[ ${OSTYPE} =~ ^darwin ]] && export BASH_SILENCE_DEPRECATION_WARNING=1
+
 #
 # functions
 #
@@ -146,10 +152,13 @@ fi
 #
 # set EDITOR, PAGER
 #
+
 [ -x "/usr/bin/vim" ] && export EDITOR=/usr/bin/vim
 [ -x "/usr/local/bin/vim" ] && export EDITOR=/usr/local/bin/vim
-[ -x "/usr/local/bin/nvim" ] && export EDITOR=/usr/local/bin/nvim
-has less && export PAGER=/usr/bin/less
+[ -x "/opt/homebrew/bin/vim" ] && export EDITOR=/opt/homebrew/bin/vim
+
+[ -x "/usr/bin/less" ] && export PAGER=/usr/bin/less
+[ -x "/opt/homebrew/bin/less" ] && export PAGER=/opt/homebrew/bin/less
 
 #
 # avoid screen lock by hitting Ctrl+S
@@ -218,18 +227,21 @@ psone(){
 case "${OSTYPE}" in
 darwin*)
     # coreutils
-    addpath /usr/local/opt/coreutils/libexec/gnubin
-    addpath /usr/local/opt/coreutils/libexec/gnuman man
+    addpath $(brew --prefix)/opt/coreutils/libexec/gnubin
+    addpath $(brew --prefix)/opt/coreutils/libexec/gnuman man
 
     # Use OpenSSL
-    addpath /usr/local/opt/openssl/bin
+    addpath $(brew --prefix)/opt/openssl/bin
 
     # Ruby
-    addpath /usr/local/opt/ruby/bin
-    addpath /usr/local/lib/ruby/gems/2.7.0/bin
+    addpath $(brew --prefix)/opt/ruby/bin
+    addpath $(brew --prefix)/lib/ruby/gems/2.7.0/bin
 
     # curl
-    addpath /usr/local/opt/curl/bin
+    addpath $(brew --prefix)/opt/curl/bin
+
+    # diff-highlight
+    addpath $(brew --prefix)/opt/git/share/git-core/contrib/diff-highlight
 
     #
     # bash completion (need brew install bash-completion)
