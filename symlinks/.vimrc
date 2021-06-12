@@ -49,6 +49,9 @@ call plug#end()
 " Basic configuration
 "======================================================
 
+" https://sw.kovidgoyal.net/kitty/faq.html#using-a-color-theme-with-a-background-color-does-not-work-well-in-vim
+let &t_ut=''
+
 filetype plugin indent on
 
 "" Encoding

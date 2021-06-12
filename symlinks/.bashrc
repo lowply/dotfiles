@@ -5,7 +5,6 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-
 #
 # reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 #
@@ -112,6 +111,9 @@ alias nstanp='lsof -nP -iTCP'
 alias lsdsstr='find . -name .DS_Store -print'
 alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 alias make='gmake'
+
+# https://sw.kovidgoyal.net/kitty/faq.html#i-get-errors-about-the-terminal-being-unknown-or-opening-the-terminal-failing-when-sshing-into-a-different-computer
+alias kssh='/Applications/kitty.app/Contents/MacOS/kitty +kitten ssh'
 
 has gsed && alias sed='gsed'
 has colordiff && alias diff='colordiff'
