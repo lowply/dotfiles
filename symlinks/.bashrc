@@ -5,14 +5,6 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-# ---------------------------------------------------------------
-# Original Setting
-# ---------------------------------------------------------------
-
-# To make tmux work on kitty. Just can't make full swich to
-# kitty's window management style, so for now I'll continue tmux...
-# https://sw.kovidgoyal.net/kitty/faq.html#i-am-using-tmux-and-have-a-problem
-export TERM=xterm-256color
 
 #
 # reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
