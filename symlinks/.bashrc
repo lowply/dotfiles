@@ -247,7 +247,7 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     #
     # bash completion (need brew install bash-completion)
     #
-    if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    if [ -h $(brew --prefix)/etc/bash_completion ]; then
         . $(brew --prefix)/etc/bash_completion
     fi
 elif [[ ${OSTYPE} =~ ^linux ]]; then
@@ -290,7 +290,7 @@ elif [[ ${OSTYPE} =~ ^linux ]]; then
 
     GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
 
-    if [ ! -L "/usr/local/bin/diff-highlight" ]; then
+    if [ ! -h "/usr/local/bin/diff-highlight" ]; then
         echo "Look for diff-highlight in ${CONTRIB_PATH} and symlink into /usr/local/bin/"
     fi
 
