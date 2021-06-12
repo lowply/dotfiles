@@ -224,8 +224,9 @@ psone(){
 #
 # path
 #
-case "${OSTYPE}" in
-darwin*)
+if [[ ${OSTYPE} =~ ^darwin ]]; then
+    has "brew" || error "brew is not installed"
+
     # coreutils
     addpath $(brew --prefix)/opt/coreutils/libexec/gnubin
     addpath $(brew --prefix)/opt/coreutils/libexec/gnuman man
@@ -249,16 +250,10 @@ darwin*)
     if [ -f $(brew --prefix)/etc/bash_completion ]; then
         . $(brew --prefix)/etc/bash_completion
     fi
-    ;;
-linux*)
+elif [[ ${OSTYPE} =~ ^linux ]]; then
     # rbenv
     [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin && eval "$(rbenv init -)"
-
-    # n
-    export N_PREFIX="$HOME/n"
-    addpath ${N_PREFIX}/bin
-    ;;
-esac
+fi
 
 # dotfiles/bin
 addpath ${HOME}/ghq/github.com/lowply/dotfiles/bin
@@ -272,24 +267,10 @@ addpath ${HOME}/go/bin
 #
 # git prompt, bash completion and diff-highlight
 #
-case "${OSTYPE}" in
-darwin*)
-    # On macOS - https://support.apple.com/en-us/HT208050
-    export BASH_SILENCE_DEPRECATION_WARNING=1
-
-    # On macOS. Need to run: brew install bash-completion
-    BREW_GIT="/usr/local/opt/git"
-    CONTRIB_PATH="${BREW_GIT}/share/git-core/contrib"
-    if [ -d ${BREW_GIT}/etc/bash_completion.d ]; then
-        GIT_COMPLETION_PATH="${BREW_GIT}/etc/bash_completion.d"
-    fi
-
-    if [ ! -L "/usr/local/bin/diff-highlight" ]; then
-        ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight /usr/local/bin/
-    fi
-
-    ;;
-linux*)
+if [[ ${OSTYPE} =~ ^darwin ]]; then
+    # On macOS. Need to have bash-completion
+    [ -h $(brew --prefix)/etc/bash_completion.d/git-prompt.sh ] && . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+elif [[ ${OSTYPE} =~ ^linux ]]; then
     GIT_VERSION=$(git --version | sed -e "s/git version //")
 
     if [ -d /usr/local/git ]; then
@@ -312,10 +293,9 @@ linux*)
     if [ ! -L "/usr/local/bin/diff-highlight" ]; then
         echo "Look for diff-highlight in ${CONTRIB_PATH} and symlink into /usr/local/bin/"
     fi
-    ;;
-esac
 
-. ${GIT_COMPLETION_PATH}/git-prompt.sh
+    . ${GIT_COMPLETION_PATH}/git-prompt.sh
+fi
 
 #
 # aws cli completion
@@ -325,14 +305,12 @@ has aws_completer && complete -C aws_completer aws
 #
 # GCP
 #
-case "${OSTYPE}" in
-darwin*)
+if [[ ${OSTYPE} =~ ^darwin ]]; then
     if [ -d ${HOME}/google-cloud-sdk ]; then
         source "${HOME}/google-cloud-sdk/path.bash.inc"
         source "${HOME}/google-cloud-sdk/completion.bash.inc"
     fi
-    ;;
-esac
+fi
 
 #
 # acme.sh
