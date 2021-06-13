@@ -10,6 +10,9 @@ fi
 #
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
+# Add brew path for Apple Sillicon macs
+[[ ${OSTYPE} =~ ^darwin && ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
+
 #
 # functions
 #
@@ -78,20 +81,6 @@ epoch () {
         /bin/date -jur $1 '+%F %T %Z';
     fi
 }
-
-#
-# for macOS
-#
-if [[ ${OSTYPE} =~ ^darwin ]]; then
-    # Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
-    export BASH_SILENCE_DEPRECATION_WARNING=1
-
-    # Add brew path for Apple Sillicon macs
-    [[ ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
-
-    has "brew" || { echo "brew is not installed"; return; }
-    export BREW_PREFIX="$(brew --prefix)"
-fi
 
 #
 # aliases
@@ -228,6 +217,11 @@ psone(){
 # path
 #
 if [[ ${OSTYPE} =~ ^darwin ]]; then
+    # Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
+    export BASH_SILENCE_DEPRECATION_WARNING=1
+
+    has "brew" && export BREW_PREFIX="$(brew --prefix)" || { echo "brew is not installed"; return; }
+
     # aliasing every command with the 'g' prefix in ${BREW_PREFIX}/bin is not a great idea.
     # instead, let's just add the gnubin dir to the PATH
     addpath ${BREW_PREFIX}/opt/coreutils/libexec/gnubin
