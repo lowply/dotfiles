@@ -10,24 +10,12 @@ fi
 #
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
-# Add brew path for Apple Sillicon macs
-[[ ${OSTYPE} =~ ^darwin && ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
-
-# Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
-[[ ${OSTYPE} =~ ^darwin ]] && export BASH_SILENCE_DEPRECATION_WARNING=1
-
 #
 # functions
 #
 addpath(){
     [ -d ${1} ] || return
-    if [ "${2}" == "man" ]; then
-        # for MANPATH
-        export MANPATH=${1}:${MANPATH//$1:/}
-    else
-        # for PATH
-        export PATH=${1}:${PATH//$1:/}
-    fi
+    export PATH=${1}:${PATH//$1:/}
 }
 
 has(){
@@ -92,6 +80,20 @@ epoch () {
 }
 
 #
+# for macOS
+#
+if [[ ${OSTYPE} =~ ^darwin ]]; then
+    # Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
+    export BASH_SILENCE_DEPRECATION_WARNING=1
+
+    # Add brew path for Apple Sillicon macs
+    [[ ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
+
+    has "brew" || { echo "brew is not installed"; return; }
+    export BREW_PREFIX="$(brew --prefix)"
+fi
+
+#
 # aliases
 #
 #alias rm='rm -i'
@@ -110,16 +112,15 @@ alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
 alias nstanp='lsof -nP -iTCP'
 alias lsdsstr='find . -name .DS_Store -print'
 alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
-alias make='gmake'
 
 # https://sw.kovidgoyal.net/kitty/faq.html#i-get-errors-about-the-terminal-being-unknown-or-opening-the-terminal-failing-when-sshing-into-a-different-computer
 alias kssh='/Applications/kitty.app/Contents/MacOS/kitty +kitten ssh'
 
 has gsed && alias sed='gsed'
+has ggrep && alias grep='ggrep'
+has gmake && alias make='gmake'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
-has ggrep && alias grep='ggrep'
-has gfind && alias find='gfind'
 has gh && alias openw='gh repo view --web'
 has code && alias cr='code . -r'
 
@@ -227,31 +228,20 @@ psone(){
 # path
 #
 if [[ ${OSTYPE} =~ ^darwin ]]; then
-    has "brew" || error "brew is not installed"
-
-    # coreutils
-    addpath $(brew --prefix)/opt/coreutils/libexec/gnubin
-    addpath $(brew --prefix)/opt/coreutils/libexec/gnuman man
+    # aliasing every command with the 'g' prefix in ${BREW_PREFIX}/bin is not a great idea.
+    # instead, let's just add the gnubin dir to the PATH
+    addpath ${BREW_PREFIX}/opt/coreutils/libexec/gnubin
 
     # Use OpenSSL
-    addpath $(brew --prefix)/opt/openssl/bin
+    addpath ${BREW_PREFIX}/opt/openssl/bin
 
     # Ruby
-    addpath $(brew --prefix)/opt/ruby/bin
-    addpath $(brew --prefix)/lib/ruby/gems/2.7.0/bin
+    addpath ${BREW_PREFIX}/opt/ruby/bin
+    addpath ${BREW_PREFIX}/lib/ruby/gems/2.7.0/bin
 
     # curl
-    addpath $(brew --prefix)/opt/curl/bin
+    addpath ${BREW_PREFIX}/opt/curl/bin
 
-    # diff-highlight
-    addpath $(brew --prefix)/opt/git/share/git-core/contrib/diff-highlight
-
-    #
-    # bash completion (need brew install bash-completion)
-    #
-    if [ -h $(brew --prefix)/etc/bash_completion ]; then
-        . $(brew --prefix)/etc/bash_completion
-    fi
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     # rbenv
     [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin && eval "$(rbenv init -)"
@@ -270,8 +260,22 @@ addpath ${HOME}/go/bin
 # git prompt, bash completion and diff-highlight
 #
 if [[ ${OSTYPE} =~ ^darwin ]]; then
-    # On macOS. Need to have bash-completion
-    [ -h $(brew --prefix)/etc/bash_completion.d/git-prompt.sh ] && . $(brew --prefix)/etc/bash_completion.d/git-prompt.sh
+    # bash completion (need brew install bash-completion)
+    if [ -h ${BREW_PREFIX}/etc/bash_completion ]; then
+        . ${BREW_PREFIX}/etc/bash_completion
+    fi
+
+    # git-prompt (need bash-completion)
+    # I didn't like bash-git-prompt, just git-prompt.sh is fine
+    if [ -h ${BREW_PREFIX}/etc/bash_completion.d/git-prompt.sh ]; then
+        . ${BREW_PREFIX}/etc/bash_completion.d/git-prompt.sh
+    fi
+
+    # diff-highlight
+    if [ ! -h ${BREW_PREFIX}/bin/diff-highlight ]; then
+        CONTRIB_PATH="${BREW_PREFIX}/opt/git/share/git-core/contrib"
+        ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight ${BREW_PREFIX}/bin
+    fi
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     GIT_VERSION=$(git --version | sed -e "s/git version //")
 
