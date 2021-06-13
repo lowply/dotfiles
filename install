@@ -87,11 +87,12 @@ main(){
 
 	WORKDIR=$(cd $(dirname $0); pwd)
 
-	case "${OSTYPE}" in
-	darwin*)
-		[ -d /usr/local/opt/coreutils ] || { echo "Install coreutils first."; exit 1; }
-		export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-	esac
+	if [[ ${OSTYPE} =~ ^darwin ]]; then
+		[[ ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
+		type brew > /dev/null 2>&1 || { echo "Install homebrew first."; exit 1; }
+		[ -d $(brew --prefix)/opt/coreutils ] || { echo "Install coreutils first."; exit 1; }
+		export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
+	fi
 
 	case "${1}" in
 		"do")
