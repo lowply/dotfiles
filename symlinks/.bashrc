@@ -240,9 +240,12 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     addpath ${BREW_PREFIX}/opt/curl/bin
 
 elif [[ ${OSTYPE} =~ ^linux ]]; then
-    # rbenv
-    [ -d ${HOME}/.rbenv ] && addpath ${HOME}/.rbenv/bin && eval "$(rbenv init -)"
+    # noop
+    :
 fi
+
+# rbenv
+[ -d ${HOME}/.rbenv ] && eval "$(rbenv init -)"
 
 # dotfiles/bin
 addpath ${HOME}/ghq/github.com/lowply/dotfiles/bin
