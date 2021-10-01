@@ -27,22 +27,27 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'honza/vim-snippets' " Snippet collection
   Plug 'tpope/vim-surround'
   Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'nixprime/cpsm', { 'do': './install.sh' } " Fast matcher
+  Plug 'nixprime/cpsm', { 'do': 'PY3=ON ./install.sh' } " Fast matcher
   Plug 'justinmk/vim-dirvish'
   Plug 'bkad/CamelCaseMotion'
   Plug 'vim-scripts/closetag.vim'
   Plug 'jiangmiao/auto-pairs'
   Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'lifepillar/vim-solarized8'
   Plug 'itchyny/lightline.vim'
   Plug 'godlygeek/tabular' " Required for vim-markdown
   Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
   Plug 'stephpy/vim-yaml', { 'for': 'yaml' } " Better yaml syntax highlighting especially with heredocs
-  Plug 'mattn/vim-goimports', { 'for': 'go' }
   Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
   Plug 'elzr/vim-json', { 'for': 'json' }
   Plug 'pangloss/vim-javascript', { 'for': 'js' }
+  Plug 'prabirshrestha/asyncomplete.vim'
+  Plug 'prabirshrestha/asyncomplete-lsp.vim'
+  Plug 'prabirshrestha/asyncomplete-buffer.vim'
+  Plug 'prabirshrestha/asyncomplete-file.vim'
+  Plug 'prabirshrestha/vim-lsp'
+  Plug 'mattn/vim-lsp-settings'
+  Plug 'mattn/vim-lsp-icons'
 call plug#end()
 
 "======================================================
@@ -375,14 +380,6 @@ sunmap b
 sunmap e
 sunmap ge
 
-"======================================================
-" Auto Complete:
-"======================================================
-
-" Override <tab>
-" let g:UltiSnipsExpandTrigger="<F9>"
-" let g:UltiSnipsJumpForwardTrigger="<F9>"
-
 set completeopt-=preview
 
 "======================================================
@@ -466,7 +463,7 @@ augroup END
 "======================================================
 " lightline:
 "======================================================
-"
+
 let g:lightline = {
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ],
@@ -478,36 +475,7 @@ let g:lightline = {
   \ }
 
 "======================================================
-" CoC and Gopls:
-"
-" Run :CocInstall coc-go first. Check ~/.config/coc/extensions/node_modules/
-" to see if extention is installed or not.
-" https://www.npmjs.com/package/coc-go
-"
-" Some configurations are taken from:
-" https://github.com/neoclide/coc.nvim#example-vim-configuration
-"
-" coc-settings.json example is at:
-" https://github.com/golang/tools/blob/master/gopls/doc/vim.md#cocnvim
-"
-" This example also says that:
-"
-" > The `editor.action.organizeImport` code action will auto-format code and add
-" missing imports. To run this automatically on save, add the following line
-" to your `init.vim`:
-"
-" autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
-"
-" However, this doesn't format code.
-" Also, this does insert/remove import declaration automatically, but it outputs:
-" [coc.nvim] Organize import action not found.
-"
-" Adding `"coc.preferences.formatOnSaveFiletypes": ["go"]` to the
-" ~/.vim/coc-settings.json file will format code, but not sure why it works.
-"
-" Instead, I decided to use mattn/vim-goimports. Zero configuration FTW.
-" https://github.com/mattn/vim-goimports
-"
+" vim-lsp
 "======================================================
 
 set cmdheight=2
@@ -515,51 +483,51 @@ set updatetime=300
 set shortmess+=c
 set signcolumn=yes
 
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" https://github.com/prabirshrestha/asyncomplete.vim#tab-completion
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+autocmd BufWritePre <buffer> call execute('LspCodeActionSync source.organizeImports')
+autocmd BufWritePre <buffer> LspDocumentFormatSync
+
+" https://qiita.com/kitagry/items/216c2cf0066ff046d200
+let g:lsp_signs_enabled = 1
+let g:lsp_diagnostics_echo_cursor = 1
+nnoremap <expr> <C-]> execute(':LspPeekDefinition') =~ "not supported" ? "\<C-]>" : ":LspDefinition<cr>"
+
+" https://github.com/prabirshrestha/asyncomplete.vim
+let g:asyncomplete_auto_popup = 1
 
 function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" https://github.com/prabirshrestha/asyncomplete-file.vim
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'allowlist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
 
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-"======================================================
-" https://superuser.com/questions/399296/256-color-support-for-vim-background-in-tmux
-" A workaround
-"======================================================
-
-if &term =~ '256color'
-  set t_ut=
-endif
+" https://github.com/prabirshrestha/asyncomplete-buffer.vim
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'allowlist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ 'config': {
+    \    'max_buffer_size': 5000000,
+    \  },
+    \ }))
 
 "======================================================
 " grep.vim
