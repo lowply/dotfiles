@@ -22,6 +22,21 @@ backup(){
     mv ${TARGET} ${BACKUPDIR}
 }
 
+deps(){
+    if grep -q "^Ubuntu" /etc/issue; then
+        GIT_VERSION=$(git --version | sed -e "s/git version //")
+        cd /usr/local/src
+        sudo curl -OL https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz
+        sudo tar xzf git-${GIT_VERSION}.tar.gz
+        sudo mkdir /usr/local/git
+        sudo mv git-${GIT_VERSION}/contrib /usr/local/git
+        CONTRIB_PATH="/usr/local/git/contrib"
+        cd ${CONTRIB_PATH}/diff-highlight
+        sudo make
+        sudo ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight /usr/local/bin
+    fi
+}
+
 symlinks(){
     cd ${WORKDIR}/symlinks
 
@@ -95,15 +110,13 @@ main(){
     fi
 
     case "${1}" in
-        "do")
-            symlinks
-            copies
-        ;;
         "clean")
             unlink
         ;;
         *)
-            usage
+            deps
+            symlinks
+            copies
         ;;
     esac
 }
