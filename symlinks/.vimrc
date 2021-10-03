@@ -260,9 +260,12 @@ nnoremap <Leader>o :.Gbrowse<CR>
 " Colorscheme:
 "======================================================
 
-" https://github.com/lifepillar/vim-solarized8
-set background=dark
-colorscheme solarized8
+try
+  colorscheme solarized8 " https://github.com/lifepillar/vim-solarized8
+  set background=dark
+catch /^Vim\%((\a\+)\)\=:E185/
+  colorscheme default
+endtry
 
 "======================================================
 "" Custom configs
