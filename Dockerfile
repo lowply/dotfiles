@@ -1,4 +1,4 @@
-# Build dependencies for cpsm. Ref: https://github.com/nixprime/cpsm#requirements
+# Build cpsm. Ref: https://github.com/nixprime/cpsm#requirements
 FROM ubuntu:20.04 AS cpsm
 WORKDIR /tmp
 RUN apt-get update
@@ -7,6 +7,7 @@ RUN apt-get install -y git libboost-all-dev cmake python-dev libicu-dev build-es
 RUN git clone https://github.com/nixprime/cpsm.git
 RUN PY3=ON cpsm/install.sh
 
+# Build vim-prettier
 FROM node:16-slim AS prettier
 WORKDIR /tmp
 RUN apt-get update && apt-get install -y git
@@ -15,11 +16,15 @@ RUN cd vim-prettier && yarn install
 
 FROM ubuntu:20.04
 RUN apt-get update
-# To install the latest Git. Ref: https://git-scm.com/download/linux
+
+# Install the latest Git. Ref: https://git-scm.com/download/linux
 RUN apt-get -y install software-properties-common && add-apt-repository -y ppa:git-core/ppa && apt-get update
 RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
-RUN apt-get -y install sudo make vim git curl locales
-RUN locale-gen en_US.UTF-8 && dpkg-reconfigure --frontend noninteractive locales
+RUN apt-get -y install sudo make vim git curl
+
+# Locales. Ref: https://hub.docker.com/_/ubuntu/
+RUN apt-get install -y locales && rm -rf /var/lib/apt/lists/* && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
 
 RUN useradd lowply -m -d /home/lowply -g users
 RUN echo "lowply ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/lowply
