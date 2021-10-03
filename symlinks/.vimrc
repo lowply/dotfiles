@@ -21,7 +21,6 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'vim-scripts/grep.vim'
   Plug 'majutsushi/tagbar'
   Plug 'Yggdroot/indentLine'
-  Plug 'SirVer/ultisnips' " Snippet
   Plug 'honza/vim-snippets' " Snippet collection
   Plug 'tpope/vim-surround'
   Plug 'ctrlpvim/ctrlp.vim'
@@ -192,15 +191,6 @@ noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 "" Opens a tab edit command with the path of the currently edited file filled
 noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
-
-" snippets
-" To make C-Space work:
-imap <Nul> <C-Space>
-let g:UltiSnipsExpandTrigger="<C-Space>"
-" let g:UltiSnipsJumpForwardTrigger="<c-tab>"
-" let g:UltiSnipsJumpBackwardTrigger="<c-b>"
-let g:UltiSnipsEditSplit="vertical"
 
 " Tagbar
 nmap <silent> <F4> :TagbarToggle<CR>
