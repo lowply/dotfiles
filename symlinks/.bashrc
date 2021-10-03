@@ -9,7 +9,7 @@ fi
 # Reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 # except on GitHub Codespaces
 #
-[ uname -a | grep -q "^Linux codespaces" ] || export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+uname -a | grep -q "^Linux codespaces" || export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 # Add brew path for Apple Sillicon macs
 [[ ${OSTYPE} =~ ^darwin && ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
