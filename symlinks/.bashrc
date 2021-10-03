@@ -278,20 +278,18 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     fi
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     GIT_VERSION=$(git --version | sed -e "s/git version //")
-
-    if [ -d /usr/local/git ]; then
-        # Installed from source - expecting the contrib directory is in /usr/local/git
-        CONTRIB_PATH="/usr/local/git/contrib"
-    elif [ -d /usr/share/git-core ]; then
-        # Installed via package manager. Amazon Linux 2 for most cases
+    if [ -d /usr/share/git-core ] && ! grep -q "Ubuntu" /etc/issue; then
+        # Git is installed via the package manager, except Ubuntu
+        #
+        # Amazon Linux 2 / CentOS 8
         CONTRIB_PATH="/usr/share/git-core/contrib"
-    elif [ -d /usr/local/src/git-${GIT_VERSION} ]; then
-        # Installed via package manager and missing the contrib directory
-
-        # Downlaod git tarball to /usr/local/src and extract it
-        # Use the same version as the installed git, otherwise this won't work
-        # You don't have to install bash-completion
-        CONTRIB_PATH="/usr/local/src/git-${GIT_VERSION}/contrib"
+    elif [ -d /usr/local/git ]; then
+        # Git is installed from source, or installed via the package manager on Ubuntu
+        # 
+        # The contrib directory is empty on Ubuntu at least on 20.04
+        # The install.sh script will download the git tarball
+        # and extract it into /usr/local/git
+        CONTRIB_PATH="/usr/local/git/contrib"
     fi
 
     GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
@@ -301,6 +299,7 @@ elif [[ ${OSTYPE} =~ ^linux ]]; then
     fi
 
     . ${GIT_COMPLETION_PATH}/git-prompt.sh
+    . ${GIT_COMPLETION_PATH}/git-completion.bash
 fi
 
 #
