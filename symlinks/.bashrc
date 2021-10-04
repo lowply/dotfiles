@@ -279,28 +279,24 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     fi
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     GIT_VERSION=$(git --version | sed -e "s/git version //")
-    if [ -d /usr/share/git-core ] && ! grep -q "Ubuntu" /etc/issue; then
-        # Git is installed via the package manager, except Ubuntu
-        #
-        # Amazon Linux 2 / CentOS 8
-        CONTRIB_PATH="/usr/share/git-core/contrib"
-    elif [ -d /usr/local/git ]; then
-        # Git is installed from source, or installed via the package manager on Ubuntu
-        # 
-        # The contrib directory is empty on Ubuntu at least on 20.04
-        # The install.sh script will download the git tarball
-        # and extract it into /usr/local/git
+    # On Linux. Git is either installed from source or via the package manager 
+    # 
+    # The contrib directory is empty on Ubuntu at least on 20.04
+    # and it's incomplete on Amazon Linux 2 / CentOS 8.
+    # The install.sh script will download the git tarball
+    # and extract it into /usr/local/git
+
+    if [ -d /usr/local/git ]; then
         CONTRIB_PATH="/usr/local/git/contrib"
+        GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
+
+        if [ ! -h "/usr/local/bin/diff-highlight" ]; then
+            echo "Look for diff-highlight in ${CONTRIB_PATH} and symlink into /usr/local/bin/"
+        fi
+
+        . ${CONTRIB_PATH}/completion/git-prompt.sh
+        . ${CONTRIB_PATH}/completion/git-completion.bash
     fi
-
-    GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
-
-    if [ ! -h "/usr/local/bin/diff-highlight" ]; then
-        echo "Look for diff-highlight in ${CONTRIB_PATH} and symlink into /usr/local/bin/"
-    fi
-
-    . ${GIT_COMPLETION_PATH}/git-prompt.sh
-    . ${GIT_COMPLETION_PATH}/git-completion.bash
 fi
 
 #
