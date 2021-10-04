@@ -23,13 +23,15 @@ backup(){
 }
 
 deps(){
-    if grep -q "^Ubuntu" /etc/issue; then
+    grep -q "^Ubuntu" /etc/issue && DIST="Ubuntu"
+    grep -q "^CentOS Linux release" /etc/redhat-release && DIST="CentOS"
+
+    if [ "$DIST" == "Ubuntu" -o "$DIST" == "CentOS" ]; then
         GIT_VERSION=$(git --version | sed -e "s/git version //")
         cd /usr/local/src
         sudo curl -OL https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz
         sudo tar xzf git-${GIT_VERSION}.tar.gz
-        sudo mkdir /usr/local/git
-        sudo mv git-${GIT_VERSION}/contrib /usr/local/git
+        sudo mv git-${GIT_VERSION} /usr/local/git
         CONTRIB_PATH="/usr/local/git/contrib"
         cd ${CONTRIB_PATH}/diff-highlight
         sudo make
