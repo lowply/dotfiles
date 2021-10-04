@@ -1,0 +1,33 @@
+# Build cpsm. Ref: https://github.com/nixprime/cpsm#requirements
+FROM centos:8 AS cpsm
+WORKDIR /tmp
+RUN yum install -y git make cmake gcc python3-devel boost-devel gcc-c++
+RUN git clone https://github.com/nixprime/cpsm.git
+RUN PY3=ON cpsm/install.sh
+
+# Build vim-prettier
+FROM node:16-slim AS prettier
+WORKDIR /tmp
+RUN apt-get update && apt-get install -y git
+RUN git clone https://github.com/prettier/vim-prettier.git
+RUN cd vim-prettier && yarn install
+
+FROM centos:8
+RUN yum -y install sudo make vim git curl python3 glibc-locale-source glibc-langpack-en
+
+# Locales
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+
+RUN useradd lowply -m -d /home/lowply -g users
+RUN echo "lowply ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/lowply
+RUN chmod 440 /etc/sudoers.d/lowply
+
+WORKDIR /home/lowply
+COPY . dotfiles
+COPY --from=cpsm /tmp/cpsm /home/lowply/.vim/plugged/cpsm
+COPY --from=prettier /tmp/vim-prettier /home/lowply/.vim/plugged/vim-prettier
+RUN chown -R lowply:users dotfiles .vim
+USER lowply
+RUN ./dotfiles/install.sh
+ENTRYPOINT bash
