@@ -25,8 +25,9 @@ backup(){
 deps(){
     grep -q "^Ubuntu" /etc/issue && DIST="Ubuntu"
     grep -q "^CentOS Linux release" /etc/redhat-release && DIST="CentOS"
+    grep -q "^Amazon Linux release" /etc/system-release && DIST="Amazon Linux"
 
-    if [ "$DIST" == "Ubuntu" -o "$DIST" == "CentOS" ]; then
+    if [ "${DIST}" == "Ubuntu" -o "${DIST}" == "CentOS" -o "${DIST}" == "Amazon Linux" ]; then
         GIT_VERSION=$(git --version | sed -e "s/git version //")
         cd /usr/local/src
         sudo curl -OL https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz
