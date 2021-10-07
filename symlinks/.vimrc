@@ -24,7 +24,8 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'honza/vim-snippets' " Snippet collection
   Plug 'tpope/vim-surround'
   Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'nixprime/cpsm', { 'do': 'PY3=ON ./install.sh' } " Fast matcher
+  " Plug 'nixprime/cpsm', { 'do': 'PY3=ON ./install.sh' } " Fast matcher
+  Plug 'mattn/ctrlp-matchfuzzy'
   Plug 'justinmk/vim-dirvish'
   Plug 'bkad/CamelCaseMotion'
   Plug 'vim-scripts/closetag.vim'
@@ -377,9 +378,8 @@ set completeopt-=preview
 " CtrlP:
 "======================================================
 
-" Use cpsm as the matcher
-" https://github.com/nixprime/cpsm
-let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
+" https://github.com/mattn/ctrlp-matchfuzzy
+let g:ctrlp_match_func = {'match': 'ctrlp_matchfuzzy#matcher'}
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_match_window = 'bottom,order:btt,min:30,max:50,results:50'
 
