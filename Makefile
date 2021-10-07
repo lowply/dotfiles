@@ -1,8 +1,19 @@
+vim_version = "8.2.3483"
+
 build-ubuntu:
-	docker build . -f Dockerfile.ubuntu-2004 -t lowply/dotfiles:ubuntu-20.04
+	docker build . \
+		-f Dockerfile.ubuntu-2004 \
+		--build-arg VIM_VER=$(vim_version) \
+		-t lowply/dotfiles:ubuntu-20.04
+
+build-centos:
+	docker build . \
+		-f Dockerfile.centos \
+		--build-arg VIM_VER=$(vim_version) \
+		-t lowply/dotfiles:centos-8
+
 run-ubuntu:
 	docker run -it --rm lowply/dotfiles:ubuntu-20.04
-build-centos:
-	docker build . -f Dockerfile.centos -t lowply/dotfiles:centos-8
+
 run-centos:
 	docker run -it --rm lowply/dotfiles:centos-8
