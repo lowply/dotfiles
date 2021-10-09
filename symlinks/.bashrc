@@ -278,25 +278,25 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
         ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight ${BREW_PREFIX}/bin
     fi
 elif [[ ${OSTYPE} =~ ^linux ]]; then
-    GIT_VERSION=$(git --version | sed -e "s/git version //")
     # On Linux. Git is either installed from source or via the package manager 
     # 
     # The contrib directory is empty on Ubuntu at least on 20.04
     # and it's incomplete on Amazon Linux 2 / CentOS 8.
     # The install.sh script will download the git tarball
     # and extract it into /usr/local/git
-
-    if [ -d /usr/local/git ]; then
+    if [ -f /etc/arch-release ]; then
+        # Arch Linux
+        CONTRIB_PATH="/usr/share/git"
+    elif [ -d /usr/local/git ]; then
+        # Ubuntu 20.04, CentOS 8 and Amazon Linux 2
         CONTRIB_PATH="/usr/local/git/contrib"
-        GIT_COMPLETION_PATH="${CONTRIB_PATH}/completion"
-
         if [ ! -h "/usr/local/bin/diff-highlight" ]; then
             echo "Look for diff-highlight in ${CONTRIB_PATH} and symlink into /usr/local/bin/"
         fi
-
-        . ${CONTRIB_PATH}/completion/git-prompt.sh
-        . ${CONTRIB_PATH}/completion/git-completion.bash
     fi
+
+    . ${CONTRIB_PATH}/completion/git-prompt.sh
+    . ${CONTRIB_PATH}/completion/git-completion.bash
 fi
 
 #

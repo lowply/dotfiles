@@ -24,14 +24,18 @@ backup(){
 
 deps(){
     if [ "${OSTYPE}" == "linux-gnu" -a ! -d /usr/local/git ]; then
-        GIT_VERSION=$(git --version | sed -e "s/git version //")
-        cd /usr/local/src
-        sudo curl -OL https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz
-        sudo tar xzf git-${GIT_VERSION}.tar.gz
-        sudo mv git-${GIT_VERSION} /usr/local/git
-        CONTRIB_PATH="/usr/local/git/contrib"
-        cd ${CONTRIB_PATH}/diff-highlight
-        sudo make
+        if [ -f /etc/arch-release ]; then
+            CONTRIB_PATH=/usr/share/git
+        else
+            GIT_VERSION=$(git --version | sed -e "s/git version //")
+            cd /usr/local/src
+            sudo curl -OL https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz
+            sudo tar xzf git-${GIT_VERSION}.tar.gz
+            sudo mv git-${GIT_VERSION} /usr/local/git
+            CONTRIB_PATH="/usr/local/git/contrib"
+            cd ${CONTRIB_PATH}/diff-highlight
+            sudo make
+        fi
         sudo ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight /usr/local/bin
     fi
 }

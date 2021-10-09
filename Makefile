@@ -12,8 +12,17 @@ build-centos:
 		--build-arg VIM_VER=$(vim_version) \
 		-t lowply/dotfiles:centos-8
 
+build-archlinux:
+	docker build . \
+		-f Dockerfile.archlinux \
+		--build-arg VIM_VER=$(vim_version) \
+		-t lowply/dotfiles:archlinux
+
 run-ubuntu:
 	docker run -it --rm lowply/dotfiles:ubuntu-20.04
 
 run-centos:
 	docker run -it --rm lowply/dotfiles:centos-8
+
+run-archlinux:
+	docker run -it --rm lowply/dotfiles:archlinux
