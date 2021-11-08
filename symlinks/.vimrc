@@ -479,8 +479,8 @@ inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 
-autocmd BufWritePre <buffer> call execute('LspCodeActionSync source.organizeImports')
-autocmd BufWritePre <buffer> LspDocumentFormatSync
+autocmd BufWritePre *.go call execute('LspCodeActionSync source.organizeImports')
+autocmd BufWritePre *.go LspDocumentFormatSync
 
 " https://qiita.com/kitagry/items/216c2cf0066ff046d200
 let g:lsp_signs_enabled = 1
