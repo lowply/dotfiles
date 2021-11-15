@@ -5,8 +5,7 @@
 #/
 #/ Subcommands:
 #/ 
-#/ install.sh          # Show this help message
-#/ install.sh do       # Run install
+#/ install.sh          # Run install
 #/ install.sh clean    # Cleanup symlinks
 #/
 
