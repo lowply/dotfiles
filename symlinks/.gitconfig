@@ -47,6 +47,7 @@
 [core]
 	pager = less -FMRiX
 	editor = vim
+	excludesfile = /Users/sho/.gitignore
 
 [push]
 	default = simple
