@@ -86,16 +86,11 @@ epoch () {
 #
 # aliases
 #
-#alias rm='rm -i'
-alias cp='cp -i'
-alias mv='mv -i'
 
 alias jman='LANG=ja_JP.utf8 man'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias ls='ls -v --color=auto'
-alias tm='tmux -2u a || tmux -2u'
 alias zcat='gzcat'
 alias pullall='git pull origin master && git submodule foreach git pull origin master'
 alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
