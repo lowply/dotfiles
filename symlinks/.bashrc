@@ -107,6 +107,8 @@ has gmake && alias make='gmake'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has gh && alias openw='gh repo view --web'
+# The 'code' binary needs to be in the $PATH, e.g.
+# sudo ln -s /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code /usr/local/bin/
 has code && alias cr='code . -r'
 
 #
@@ -213,7 +215,7 @@ psone(){
 }
 
 #
-# path
+# $PATH
 #
 if [[ ${OSTYPE} =~ ^darwin ]]; then
     # Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
@@ -225,15 +227,18 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     # instead, let's just add the gnubin dir to the PATH
     addpath ${BREW_PREFIX}/opt/coreutils/libexec/gnubin
 
-    # Use OpenSSL
-    addpath ${BREW_PREFIX}/opt/openssl/bin
+    # Prefer OpenSSL over LibreSSL
+    addpath ${BREW_PREFIX}/opt/openssl@1.1/bin
 
-    # Ruby
+    # Ruby and Gems
     addpath ${BREW_PREFIX}/opt/ruby/bin
-    addpath ${BREW_PREFIX}/lib/ruby/gems/2.7.0/bin
+    has gem && addpath $(gem environment | grep "EXECUTABLE DIRECTORY: " | cut -d ':' -f 2 | xargs)
 
     # curl
     addpath ${BREW_PREFIX}/opt/curl/bin
+
+    # Dropbox
+    addpath ${HOME}/Dropbox/bin
 
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     # noop
@@ -249,8 +254,11 @@ addpath ${HOME}/ghq/github.com/lowply/dotfiles/bin
 # ~/bin
 addpath ${HOME}/bin
 
-# golang
+# go
 addpath ${HOME}/go/bin
+
+# rust/cargo
+addpath ${HOME}/.cargo/bin
 
 #
 # git prompt, bash completion and diff-highlight
