@@ -11,7 +11,7 @@ has(){
 }
 
 log(){
-    if [ -z ${LOGFILE} ]
+    if [ -z ${LOGFILE} ]; then
         echo "\$LOGFILE is not defined."
         exit 1
     fi
