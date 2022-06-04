@@ -228,7 +228,7 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     addpath ${BREW_PREFIX}/opt/coreutils/libexec/gnubin
 
     # Prefer OpenSSL over LibreSSL
-    addpath ${BREW_PREFIX}/opt/openssl@1.1/bin
+    addpath ${BREW_PREFIX}/opt/openssl/bin
 
     # Ruby and Gems
     addpath ${BREW_PREFIX}/opt/ruby/bin
