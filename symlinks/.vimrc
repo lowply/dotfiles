@@ -45,6 +45,8 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'prabirshrestha/vim-lsp'
   Plug 'mattn/vim-lsp-settings'
   Plug 'mattn/vim-lsp-icons'
+  Plug 'Shougo/unite.vim'
+  Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 call plug#end()
 
 "======================================================
