@@ -240,6 +240,8 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     # Dropbox
     addpath ${HOME}/Dropbox/bin
 
+    # for dnsmasq, dsvpn etc
+    addpath ${BREW_PREFIX}/sbin
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     # noop
     :
