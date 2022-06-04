@@ -24,7 +24,6 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'honza/vim-snippets' " Snippet collection
   Plug 'tpope/vim-surround'
   Plug 'ctrlpvim/ctrlp.vim'
-  " Plug 'nixprime/cpsm', { 'do': 'PY3=ON ./install.sh' } " Fast matcher
   Plug 'mattn/ctrlp-matchfuzzy'
   Plug 'justinmk/vim-dirvish'
   Plug 'bkad/CamelCaseMotion'
