@@ -18,7 +18,6 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
   Plug 'airblade/vim-gitgutter'
-  Plug 'vim-scripts/grep.vim'
   Plug 'majutsushi/tagbar'
   Plug 'Yggdroot/indentLine'
   Plug 'honza/vim-snippets' " Snippet collection
@@ -522,13 +521,19 @@ au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#source
     \ }))
 
 "======================================================
-" grep.vim
+" Unite.vim
 "======================================================
 
-nnoremap <silent> <leader>f :Rgrep<CR>
-let Grep_Default_Options = '-IR'
-let Grep_Skip_Files = '*.log *.db'
-let Grep_Skip_Dirs = '.git node_modules'
+" Ref. https://blog.monochromegane.com/blog/2013/09/18/ag-and-unite/
+
+nnoremap <silent> <leader>g :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
+nnoremap <silent> <leader>f :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
+
+if executable('rg')
+  let g:unite_source_grep_command = 'rg'
+  let g:unite_source_grep_default_opts = '--no-heading --color never --column'
+  let g:unite_source_grep_recursive_opt = ''
+endif
 
 "======================================================
 " END:
