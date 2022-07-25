@@ -442,6 +442,16 @@ autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 
+" Run npm i -D prettier @prettier/plugin-ruby in your directory to enable
+" formatting by prettier. Globally installed prettier won't work with the Ruby
+" plugin
+"
+" Configurations are taken from https://github.com/prettier/vim-prettier#configuration
+
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0
+let g:prettier#exec_cmd_async = 1
+
 "======================================================
 " SCSS:
 "======================================================
