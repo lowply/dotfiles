@@ -28,7 +28,7 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'bkad/CamelCaseMotion'
   Plug 'vim-scripts/closetag.vim'
   Plug 'jiangmiao/auto-pairs'
-  Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+  Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
   Plug 'lifepillar/vim-solarized8'
   Plug 'itchyny/lightline.vim'
   Plug 'godlygeek/tabular' " Required for vim-markdown
