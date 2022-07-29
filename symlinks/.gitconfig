@@ -86,7 +86,8 @@
 	gpgSign = true
 [init]
 	defaultBranch = main
-[credential "https://github.com"]
-	helper = !/opt/homebrew/bin/gh auth git-credential
-[credential "https://gist.github.com"]
-	helper = !/opt/homebrew/bin/gh auth git-credential
+
+# https://git-scm.com/docs/gitcredentials
+# > If the helper string begins with "!", it is considered a shell snippet, and everything after the "!" becomes the command.
+[credential]
+	helper = !gh auth git-credential
