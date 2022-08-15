@@ -87,7 +87,5 @@
 [init]
 	defaultBranch = main
 
-# https://git-scm.com/docs/gitcredentials
-# > If the helper string begins with "!", it is considered a shell snippet, and everything after the "!" becomes the command.
 [credential]
-	helper = !gh auth git-credential
+	helper = !git-credential-manager-core
