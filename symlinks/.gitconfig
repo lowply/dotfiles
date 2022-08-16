@@ -89,3 +89,7 @@
 
 [credential]
 	helper = !git-credential-manager-core
+
+[include]
+    path = ~/.gitconfig.local
+
