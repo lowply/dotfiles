@@ -1,6 +1,3 @@
-[include]
-	path = ~/.gitconfig.local
-
 [color]
 	status = auto
 	diff = auto
@@ -82,8 +79,10 @@
 
 [gpg]
 	program = gpg
+
 [tag]
 	gpgSign = true
+
 [init]
 	defaultBranch = main
 
@@ -91,5 +90,4 @@
 	helper = !git-credential-manager-core
 
 [include]
-    path = ~/.gitconfig.local
-
+	path = ~/.gitconfig.local
