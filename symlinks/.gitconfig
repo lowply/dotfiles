@@ -87,7 +87,7 @@
 	defaultBranch = main
 
 [credential]
-	helper = !git-credential-manager-core
+	helper = /usr/local/bin/git-credential-manager-core
 
 [include]
 	path = ~/.gitconfig.local
