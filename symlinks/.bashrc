@@ -335,13 +335,6 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 #
-# SwitchAudioSource
-#
-export AIRPODS_MAC="34-31-8F-54-3C-93"
-export SAS_UID_IN="com_motu_driver_coreuac_control_interface:m4ae1e35ej"
-export SAS_UID_OUT="${AIRPODS_MAC}:output"
-
-#
 # env specific additions
 #
 if [ -f ${HOME}/.bashrc.local ]; then
