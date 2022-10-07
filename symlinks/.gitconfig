@@ -53,14 +53,14 @@
 	user = lowply
 
 [user]
-	signingkey = lowply@github.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLaQnurE5ml8aUZaaF6BINBT+ThbQ3UGlwkXaRLhQUz
 	username = lowply
 	name = Sho Mizutani
 	email = lowply@github.com
 
 [commit]
 	verbose = true
-	gpgsign = false
+	gpgsign = true
 
 [pager]
 	log = diff-highlight | less
@@ -78,7 +78,7 @@
 	autosquash = true
 
 [gpg]
-	program = gpg
+	format = ssh
 
 [tag]
 	gpgSign = true
