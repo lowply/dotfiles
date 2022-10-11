@@ -91,3 +91,6 @@
 
 [include]
 	path = ~/.gitconfig.local
+
+[gpg "ssh"]
+	allowedSignersFile = /Users/sho/.config/git/allowedSigners
