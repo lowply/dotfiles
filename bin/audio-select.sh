@@ -50,12 +50,15 @@ MODE=${1}
 UID_AP="34-31-8F-54-3C-93:output"
 UID_M4="com_motu_driver_coreuac_control_interface:m4ae1e35ej"
 
-if [ "${MODE}" == "zoom" ]; then
-    connect_bt "${UID_AP/:output/}"
-    select_audio ${UID_M4} ${UID_AP}
-elif [ "${MODE}" == "motu" ]; then
-    select_audio ${UID_M4} ${UID_M4}
-else
-    echo "No such mode: ${MODE}"
-    exit 1
-fi
+case ${MODE} in
+    "zoom")
+        connect_bt "${UID_AP/:output/}"
+        select_audio "${UID_M4}" "${UID_AP}"
+    ;;
+    "music")
+        select_audio "${UID_M4}" "${UID_M4}"
+    ;;
+    *)
+        echo "No such mode: ${MODE}"
+        exit 1
+    ;;
