@@ -54,11 +54,12 @@ case ${MODE} in
     "zoom")
         connect_bt "${UID_AP/:output/}"
         select_audio "${UID_M4}" "${UID_AP}"
-    ;;
+        ;;
     "music")
         select_audio "${UID_M4}" "${UID_M4}"
-    ;;
+        ;;
     *)
         echo "No such mode: ${MODE}"
         exit 1
-    ;;
+        ;;
+esac
