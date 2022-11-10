@@ -1,6 +1,13 @@
 #!/bin/bash
 
-PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:${PATH}"
+#/ Usage: audio-select.sh <MODE>
+#/
+#/ MODES:
+#/   zoom:   Input -> M4      | Output -> AirPods
+#/   music:  Input -> M4      | Output -> M4
+#/   remote: Input -> AirPods | Output -> AirPods
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:${PATH}"
 
 abort(){
     >&2 echo "$1"
@@ -8,7 +15,7 @@ abort(){
 }
 
 usage(){
-    abort "Usage: ./audio-select.sh <MODE>"
+    grep '^#/' < "$0" | cut -c4-
 }
 
 connect_bt(){
@@ -44,11 +51,10 @@ select_audio(){
 type BluetoothConnector > /dev/null 2>&1 || abort "BluetoothConnector not found. Run brew install bluetoothconnector"
 type SwitchAudioSource > /dev/null 2>&1 || abort "SwitchAudioSource not found. Run brew install switchaudio-osx"
 
-[ $# -eq 1 ] || usage 
-
 MODE=${1}
 UID_AP="34-31-8F-54-3C-93:output"
 UID_M4="com_motu_driver_coreuac_control_interface:m4ae1e35ej"
+UID_BM="BuiltInMicrophoneDevice"
 
 case ${MODE} in
     "zoom")
@@ -58,8 +64,11 @@ case ${MODE} in
     "music")
         select_audio "${UID_M4}" "${UID_M4}"
         ;;
+    "remote")
+        connect_bt "${UID_AP/:output/}"
+        select_audio "${UID_BM}" "${UID_AP}"
+        ;;
     *)
-        echo "No such mode: ${MODE}"
-        exit 1
+        usage
         ;;
 esac
