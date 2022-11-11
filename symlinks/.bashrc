@@ -248,7 +248,10 @@ elif [[ ${OSTYPE} =~ ^linux ]]; then
 fi
 
 # rbenv
-[ -d ${HOME}/.rbenv ] && eval "$(rbenv init -)"
+if [[ -d ${HOME}/.rbenv ]]; then
+    [ ${OSTYPE} =~ ^linux ] && addpath ${HOME}/.rbenv/bin
+    eval "$(rbenv init -)"
+fi
 
 # dotfiles/bin
 addpath ${HOME}/ghq/github.com/lowply/dotfiles/bin
