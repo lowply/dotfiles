@@ -248,8 +248,8 @@ elif [[ ${OSTYPE} =~ ^linux ]]; then
 fi
 
 # rbenv
-if [[ -d ${HOME}/.rbenv ]]; then
-    [ ${OSTYPE} =~ ^linux ] && addpath ${HOME}/.rbenv/bin
+if [ -d ${HOME}/.rbenv ]; then
+    [[ ${OSTYPE} =~ ^linux ]] && addpath ${HOME}/.rbenv/bin
     eval "$(rbenv init -)"
 fi
 
