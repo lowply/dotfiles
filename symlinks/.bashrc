@@ -9,10 +9,10 @@ fi
 # Reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 # except on GitHub Codespaces
 #
-uname -a | grep -q "^Linux codespaces" || export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+[ "${CODESPACES}" == "true" ] || export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 # Add brew path for Apple Sillicon macs
-[[ ${OSTYPE} =~ ^darwin && ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
+echo ${OSTYPE} | grep -q "darwin" && export PATH="/opt/homebrew/bin:${PATH}"
 
 #
 # functions
@@ -281,9 +281,9 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     fi
 
     # diff-highlight
-    if [ ! -h ${BREW_PREFIX}/bin/diff-highlight ]; then
+    if [ ! -h /usr/local/bin/diff-highlight ]; then
         CONTRIB_PATH="${BREW_PREFIX}/opt/git/share/git-core/contrib"
-        ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight ${BREW_PREFIX}/bin
+        ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight /usr/local/bin
     fi
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     # On Linux. Git is either installed from source or via the package manager 

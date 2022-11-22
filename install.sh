@@ -105,9 +105,9 @@ main(){
     WORKDIR=$(cd $(dirname $0); pwd)
 
     if [[ ${OSTYPE} =~ ^darwin ]]; then
-        [[ ${HOSTTYPE} = "arm64" ]] && export PATH="/opt/homebrew/bin:${PATH}"
+        export PATH="/opt/homebrew/bin:${PATH}"
         type brew > /dev/null 2>&1 || { echo "Install homebrew first."; exit 1; }
-        [ -d $(brew --prefix)/opt/coreutils ] || { echo "Install coreutils first."; exit 1; }
+        [ -L $(brew --prefix)/opt/coreutils ] || { echo "Install coreutils first."; exit 1; }
         export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
     fi
 

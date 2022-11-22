@@ -93,3 +93,5 @@
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.config/git/allowedSigners
+[credential "https://ghe.io"]
+	provider = github
