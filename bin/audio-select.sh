@@ -3,9 +3,9 @@
 #/ Usage: audio-select.sh <MODE>
 #/
 #/ MODES:
-#/   zoom:   Input -> M4      | Output -> AirPods
-#/   music:  Input -> M4      | Output -> M4
-#/   remote: Input -> AirPods | Output -> AirPods
+#/    music:  Input -> Audio Interface     | Output -> Audio Interface
+#/    zoom:   Input -> Audio Interface     | Output -> AirPods
+#/    remote: Input -> Built-in Microphone | Output -> AirPods
 
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:${PATH}"
 
