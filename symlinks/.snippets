@@ -49,3 +49,6 @@ date -ju '+%F %T %Z';
 
 # epoch
 date -jur $1 '+%F %T %Z';
+
+# terminfo
+infocmp -a xterm-kitty | gh cs ssh -c [codespace] -- tic -x -o \~/.terminfo /dev/stdin
