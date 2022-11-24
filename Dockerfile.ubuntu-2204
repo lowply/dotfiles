@@ -47,7 +47,7 @@ ENV LANG en_US.utf8
 # Install yarn to build vim-prettier
 RUN <<EOF
     # https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-    curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+    curl -fsSL https://deb.nodesource.com/setup_19.x | bash -
     apt-get install -y nodejs
     npm -g install yarn
 EOF
