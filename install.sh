@@ -9,7 +9,7 @@
 #/ install.sh clean    # Cleanup symlinks
 #/
 
-[ -f /etc/lsb-release ] && . /etc/lsb-release
+[ -f /etc/os-release ] && . /etc/os-release
 
 backup(){
     local TARGET=${1}
@@ -18,23 +18,15 @@ backup(){
     mv ${TARGET} ${BACKUPDIR}
 }
 
-download-git(){
-    [ "${DISTRIB_ID}" == "Ubuntu" ] || return
+git-contrib(){
+    [ "${OSTYPE}" == "linux-gnu" ] || return
+    [ "${ID}" == "ubuntu" -o "${ID}" == "debian" ] || return
+    [ -d /usr/local/git ] && return
 
-    local GIT_VERSION=$(git --version | sed -e "s/git version //")
-    local DOWNLOAD_URL="https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz"
-
-    if [ -f git-${GIT_VERSION}.tar.gz ]; then
-        # Just for local testing
-        cp git-${GIT_VERSION}.tar.gz /tmp
-    else
-        curl -L ${DOWNLOAD_URL} -o /tmp/git-${GIT_VERSION}.tar.gz
-    fi
-
-    cd /tmp
-    tar xzf git-${GIT_VERSION}.tar.gz
-    sudo mv git-${GIT_VERSION} /usr/local/git
-    cd /usr/local/git/contrib/diff-highlight
+    sudo git clone https://github.com/lowply/git-contrib.git /usr/local/git
+    cd /usr/local/git
+    sudo git checkout $(git --version | sed -e "s/git version /v/")
+    cd contrib/diff-highlight
     sudo make
 }
 
@@ -115,7 +107,7 @@ main(){
             unlink
         ;;
         *)
-            download-git
+            git-contrib
             symlinks
             copies
         ;;
