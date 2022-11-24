@@ -38,5 +38,14 @@ sudo killall -HUP mDNSResponder
 # start docker-unbound
 docker ps && docker start unbound && docker ps
 
-# just push
+# just push all
 git add . && git commit -m "update" && git push
+
+# git pull all
+git pull origin master && git submodule foreach git pull origin master
+
+# epoch now
+date -ju '+%F %T %Z';
+
+# epoch
+date -jur $1 '+%F %T %Z';

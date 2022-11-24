@@ -1,5 +1,7 @@
 # lowply/dotfiles
 
+Currently only supports macOS and Ubuntu.
+
 ## Install
 
 ```bash

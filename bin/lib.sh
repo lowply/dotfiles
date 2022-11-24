@@ -10,6 +10,11 @@ DATE=$(date +%y%m%d_%H%M%S)
 # Methods
 # ------------------------------
 
+usage() {
+    grep '^#/' < ${0} | cut -c4-
+    exit 1
+}
+
 logfile(){
 	LOGDIR="${HOME}/.log/$(basename $0)"
 	LOGFILE="${LOGDIR}/$(date +%y%m%d).log"

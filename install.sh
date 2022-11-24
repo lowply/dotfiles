@@ -9,10 +9,7 @@
 #/ install.sh clean    # Cleanup symlinks
 #/
 
-usage() {
-    grep '^#/' < ${0} | cut -c4-
-    exit 1
-}
+[ -f /etc/lsb-release ] && . /etc/lsb-release
 
 backup(){
     local TARGET=${1}
@@ -21,22 +18,24 @@ backup(){
     mv ${TARGET} ${BACKUPDIR}
 }
 
-deps(){
-    if [ "${OSTYPE}" == "linux-gnu" -a ! -d /usr/local/git ]; then
-        if [ -f /etc/arch-release ]; then
-            CONTRIB_PATH=/usr/share/git
-        else
-            GIT_VERSION=$(git --version | sed -e "s/git version //")
-            cd /usr/local/src
-            sudo curl -OL https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz
-            sudo tar xzf git-${GIT_VERSION}.tar.gz
-            sudo mv git-${GIT_VERSION} /usr/local/git
-            CONTRIB_PATH="/usr/local/git/contrib"
-            cd ${CONTRIB_PATH}/diff-highlight
-            sudo make
-        fi
-        sudo ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight /usr/local/bin
+download-git(){
+    [ "${DISTRIB_ID}" == "Ubuntu" ] || return
+
+    local GIT_VERSION=$(git --version | sed -e "s/git version //")
+    local DOWNLOAD_URL="https://mirrors.edge.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz"
+
+    if [ -f git-${GIT_VERSION}.tar.gz ]; then
+        # Just for local testing
+        cp git-${GIT_VERSION}.tar.gz /tmp
+    else
+        curl -L ${DOWNLOAD_URL} -o /tmp/git-${GIT_VERSION}.tar.gz
     fi
+
+    cd /tmp
+    tar xzf git-${GIT_VERSION}.tar.gz
+    sudo mv git-${GIT_VERSION} /usr/local/git
+    cd /usr/local/git/contrib/diff-highlight
+    sudo make
 }
 
 symlinks(){
@@ -116,7 +115,7 @@ main(){
             unlink
         ;;
         *)
-            deps
+            download-git
             symlinks
             copies
         ;;

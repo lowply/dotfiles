@@ -5,6 +5,8 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+DOTFILES_DIR="${HOME}/ghq/github.com/lowply/dotfiles"
+
 #
 # Reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
 # except on GitHub Codespaces
@@ -12,7 +14,7 @@ fi
 [ "${CODESPACES}" == "true" ] || export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 # Add brew path for Apple Sillicon macs
-echo ${OSTYPE} | grep -q "darwin" && export PATH="/opt/homebrew/bin:${PATH}"
+[[ ${OSTYPE} =~ ^darwin ]] && export PATH="/opt/homebrew/bin:${PATH}"
 
 #
 # functions
@@ -75,14 +77,6 @@ docker_cleanup(){
     for x in $(docker images | grep "<none>" | awk '{print $3}'); do docker rmi $x; done
 }
 
-epoch () {
-    if [ "$1" == "now" ]; then
-        /bin/date -ju '+%F %T %Z';
-    else
-        /bin/date -jur $1 '+%F %T %Z';
-    fi
-}
-
 #
 # aliases
 #
@@ -92,7 +86,6 @@ alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias zcat='gzcat'
-alias pullall='git pull origin master && git submodule foreach git pull origin master'
 alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
 alias nstanp='lsof -nP -iTCP'
 alias lsdsstr='find . -name .DS_Store -print'
@@ -107,8 +100,9 @@ has gmake && alias make='gmake'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has gh && alias openw='gh repo view --web'
-# The 'code' binary needs to be in the $PATH, e.g.
-# sudo ln -s /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code /usr/local/bin/
+
+# The 'code' command needs to be installed.
+# See https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line
 has code && alias cr='code . -r'
 
 #
@@ -249,62 +243,54 @@ fi
 
 # rbenv
 if [ -d ${HOME}/.rbenv ]; then
+    # Only Linux as rbenv is supposed to be installed via brew on macOS
+    # Using apt on Debian/Ubuntu is not recommended. See:
+    # https://github.com/rbenv/rbenv#debian-ubuntu-and-their-derivatives
     [[ ${OSTYPE} =~ ^linux ]] && addpath ${HOME}/.rbenv/bin
     eval "$(rbenv init -)"
 fi
 
 # dotfiles/bin
-addpath ${HOME}/ghq/github.com/lowply/dotfiles/bin
-
-# ~/bin
-addpath ${HOME}/bin
+addpath ${DOTFILES_DIR}/bin
 
 # go
 addpath ${HOME}/go/bin
-
-# rust/cargo
-addpath ${HOME}/.cargo/bin
 
 #
 # git prompt, bash completion and diff-highlight
 #
 if [[ ${OSTYPE} =~ ^darwin ]]; then
     # bash completion (need brew install bash-completion)
+    # This will automatically include
+    # ${BREW_PREFIX}/etc/bash_completion.d/git-completion.bash
+    # ${BREW_PREFIX}/etc/bash_completion.d/git-prompt.sh
     if [ -h ${BREW_PREFIX}/etc/bash_completion ]; then
         . ${BREW_PREFIX}/etc/bash_completion
     fi
 
-    # git-prompt (need bash-completion)
-    # I didn't like bash-git-prompt, just git-prompt.sh is fine
-    if [ -h ${BREW_PREFIX}/etc/bash_completion.d/git-prompt.sh ]; then
-        . ${BREW_PREFIX}/etc/bash_completion.d/git-prompt.sh
-    fi
-
     # diff-highlight
-    if [ ! -h /usr/local/bin/diff-highlight ]; then
-        CONTRIB_PATH="${BREW_PREFIX}/opt/git/share/git-core/contrib"
-        ln -s ${CONTRIB_PATH}/diff-highlight/diff-highlight /usr/local/bin
-    fi
+    addpath ${BREW_PREFIX}/share/git-core/contrib/diff-highlight
 elif [[ ${OSTYPE} =~ ^linux ]]; then
-    # On Linux. Git is either installed from source or via the package manager 
-    # 
-    # The contrib directory is empty on Ubuntu at least on 20.04
-    # and it's incomplete on Amazon Linux 2 / CentOS 8.
-    # The install.sh script will download the git tarball
-    # and extract it into /usr/local/git
-    if [ -f /etc/arch-release ]; then
-        # Arch Linux
-        CONTRIB_PATH="/usr/share/git"
-    elif [ -d /usr/local/git ]; then
-        # Ubuntu 20.04, CentOS 8 and Amazon Linux 2
-        CONTRIB_PATH="/usr/local/git/contrib"
-        if [ ! -h "/usr/local/bin/diff-highlight" ]; then
-            echo "Look for diff-highlight in ${CONTRIB_PATH} and symlink into /usr/local/bin/"
-        fi
-    fi
+    # On Linux. Git is either installed from source or via the package manager
+    #
+    # /usr/share/git-core/contrib and /usr/share/doc/git/contrib/diff-highlight
+    # are almost empty on Ubuntu 20.04 / 22.04
+    #
+    # This only matches if Git is either
+    # A) Installed via source
+    # B) Pre-installed but the install.sh script downloaded the tarball
+    # just for the contrib directory
+    #
+    # In the case of B, the install.sh script downloads the Git tarball
+    # with the exact same version of what's already installed and extract
+    # it into /usr/local/git
 
-    . ${CONTRIB_PATH}/completion/git-prompt.sh
-    . ${CONTRIB_PATH}/completion/git-completion.bash
+    if [ -d /usr/local/git ]; then
+        CONTRIB_PATH="/usr/local/git/contrib"
+        addpath ${CONTRIB_PATH}/diff-highlight
+        . ${CONTRIB_PATH}/completion/git-prompt.sh
+        . ${CONTRIB_PATH}/completion/git-completion.bash
+    fi
 fi
 
 #

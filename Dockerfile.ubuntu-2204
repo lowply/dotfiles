@@ -2,7 +2,7 @@
 # https://www.docker.com/blog/introduction-to-heredocs-in-dockerfiles/
 
 # Build vim from source
-FROM ubuntu:20.04 AS vim
+FROM ubuntu:22.04 AS vim
 
 RUN <<EOF
     apt-get update
@@ -25,7 +25,7 @@ RUN <<EOF
     make install
 EOF
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # Install the latest Git. Ref: https://git-scm.com/download/linux
 RUN <<EOF
