@@ -5,7 +5,7 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-DOTFILES_DIR="${HOME}/ghq/github.com/lowply/dotfiles"
+DOTFILES_DIR="$(dirname $(dirname $(readlink ${BASH_SOURCE})))"
 
 #
 # Reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
