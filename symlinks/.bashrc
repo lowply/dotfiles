@@ -5,16 +5,11 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-DOTFILES_DIR="$(dirname $(dirname $(readlink ${BASH_SOURCE})))"
-
 #
-# Reset default path and adding /usr/local/bin and /usr/local/sbin at proper position
+# Reset default path and add /usr/local/bin and /usr/local/sbin at proper position
 # except on GitHub Codespaces
 #
 [ "${CODESPACES}" == "true" ] || export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
-
-# Add brew path for Apple Sillicon macs
-[[ ${OSTYPE} =~ ^darwin ]] && export PATH="/opt/homebrew/bin:${PATH}"
 
 #
 # functions
@@ -124,7 +119,7 @@ export LESS='-X -R -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
 #
 if has source-highlight; then
     if has src-hilite-lesspipe.sh; then
-        # CentOS / Mac
+        # macOS
         LESSPIPE=$(which src-hilite-lesspipe.sh)
     elif [ -x "/usr/share/source-highlight/src-hilite-lesspipe.sh" ]; then
         # Ubuntu
@@ -215,7 +210,11 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     # Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
     export BASH_SILENCE_DEPRECATION_WARNING=1
 
-    has "brew" && export BREW_PREFIX="$(brew --prefix)" || { echo "brew is not installed"; return; }
+    [ -f "/opt/homebrew/bin/brew" ] || { echo "brew is not installed"; return; }
+
+    export BREW_PREFIX="$(/opt/homebrew/bin/brew --prefix)"
+
+    addpath ${BREW_PREFIX}/bin
 
     # aliasing every command with the 'g' prefix in ${BREW_PREFIX}/bin is not a great idea.
     # instead, let's just add the gnubin dir to the PATH
@@ -251,6 +250,7 @@ if [ -d ${HOME}/.rbenv ]; then
 fi
 
 # dotfiles/bin
+DOTFILES_DIR="$(dirname $(dirname $(readlink ${BASH_SOURCE})))"
 addpath ${DOTFILES_DIR}/bin
 
 # go
@@ -278,12 +278,11 @@ elif [[ ${OSTYPE} =~ ^linux ]]; then
     #
     # This only matches if Git is either
     # A) Installed via source
-    # B) Pre-installed but the install.sh script downloaded the tarball
-    # just for the contrib directory
+    # B) Installed via apt-get and the install.sh script cloned
+    #    https://github.com/lowply/git-contrib to /usr/local/git
     #
-    # In the case of B, the install.sh script downloads the Git tarball
-    # with the exact same version of what's already installed and extract
-    # it into /usr/local/git
+    # In the case of B, the install.sh script also checks out
+    # the tag that's the exact same version of installed Git
 
     if [ -d /usr/local/git ]; then
         CONTRIB_PATH="/usr/local/git/contrib"
