@@ -52,7 +52,7 @@ type BluetoothConnector > /dev/null 2>&1 || abort "BluetoothConnector not found.
 type SwitchAudioSource > /dev/null 2>&1 || abort "SwitchAudioSource not found. Run brew install switchaudio-osx"
 
 MODE=${1}
-UID_AP="34-31-8F-54-3C-93:output"
+UID_AP="DC-80-84-8A-CD-CD:output"
 UID_M4="com_motu_driver_coreuac_control_interface:m4ae1e35ej"
 UID_BM="BuiltInMicrophoneDevice"
 
