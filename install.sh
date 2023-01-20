@@ -20,7 +20,7 @@ backup(){
 
 git-contrib(){
     [ "${OSTYPE}" == "linux-gnu" ] || return
-    [ "${ID}" == "ubuntu" -o "${ID}" == "debian" ] || return
+    [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] || return
     [ -d /usr/local/git ] && return
 
     sudo git clone https://github.com/lowply/git-contrib.git /usr/local/git
@@ -35,6 +35,11 @@ symlinks(){
 
     local LIST_DIRS=$(find . -mindepth 1 -type d | sed -e 's/^\.\///')
     local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
+
+    # Exclude .bashrc for Codespaces
+    if [ -n "$CODESPACES" ]; then
+        local LIST_FILES=$(echo ${LIST_FILES} | sed -e 's/.bashrc//')
+    fi
 
     # make directories
     for D in ${LIST_DIRS}; do
@@ -112,6 +117,16 @@ main(){
             copies
         ;;
     esac
+
+    if [ -n "$CODESPACES" ]; then
+        # See "Troubleshooting GPG verification for GitHub Codespaces - GitHub Docs"
+        # https://docs.github.com/en/codespaces/troubleshooting/troubleshooting-gpg-verification-for-github-codespaces#errors-caused-by-conflicting-configuration
+        # GitHub Codespaces doesn't support SSH commit signing. For now, I'll ssh into the instance to commit using SSH key, so I will retain user.signingkey and commit.gpgsign.
+        git config --global --unset credential.helper
+
+        # There's the Codespaces default .bashrc. Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
+        echo ". /workspaces/.codespaces/.persistedshare/dotfiles/symlinks/.bashrc" >> ${HOME}/.bashrc
+    fi
 }
 
 main $@
