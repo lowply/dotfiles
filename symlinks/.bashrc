@@ -9,7 +9,7 @@ fi
 # Reset default path and add /usr/local/bin and /usr/local/sbin at proper position
 # except on GitHub Codespaces
 #
-[ "${CODESPACES}" == "true" ] || export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+[ -z "${CODESPACES}" ] && export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 #
 # functions
@@ -241,8 +241,10 @@ elif [[ ${OSTYPE} =~ ^linux ]]; then
 fi
 
 # rbenv
-if [ -d ${HOME}/.rbenv ]; then
-    # Only Linux as rbenv is supposed to be installed via brew on macOS
+if [ -z "${CODESPACES}" ] && [ -d ${HOME}/.rbenv ]; then
+    # Only Linux except Codespaces
+    # On macOS, rbenv is supposed to be installed via Homebrew
+    #
     # Using apt on Debian/Ubuntu is not recommended. See:
     # https://github.com/rbenv/rbenv#debian-ubuntu-and-their-derivatives
     [[ ${OSTYPE} =~ ^linux ]] && addpath ${HOME}/.rbenv/bin
@@ -250,7 +252,7 @@ if [ -d ${HOME}/.rbenv ]; then
 fi
 
 # dotfiles/bin
-DOTFILES_DIR="$(dirname $(dirname $(readlink ${BASH_SOURCE})))"
+DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
 addpath ${DOTFILES_DIR}/bin
 
 # go
