@@ -325,7 +325,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # For SSH commit signing
-if [ ${CODESPACES} == "true" ] && find /tmp/ssh-* -type d &> /dev/null; then
+if [ "${CODESPACES}" == "true" ] && find /tmp/ssh-* -type d &> /dev/null; then
     unset SSH_AUTH_SOCK
     for x in $(find /tmp/ssh-* -type s); do
         if SSH_AUTH_SOCK=${x} ssh-add -l > /dev/null; then
