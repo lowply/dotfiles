@@ -85,13 +85,8 @@
 [init]
 	defaultBranch = main
 
-[credential]
-	helper = /usr/local/bin/git-credential-manager-core
-
 [include]
 	path = ~/.gitconfig.local
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.config/git/allowedSigners
-[credential "https://ghe.io"]
-	provider = github
