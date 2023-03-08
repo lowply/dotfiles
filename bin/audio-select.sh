@@ -37,7 +37,7 @@ select_audio(){
     local INPUT=${1}
     local OUTPUT=${2}
 
-    AUDIO_SWITCH_SOUND=${AUDIO_SWITCH_SOUND:-"${HOME}/Dropbox/Sounds/Funk.aiff"}
+    AUDIO_SWITCH_SOUND=${AUDIO_SWITCH_SOUND:-"${HOME}/Library/Mobile Documents/com~apple~CloudDocs/Sounds/Funk.aiff"}
 
     SwitchAudioSource -t input -u "${INPUT}" > /dev/null || abort "Failed to switch input"
     SwitchAudioSource -t output -u "${OUTPUT}" > /dev/null || abort "Failed to switch output"
