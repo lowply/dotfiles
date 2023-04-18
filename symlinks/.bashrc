@@ -65,13 +65,6 @@ backup() {
     cp -a $1{,.$(date +%y%m%d_%H%M%S)}
 }
 
-# Docker
-
-docker_cleanup(){
-    for x in $(docker ps -a | grep Exited | awk '{print $1}'); do docker rm $x; done
-    for x in $(docker images | grep "<none>" | awk '{print $3}'); do docker rmi $x; done
-}
-
 #
 # aliases
 #
@@ -80,18 +73,11 @@ alias jman='LANG=ja_JP.utf8 man'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias zcat='gzcat'
 alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
 alias nstanp='lsof -nP -iTCP'
 alias lsdsstr='find . -name .DS_Store -print'
 alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 
-# https://sw.kovidgoyal.net/kitty/faq.html#i-get-errors-about-the-terminal-being-unknown-or-opening-the-terminal-failing-when-sshing-into-a-different-computer
-alias kssh='/Applications/kitty.app/Contents/MacOS/kitty +kitten ssh'
-
-has gsed && alias sed='gsed'
-has ggrep && alias grep='ggrep'
-has gmake && alias make='gmake'
 has colordiff && alias diff='colordiff'
 has gls && alias ls='ls -v --color=auto'
 has gh && alias openw='gh repo view --web'
@@ -230,11 +216,18 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     # curl
     addpath ${BREW_PREFIX}/opt/curl/bin
 
-    # Dropbox
-    addpath ${HOME}/Dropbox/bin
-
     # for dnsmasq, dsvpn etc
     addpath ${BREW_PREFIX}/sbin
+
+
+    has gsed && alias sed='gsed'
+    has gawk && alias awk='gawk'
+    has ggrep && alias grep='ggrep'
+    has gmake && alias make='gmake'
+    has gzcat && alias zcat='gzcat'
+
+    # https://sw.kovidgoyal.net/kitty/faq.html#i-get-errors-about-the-terminal-being-unknown-or-opening-the-terminal-failing-when-sshing-into-a-different-computer
+    alias kssh='/Applications/kitty.app/Contents/MacOS/kitty +kitten ssh'
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     # noop
     :
