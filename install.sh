@@ -4,7 +4,7 @@
 
 #/
 #/ Subcommands:
-#/ 
+#/
 #/ install.sh          # Run install
 #/ install.sh clean    # Cleanup symlinks
 #/
@@ -67,7 +67,7 @@ symlinks(){
 copies(){
     cd ${WORKDIR}/copies
     local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
-    
+
     for F in ${LIST_FILES}; do
         local SRC="$(readlink -f ${F})"
         local DST="${HOME}/${F}"
