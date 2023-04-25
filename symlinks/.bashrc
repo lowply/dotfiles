@@ -244,6 +244,12 @@ if [ -z "${CODESPACES}" ] && [ -d ${HOME}/.rbenv ]; then
     eval "$(rbenv init -)"
 fi
 
+# n
+if has n; then
+    export N_PREFIX=${HOME}/.n
+    addpath ${HOME}/.n/bin
+fi
+
 # dotfiles/bin
 DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
 addpath ${DOTFILES_DIR}/bin
