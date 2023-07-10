@@ -4,6 +4,7 @@
   "terminal.integrated.fontSize": 14,
   "terminal.integrated.lineHeight": 1.2,
   "terminal.integrated.fontFamily": "'SF Mono', monospace",
+  "terminal.integrated.enableMultiLinePasteWarning": false,
   "go.useLanguageServer": true,
   "git.confirmSync": false,
   "git.enableSmartCommit": true,
@@ -12,6 +13,7 @@
   "security.workspace.trust.enabled": false,
   "redhat.telemetry.enabled": true,
   "editor.inlineSuggest.enabled": true,
+  "editor.multiCursorModifier": "ctrlCmd",
   "workbench.startupEditor": "none",
   "github.copilot.enable": {
     "*": true,
@@ -20,37 +22,34 @@
     "markdown": true,
     "scminput": false
   },
-  "remote.containers.dockerPath": "nerdctl",
   "githubPullRequests.pullBranch": "never",
-  "editor.multiCursorModifier": "ctrlCmd",
-  "[erb]": {
-    "editor.defaultFormatter": "aliariff.vscode-erb-beautify"
-  },
   "markdownlint.config": {
     "MD034": false
   },
   "workbench.colorTheme": "GitHub Dark Dimmed",
+  "prettier.enableDebugLogs": true,
   "ruby.format": false,
   "ruby.rubocop.useBundler": true,
   "vscode-graphql.cacheSchemaFileForLookup": false,
-
-  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[erb]": {
+    "editor.defaultFormatter": "aliariff.vscode-erb-beautify"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "terminal.integrated.enableMultiLinePasteWarning": false,
   "[markdown]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
   },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "prettier.enableDebugLogs": true,
-  "prettier.useEditorConfig": false,
   "[css]": {
     "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
   }
 }
