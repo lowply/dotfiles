@@ -1,13 +1,56 @@
 {
-    "editor.fontSize": 14,
-    "editor.fontFamily": "'SF Mono Regular', Menlo, Monaco, 'Courier New', monospace",
-    "terminal.integrated.fontSize": 13,
-    "terminal.integrated.lineHeight": 1.2,
-    "terminal.integrated.fontFamily": "'SF Mono Regular', Menlo, Monaco, 'Courier New', monospace",
-    "go.useLanguageServer": true,
-    "git.confirmSync": false,
-    "git.enableSmartCommit": true,
-    "workbench.colorTheme": "GitHub Dark",
-    "editor.formatOnSave": true,
-    "explorer.confirmDragAndDrop": false
+  "editor.fontSize": 14,
+  "editor.fontFamily": "'SF Mono', monospace",
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.lineHeight": 1.2,
+  "terminal.integrated.fontFamily": "'SF Mono', monospace",
+  "go.useLanguageServer": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "explorer.confirmDragAndDrop": false,
+  "go.toolsManagement.autoUpdate": true,
+  "security.workspace.trust.enabled": false,
+  "redhat.telemetry.enabled": true,
+  "editor.inlineSuggest.enabled": true,
+  "workbench.startupEditor": "none",
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": false,
+    "plaintext": false,
+    "markdown": true,
+    "scminput": false
+  },
+  "remote.containers.dockerPath": "nerdctl",
+  "githubPullRequests.pullBranch": "never",
+  "editor.multiCursorModifier": "ctrlCmd",
+  "[erb]": {
+    "editor.defaultFormatter": "aliariff.vscode-erb-beautify"
+  },
+  "markdownlint.config": {
+    "MD034": false
+  },
+  "workbench.colorTheme": "GitHub Dark Dimmed",
+  "ruby.format": false,
+  "ruby.rubocop.useBundler": true,
+  "vscode-graphql.cacheSchemaFileForLookup": false,
+
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.enableDebugLogs": true,
+  "prettier.useEditorConfig": false,
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  }
 }
