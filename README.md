@@ -15,5 +15,5 @@ $ ./dotfiles/install.sh
 After running the install script, manually symlink the `settings.json`:
 
 ```
-ln -s ~/.vscode/settings.json ~/Library/Application\ Support/Code/User/settings.json
+ln -sf ~/ghq/github.com/lowply/dotfiles/vscode/settings.json ~/Library/Application\ Support/Code/User/settings.json
 ```
