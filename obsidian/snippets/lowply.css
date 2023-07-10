@@ -1,0 +1,42 @@
+/*
+Fix indent. Turn off "Show indentation guides" in the Editor pane
+as it won't render correctly with the following changes.
+
+30 pixels each, up to 9 indents.
+*/
+
+div.view-content div.HyperMD-list-line-1 {
+    padding-inline-start: 15px !important;
+}
+
+div.view-content div.HyperMD-list-line-2 {
+    padding-inline-start: 45px !important;
+}
+
+div.view-content div.HyperMD-list-line-3 {
+    padding-inline-start: 75px !important;
+}
+
+div.view-content div.HyperMD-list-line-4 {
+    padding-inline-start: 105px !important;
+}
+
+div.view-content div.HyperMD-list-line-5 {
+    padding-inline-start: 135px !important;
+}
+
+div.view-content div.HyperMD-list-line-6 {
+    padding-inline-start: 165px !important;
+}
+
+div.view-content div.HyperMD-list-line-7 {
+    padding-inline-start: 195px !important;
+}
+
+div.view-content div.HyperMD-list-line-8 {
+    padding-inline-start: 225px !important;
+}
+
+div.view-content div.HyperMD-list-line-9 {
+    padding-inline-start: 255px !important;
+}
