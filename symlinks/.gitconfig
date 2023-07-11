@@ -90,3 +90,5 @@
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.config/git/allowedSigners
+[fetch]
+	prune = true
