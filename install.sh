@@ -121,6 +121,15 @@ main(){
     if [ -n "$CODESPACES" ]; then
         # There's the Codespaces default .bashrc. Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
         echo ". /workspaces/.codespaces/.persistedshare/dotfiles/symlinks/.bashrc" >> ${HOME}/.bashrc
+
+        # Install Kitty terminfo
+        [ -f ${HOME}/.terminfo/x/xterm-kitty ] || gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/kovidgoyal/kitty/contents/terminfo/kitty.terminfo \
+            -q '.content' \
+            | base64 -d \
+            | tic -x -o ~/.terminfo -
     fi
 }
 
