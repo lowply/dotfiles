@@ -250,6 +250,9 @@ if has n; then
     addpath ${HOME}/.n/bin
 fi
 
+# ~/bin
+addpath ${HOME}/bin
+
 # dotfiles/bin
 DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
 addpath ${DOTFILES_DIR}/bin
@@ -340,3 +343,4 @@ fi
 if [ -f ${HOME}/.bashrc.local ]; then
     . ${HOME}/.bashrc.local
 fi
+
