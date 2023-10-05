@@ -268,9 +268,6 @@ vnoremap <silent> y y`]
 vnoremap <silent> p p`]
 nnoremap <silent> p p`]
 
-nmap <Leader><Leader> V
-vmap <Leader><Leader> V
-
 " http://bit.ly/2CBizVF
 " ---------------------
 
