@@ -271,9 +271,6 @@ nnoremap <silent> p p`]
 " http://bit.ly/2CBizVF
 " ---------------------
 
-" Map two escs to nohlsearch
-nnoremap <Esc><Esc> :nohlsearch<CR><Esc>
-
 " Disable unsafe keys
 nnoremap ZZ <Nop>
 nnoremap ZQ <Nop>
