@@ -8,6 +8,7 @@
 
 [merge]
 	ff = false
+	conflictstyle = zdiff3
 
 [pull]
 	ff = only
@@ -42,11 +43,16 @@
 	process = git-lfs filter-process
 
 [core]
-	pager = less -FMRiX
+	pager = delta ; install delta via https://dandavison.github.io/delta/installation.html
 	editor = vim
+	excludeFiles = ~/.gitignore
+
+[delta]
+	navigate = true
+	light = false
 
 [push]
-	default = simple
+	default = current
 
 [github]
 	user = lowply
@@ -61,17 +67,14 @@
 	verbose = true
 	gpgsign = true
 
-[pager]
-	log = diff-highlight | less
-	show = diff-highlight | less
-	diff = diff-highlight | less
-
 [interactive]
-	diffFilter = diff-highlight
+	diffFilter = delta --color-only
 
 [diff]
+	algorithm = histogram
 	compactionHeuristic = true
 	submodule = log
+	colorMoved = default
 
 [rebase]
 	autosquash = true
@@ -90,5 +93,9 @@
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.config/git/allowedSigners
+
 [fetch]
 	prune = true
+
+[log]
+	date = iso
