@@ -20,7 +20,7 @@
 	s = status
 	b = branch
 	co = checkout
-	d = diff
+	d = difftool
 	l = log --graph -n 20 --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(green)- %an, %cr%Creset'
 
 	# http://blog.blindgaenger.net/advanced_git_aliases.html
@@ -43,7 +43,7 @@
 	process = git-lfs filter-process
 
 [core]
-	pager = delta ; install delta via https://dandavison.github.io/delta/installation.html
+	pager = less -FMRiX
 	editor = vim
 	excludeFiles = ~/.gitignore
 
@@ -64,20 +64,23 @@
 	email = sho@svifa.net
 
 [includeIf "gitdir:~/ghq/github.com/github/"]
-    path = ~/.gitconfig.work
+	path = ~/.gitconfig.work
 
 [commit]
 	verbose = true
 	gpgsign = true
 
-[interactive]
-	diffFilter = delta --color-only
-
 [diff]
-	algorithm = histogram
-	compactionHeuristic = true
-	submodule = log
-	colorMoved = default
+	tool = difftastic
+
+[difftool]
+	prompt = false
+
+[difftool "difftastic"]
+	cmd = difft "$LOCAL" "$REMOTE"
+
+[pager]
+	difftool = true
 
 [rebase]
 	autosquash = true
