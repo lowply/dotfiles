@@ -64,7 +64,7 @@
 	email = sho@svifa.net
 
 [includeIf "gitdir:~/ghq/github.com/github/"]
-	path = ~/.gitconfig.work
+	path = ~/.config/git/config.work
 
 [commit]
 	verbose = true
