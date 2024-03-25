@@ -61,7 +61,10 @@
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLaQnurE5ml8aUZaaF6BINBT+ThbQ3UGlwkXaRLhQUz
 	username = lowply
 	name = Sho Mizutani
-	email = lowply@github.com
+	email = sho@svifa.net
+
+[includeIf "gitdir:~/ghq/github.com/github/"]
+    path = ~/.gitconfig.work
 
 [commit]
 	verbose = true
