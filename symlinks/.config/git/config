@@ -45,7 +45,6 @@
 [core]
 	pager = less -FMRiX
 	editor = vim
-	excludeFiles = ~/.gitignore
 
 [delta]
 	navigate = true
@@ -65,6 +64,9 @@
 
 [includeIf "gitdir:~/ghq/github.com/github/"]
 	path = ~/.config/git/config.work
+
+[include]
+	path = ~/.config/config.local
 
 [commit]
 	verbose = true
@@ -93,9 +95,6 @@
 
 [init]
 	defaultBranch = main
-
-[include]
-	path = ~/.gitconfig.local
 
 [gpg "ssh"]
 	allowedSignersFile = ~/.config/git/allowedSigners
