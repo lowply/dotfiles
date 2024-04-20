@@ -18,25 +18,15 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'tpope/vim-fugitive'
   Plug 'tpope/vim-rhubarb' " required by fugitive to :Gbrowse
   Plug 'airblade/vim-gitgutter'
-  Plug 'majutsushi/tagbar'
-  Plug 'Yggdroot/indentLine'
-  Plug 'honza/vim-snippets' " Snippet collection
   Plug 'tpope/vim-surround'
   Plug 'ctrlpvim/ctrlp.vim'
   Plug 'mattn/ctrlp-matchfuzzy'
-  Plug 'justinmk/vim-dirvish'
   Plug 'bkad/CamelCaseMotion'
-  Plug 'vim-scripts/closetag.vim'
   Plug 'jiangmiao/auto-pairs'
-  Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
   Plug 'lifepillar/vim-solarized8'
   Plug 'itchyny/lightline.vim'
-  Plug 'godlygeek/tabular' " Required for vim-markdown
   Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
-  Plug 'stephpy/vim-yaml', { 'for': 'yaml' } " Better yaml syntax highlighting especially with heredocs
-  Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
   Plug 'elzr/vim-json', { 'for': 'json' }
-  Plug 'pangloss/vim-javascript', { 'for': 'js' }
   Plug 'prabirshrestha/asyncomplete.vim'
   Plug 'prabirshrestha/asyncomplete-lsp.vim'
   Plug 'prabirshrestha/asyncomplete-buffer.vim'
@@ -44,8 +34,6 @@ call plug#begin(expand('~/.vim/plugged'))
   Plug 'prabirshrestha/vim-lsp'
   Plug 'mattn/vim-lsp-settings'
   Plug 'mattn/vim-lsp-icons'
-  Plug 'Shougo/unite.vim'
-  Plug 'Shougo/vimproc.vim', {'do' : 'make'}
 call plug#end()
 
 "======================================================
@@ -191,10 +179,6 @@ noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 
 "" Opens a tab edit command with the path of the currently edited file filled
 noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-
-" Tagbar
-nmap <silent> <F4> :TagbarToggle<CR>
-let g:tagbar_autofocus = 1
 
 " Disable visualbell
 set noerrorbells visualbell t_vb=
@@ -426,7 +410,6 @@ let g:vim_markdown_folding_disabled = 1
 " YAML:
 "======================================================
 
-" au! BufNewFile,BufReadPost *.{yaml,yml} set filetype=yaml foldmethod=indent
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 
 "======================================================
@@ -434,17 +417,6 @@ autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 "======================================================
 
 au FileType ruby setl nowrap tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-
-" Run npm i -D prettier @prettier/plugin-ruby in your directory to enable
-" formatting by prettier. Globally installed prettier won't work with the Ruby
-" plugin
-"
-" Configurations are taken from https://github.com/prettier/vim-prettier#configuration
-
-" let g:prettier#autoformat = 1
-let g:prettier#autoformat_require_pragma = 0
-let g:prettier#exec_cmd_async = 1
-let g:prettier#quickfix_enabled = 0
 
 "======================================================
 " SCSS:
@@ -514,30 +486,15 @@ au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#source
     \ }))
 
 " https://github.com/prabirshrestha/asyncomplete-buffer.vim
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
     \ 'name': 'buffer',
     \ 'allowlist': ['*'],
-    \ 'priority': 10,
+    \ 'blocklist': ['go'],
     \ 'completor': function('asyncomplete#sources#buffer#completor'),
     \ 'config': {
     \    'max_buffer_size': 5000000,
     \  },
     \ }))
-
-"======================================================
-" Unite.vim
-"======================================================
-
-" Ref. https://blog.monochromegane.com/blog/2013/09/18/ag-and-unite/
-
-nnoremap <silent> <leader>g :<C-u>Unite grep:. -buffer-name=search-buffer<CR>
-nnoremap <silent> <leader>f :<C-u>Unite grep:. -buffer-name=search-buffer<CR><C-R><C-W>
-
-if executable('rg')
-  let g:unite_source_grep_command = 'rg'
-  let g:unite_source_grep_default_opts = '--no-heading --color never --column'
-  let g:unite_source_grep_recursive_opt = ''
-endif
 
 "======================================================
 " END:
