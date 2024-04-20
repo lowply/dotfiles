@@ -1,16 +1,23 @@
-build-ubuntu:
+build-ubuntu-noble:
+	docker build . \
+		-f Dockerfile.ubuntu-2404 \
+		-t lowply/dotfiles:ubuntu-noble \
+
+build-ubuntu-jammy:
 	docker build . \
 		-f Dockerfile.ubuntu-2204 \
-		-t lowply/dotfiles:ubuntu-22.04 \
-		-t lowply/dotfiles:latest
+		-t lowply/dotfiles:ubuntu-jammy \
 
-build-ubuntu-cs:
+build-ubuntu-focal:
 	docker build . \
 		-f Dockerfile.ubuntu-2004 \
-		-t lowply/dotfiles:ubuntu-20.04
+		-t lowply/dotfiles:ubuntu-focal
 
-run-ubuntu:
-	docker run -it --rm lowply/dotfiles:ubuntu-22.04
+run-ubuntu-noble:
+	docker run -it --rm lowply/dotfiles:ubuntu-noble
 
-run-ubuntu-cs:
-	docker run -it --rm lowply/dotfiles:ubuntu-20.04
+run-ubuntu-jammy:
+	docker run -it --rm lowply/dotfiles:ubuntu-jammy
+
+run-ubuntu-focal:
+	docker run -it --rm lowply/dotfiles:ubuntu-focal
