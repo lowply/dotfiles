@@ -13,36 +13,11 @@ netstat -tlnp
 # supervisord
 supervisorctl status
 
-# docker
-docker rm $(docker ps -a -q)
-docker rmi $(docker images -q)
-
-# pwgen
-pwgen -Bs 8
-
-# cache
-sync && sysctl -w vm.drop_caches=3
-
-# swap
-swapoff -a && swapon -a
-
-# mysql
-mysql -e "select table_name, table_schema, engine from information_schema.tables;"
-
 # open port on macOS
 sudo lsof -PiTCP -sTCP:LISTEN | grep "IPv4"
 
 # reset DNS cache on macOS
 sudo killall -HUP mDNSResponder
-
-# start docker-unbound
-docker ps && docker start unbound && docker ps
-
-# just push all
-git add . && git commit -m "update" && git push
-
-# git pull all
-git pull origin master && git submodule foreach git pull origin master
 
 # epoch now
 date -ju '+%F %T %Z';
@@ -50,11 +25,5 @@ date -ju '+%F %T %Z';
 # epoch
 date -jur $1 '+%F %T %Z';
 
-# terminfo
-infocmp -a xterm-kitty | gh cs ssh -c [codespace] -- tic -x -o \~/.terminfo /dev/stdin
-
 # kill AMPLibraryAgent
 killall AMPLibraryAgent
-
-# meetings
-audio-select.sh zoom; keylight.sh
