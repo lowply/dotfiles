@@ -100,8 +100,8 @@ export HISTTIMEFORMAT="%F %T : "
 export LESS='-X -R -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
 
 #
-# for Mac, brew install source-highlight
-# for Linux, yum install source-highlight
+# brew install source-highlight for macOS
+#  apt install source-highlight for Ubuntu
 #
 if has source-highlight; then
     if has src-hilite-lesspipe.sh; then
