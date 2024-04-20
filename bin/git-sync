@@ -1,24 +1,25 @@
-#!/bin/sh
+#!/bin/bash
 
-user=`git config github.user`
-git remote show ${user} > /dev/null 2>&1
-has_repo=$?
+[ -d .git ] || { echo "Not a git repository"; exit 1; }
 
 git fetch --all --prune
-modified=`git status | grep modified | wc -l`
-if [ $modified -gt 0 ] ; then git stash ; fi
-branch=`git branch | grep '*' | cut -f 2 -d ' '`
 
-master=`git remote show origin | grep 'HEAD branch:' | cut -d : -f 2 | tr -d '[[:space:]]'`
-git checkout $master
-git pull --rebase origin $master
-if [ $has_repo = 0 ] ; then git push ${user} $master; fi
-if [ $branch != $master ] ; then
-    if [ `git branch --merged | grep ${branch} | wc -l` -eq 1 ]
-    then
-        git branch -d ${branch}
+modified=$(git status | grep modified | wc -l)
+
+[ $modified -gt 0 ] && git stash
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+default_branch=$(git remote show origin | grep 'HEAD branch:' | cut -d ':' -f 2 | xargs)
+
+git checkout ${default_branch}
+git pull --rebase origin ${default_branch}
+
+if [ ${current_branch} != ${default_branch} ] ; then
+    if [ $(git branch --merged | grep ${current_branch} | wc -l) -eq 1 ]; then
+        git branch -d ${current_branch}
     else
-        git checkout ${branch}
+        git checkout ${current_branch}
     fi
 fi
-if [ $modified -gt 0 ] ; then git stash pop ; fi
+
+[ $modified -gt 0 ] && git stash pop
