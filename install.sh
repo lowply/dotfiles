@@ -95,6 +95,10 @@ unlink(){
     done
 }
 
+brew(){
+    [[ ${OSTYPE} =~ ^darwin ]] && brew bundle
+}
+
 main(){
     [ $# -gt 1 ] && usage
 
@@ -115,6 +119,7 @@ main(){
             git-contrib
             symlinks
             copies
+            brew
         ;;
     esac
 
@@ -130,6 +135,9 @@ main(){
             -q '.content' \
             | base64 -d \
             | tic -x -o ~/.terminfo -
+
+        # Install
+        sudo apt install -y peco source-highlight
     fi
 }
 
