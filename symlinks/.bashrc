@@ -103,12 +103,15 @@ export LESS='-X -R -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
 # set EDITOR, PAGER
 #
 
-[ -x "/usr/bin/vim" ] && export EDITOR=/usr/bin/vim
-[ -x "/usr/local/bin/vim" ] && export EDITOR=/usr/local/bin/vim
-[ -x "/opt/homebrew/bin/vim" ] && export EDITOR=/opt/homebrew/bin/vim
+for P in /usr/bin/vim /usr/local/bin/vim /opt/homebrew/bin/vim
+do
+    [ -x ${P} ] && export EDITOR=${P}
+done
 
-[ -x "/usr/bin/less" ] && export PAGER=/usr/bin/less
-[ -x "/opt/homebrew/bin/less" ] && export PAGER=/opt/homebrew/bin/less
+for P in /usr/bin/less /opt/homebrew/bin/less
+do
+    [ -x ${P} ] && export PAGER=${P}
+done
 
 #
 # avoid screen lock by hitting Ctrl+S
