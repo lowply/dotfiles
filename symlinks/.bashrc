@@ -100,21 +100,6 @@ export HISTTIMEFORMAT="%F %T : "
 export LESS='-X -R -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
 
 #
-# brew install source-highlight for macOS
-#  apt install source-highlight for Ubuntu
-#
-if has source-highlight; then
-    if has src-hilite-lesspipe.sh; then
-        # macOS
-        LESSPIPE=$(which src-hilite-lesspipe.sh)
-    elif [ -x "/usr/share/source-highlight/src-hilite-lesspipe.sh" ]; then
-        # Ubuntu
-        LESSPIPE="/usr/share/source-highlight/src-hilite-lesspipe.sh"
-    fi
-    export LESSOPEN="| $LESSPIPE %s"
-fi
-
-#
 # set EDITOR, PAGER
 #
 
@@ -231,6 +216,21 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     # noop
     :
+fi
+
+#
+# brew install source-highlight for macOS
+#  apt install source-highlight for Ubuntu
+#
+if has source-highlight; then
+    if has src-hilite-lesspipe.sh; then
+        # macOS
+        LESSPIPE=$(which src-hilite-lesspipe.sh)
+    elif [ -x "/usr/share/source-highlight/src-hilite-lesspipe.sh" ]; then
+        # Ubuntu
+        LESSPIPE="/usr/share/source-highlight/src-hilite-lesspipe.sh"
+    fi
+    export LESSOPEN="| $LESSPIPE %s"
 fi
 
 # rbenv
