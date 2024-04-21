@@ -3,10 +3,8 @@
 # type "psone" to take effect immediately
 #
 
-local BACKGROUND=0
 local UNAME=252
 local SYMBOL=3
 local HOST=252
 local DIRNAME=252
 local PROMPT=3
-local BRANCH=33
