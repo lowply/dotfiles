@@ -65,6 +65,10 @@ backup() {
     cp -a $1{,.$(date +%y%m%d_%H%M%S)}
 }
 
+colortext(){
+    printf "\[$(tput setaf ${2})\]${1}\[$(tput sgr0)\]"
+}
+
 #
 # aliases
 #
@@ -128,45 +132,6 @@ shopt -s histappend
 # update the values of LINES and COLUMNS.
 #
 shopt -s checkwinsize
-
-#
-# PS1
-#
-psone(){
-    GIT_PS1_SHOWDIRTYSTATE=true
-    GIT_PS1_SHOWUNTRACKEDFILES=true
-    GIT_PS1_SHOWUPSTREAM="auto"
-    GIT_PS1_SHOWCOLORHINTS=true
-
-    # color config
-    if [ $(id -u) = 0 ]; then
-        local UNAME=196
-        local SYMBOL=226
-        local HOST=196
-        local DIRNAME=196
-        local PROMPT=196
-    else
-        if [ -f ${HOME}/.bash_color ]; then
-            . ${HOME}/.bash_color
-        else
-            local UNAME=252
-            local SYMBOL=3
-            local HOST=252
-            local DIRNAME=252
-            local PROMPT=3
-        fi
-    fi
-
-    pc_u=$(printf "\[$(tput setaf ${UNAME})\]\u\[$(tput sgr0)\]")
-    pc_s=$(printf "\[$(tput setaf ${SYMBOL})\]@\[$(tput sgr0)\]")
-    pc_h=$(printf "\[$(tput setaf ${HOST})\]\h\[$(tput sgr0)\]")
-    pc_d=$(printf "\[$(tput setaf ${DIRNAME})\]\w\[$(tput sgr0)\]")
-    pc_p=$(printf "\[$(tput setaf ${PROMPT})\]$\[$(tput sgr0)\]")
-
-    # set PS1
-    # reference: https://github.com/git/git/blob/v2.44.0/contrib/completion/git-prompt.sh#L23
-    export PROMPT_COMMAND="__git_ps1 \"${pc_u}${pc_s}${pc_h}:${pc_d}\" \"\n${pc_p} \""
-}
 
 #
 # $PATH
@@ -315,6 +280,44 @@ fi
 #
 # psone
 #
+psone(){
+    GIT_PS1_SHOWDIRTYSTATE=true
+    GIT_PS1_SHOWUNTRACKEDFILES=true
+    GIT_PS1_SHOWUPSTREAM="auto"
+    GIT_PS1_SHOWCOLORHINTS=true
+
+    # color config
+    if [ $(id -u) = 0 ]; then
+        local UNAME=196
+        local SYMBOL=226
+        local HOST=196
+        local DIRNAME=196
+        local PROMPT=196
+    else
+        if [ -f ${HOME}/.bash_color ]; then
+            . ${HOME}/.bash_color
+        else
+            local UNAME=252
+            local SYMBOL=3
+            local HOST=252
+            local DIRNAME=252
+            local PROMPT=3
+        fi
+    fi
+
+    # Double escape to suppress printf unicode warning on Linux
+    [[ ${OSTYPE} =~ ^linux ]] && u="\\\u" || u="\u"
+    pc_u=$(colortext "${u}" "${UNAME}")
+    pc_s=$(colortext "@"  "${SYMBOL}")
+    pc_h=$(colortext "\h" "${HOST}")
+    pc_d=$(colortext "\w" "${DIRNAME}")
+    pc_p=$(colortext "$"  "${PROMPT}")
+
+    # set PS1
+    # reference: https://github.com/git/git/blob/v2.44.0/contrib/completion/git-prompt.sh#L23
+    export PROMPT_COMMAND="__git_ps1 \"${pc_u}${pc_s}${pc_h}:${pc_d}\" \"\n${pc_p} \""
+}
+
 psone
 
 export LC_ALL=en_US.UTF-8
