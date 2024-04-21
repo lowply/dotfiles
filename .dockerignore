@@ -1,4 +1,2 @@
-.git
 Makefile
-Dockerfile.ubuntu-2004
-Dockerfile.ubuntu-2204
+Dockerfile*
