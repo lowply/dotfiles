@@ -13,11 +13,13 @@ build-ubuntu-focal:
 		-f Dockerfile.ubuntu-2004 \
 		-t lowply/dotfiles:ubuntu-focal
 
+# Docker defaults to xterm. Force to use the current TERM,
+# otherwise tput doesn't work as expected
 run-ubuntu-noble:
-	docker run -it --rm lowply/dotfiles:ubuntu-noble
+	docker run -it --rm -e TERM=${TERM} lowply/dotfiles:ubuntu-noble
 
 run-ubuntu-jammy:
-	docker run -it --rm lowply/dotfiles:ubuntu-jammy
+	docker run -it --rm -e TERM=${TERM} lowply/dotfiles:ubuntu-jammy
 
 run-ubuntu-focal:
-	docker run -it --rm lowply/dotfiles:ubuntu-focal
+	docker run -it --rm -e TERM=${TERM} lowply/dotfiles:ubuntu-focal
