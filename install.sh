@@ -123,21 +123,24 @@ main(){
         ;;
     esac
 
-    if [ -n "$CODESPACES" ]; then
-        # There's the Codespaces default .bashrc. Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
-        echo ". /workspaces/.codespaces/.persistedshare/dotfiles/symlinks/.bashrc" >> ${HOME}/.bashrc
-
+    if [[ ${OSTYPE} =~ ^linux ]]; then
         # Install Kitty terminfo
-        [ -f ${HOME}/.terminfo/x/xterm-kitty ] || gh api \
+        [ -f ${HOME}/.terminfo/x/xterm-kitty ] || \
+            curl \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/kovidgoyal/kitty/contents/terminfo/kitty.terminfo \
-            -q '.content' \
+            https://api.github.com/repos/kovidgoyal/kitty/contents/terminfo/kitty.terminfo \
+            | jq -r .content \
             | base64 -d \
             | tic -x -o ~/.terminfo -
 
         # Install
         sudo apt install -y peco source-highlight
+
+        if [ -n "$CODESPACES" ]; then
+            # There's the Codespaces default .bashrc. Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
+            echo ". /workspaces/.codespaces/.persistedshare/dotfiles/symlinks/.bashrc" >> ${HOME}/.bashrc
+        fi
     fi
 }
 
