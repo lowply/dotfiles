@@ -133,8 +133,10 @@ main(){
             | base64 -d \
             | tic -x -o ~/.terminfo -
 
-        # Install
-        sudo apt install -y peco source-highlight
+        # Install peco
+        curl -OL https://github.com/peco/peco/releases/latest/download/peco_linux_amd64.tar.gz
+        tar vxzf peco_linux_amd64.tar.gz -C /tmp
+        sudo mv /tmp/peco_linux_amd64/peco /usr/local/bin/peco
 
         if [ -n "$CODESPACES" ]; then
             # There's the Codespaces default .bashrc. Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
