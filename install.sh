@@ -19,8 +19,7 @@ backup(){
 }
 
 git-contrib(){
-    [ "${OSTYPE}" == "linux-gnu" ] || return
-    [ "${ID}" == "ubuntu" ] || [ "${ID}" == "debian" ] || return
+    [[ ${OSTYPE} =~ ^linux ]] || return
     [ -d /usr/local/git ] && return
 
     sudo git clone https://github.com/lowply/git-contrib.git /usr/local/git
@@ -124,9 +123,6 @@ main(){
     esac
 
     if [[ ${OSTYPE} =~ ^linux ]]; then
-        # Install peco
-        apt update && apt install peco
-
         # Install Kitty terminfo
         [ -f ${HOME}/.terminfo/x/xterm-kitty ] || \
             curl \
