@@ -124,6 +124,9 @@ main(){
     esac
 
     if [[ ${OSTYPE} =~ ^linux ]]; then
+        # Install peco
+        apt update && apt install peco
+
         # Install Kitty terminfo
         [ -f ${HOME}/.terminfo/x/xterm-kitty ] || \
             curl \

@@ -30,26 +30,25 @@ error(){
 }
 
 peco-run-cmd(){
-    if [ -n "$1" ] ; then
-        # Replace the last entry, with $1
-        history -s $1
-        # Execute it
-        echo $1 >&2
-        eval $1
-    else
-        # Remove the last entry
-        history -d $((HISTCMD-1))
-    fi
+    [ "$#" -ne 1 ] && return
+    # Replace the last entry, with $1
+    history -s $1
+    # Execute it
+    echo $1 >&2
+    eval $1
 }
 
 # See ~/.inputrc
-peco-ghq () {
+peco-cd-repo () {
     has "peco" || error "peco is not installed"
-    has "ghq" || error "ghq is not installed"
-    local GHQDIR="${HOME}/ghq"
-    local DIR="$(ghq list | peco)"
-    if [ ! -z "${DIR}" ]; then
-        cd "${GHQDIR}/${DIR}"
+    if [ -n "${CODESPACES}" ]; then
+        local DIR="$(ls -d /workspaces/*)"
+        [ -n "${DIR}" ] && cd "${DIR}"
+    else
+        has "ghq" || error "ghq is not installed"
+        local GHQDIR="${HOME}/ghq"
+        local DIR="$(ghq list | peco)"
+        [ -n "${DIR}" ] && cd "${GHQDIR}/${DIR}"
     fi
 }
 
@@ -57,7 +56,7 @@ peco-ghq () {
 peco-snippets() {
     has "peco" || return
     [ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
-    local CMD=$(grep -v "^#" ~/.snippets | sed '/^$/d' | peco)
+    local CMD=$(cat ~/.snippets | sed '/^#.*$/d' | sed '/^$/d' | peco)
     peco-run-cmd "$CMD"
 }
 
