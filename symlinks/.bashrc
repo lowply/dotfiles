@@ -42,7 +42,7 @@ peco-run-cmd(){
 peco-cd-repo () {
     has "peco" || error "peco is not installed"
     if [ -n "${CODESPACES}" ]; then
-        local DIR="$(ls -d /workspaces/*)"
+        local DIR="$(ls -d /workspaces/* | peco)"
         [ -n "${DIR}" ] && cd "${DIR}"
     else
         has "ghq" || error "ghq is not installed"
