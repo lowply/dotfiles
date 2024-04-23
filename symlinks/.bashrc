@@ -41,14 +41,14 @@ peco-run-cmd(){
 # See ~/.inputrc
 peco-cd-repo () {
     has "peco" || error "peco is not installed"
-    if [[ ${OSTYPE} =~ ^darwin ]]; then
+    if [ -n "${CODESPACES}" ]; then
+        local DIR="$(ls -d /workspaces/* | peco)"
+        [ -n "${DIR}" ] && cd "${DIR}"
+    else
         has "ghq" || error "ghq is not installed"
         local GHQDIR="${HOME}/ghq"
         local DIR="$(ghq list | peco)"
         [ -n "${DIR}" ] && cd "${GHQDIR}/${DIR}"
-    elif [ -n "${CODESPACES}" ]; then
-        local DIR="$(ls -d /workspaces/* | peco)"
-        [ -n "${DIR}" ] && cd "${DIR}"
     fi
 }
 
