@@ -32,8 +32,7 @@ git-contrib(){
 symlinks(){
     cd ${WORKDIR}/symlinks
 
-    local LIST_DIRS=$(find . -mindepth 1 -type d | sed -e 's/^\.\///')
-    local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
+    local LIST_DIRS=$(find . -mindepth 1 -type d | sed -e 's/^\.\///') local LIST_FILES=$(find . -type f -not -name '.gitkeep' | sed -e 's/^\.\///')
 
     # Exclude .bashrc for Codespaces
     if [ -n "$CODESPACES" ]; then
@@ -95,7 +94,7 @@ unlink(){
 }
 
 brew(){
-    [[ ${OSTYPE} =~ ^darwin ]] && brew bundle
+    [[ ${OSTYPE} =~ ^darwin ]] && brew bundle || true
 }
 
 main(){
@@ -108,21 +107,7 @@ main(){
         type brew > /dev/null 2>&1 || { echo "Install homebrew first."; exit 1; }
         [ -L $(brew --prefix)/opt/coreutils ] || { echo "Install coreutils first."; exit 1; }
         export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
-    fi
-
-    case "${1}" in
-        "clean")
-            unlink
-        ;;
-        *)
-            git-contrib
-            symlinks
-            copies
-            brew
-        ;;
-    esac
-
-    if [[ ${OSTYPE} =~ ^linux ]]; then
+    else
         # Install Kitty terminfo
         [ -f ${HOME}/.terminfo/x/xterm-kitty ] || \
             curl \
@@ -140,11 +125,23 @@ main(){
             && sudo mv /tmp/peco_linux_amd64/peco /usr/local/bin/peco \
             && sudo chown root:root /usr/local/bin/peco
 
-        if [ -n "$CODESPACES" ]; then
-            # There's the Codespaces default .bashrc. Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
-            echo ". /workspaces/.codespaces/.persistedshare/dotfiles/symlinks/.bashrc" >> ${HOME}/.bashrc
-        fi
+        # There's the Codespaces default .bashrc.
+        # Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
+        [ -n "$CODESPACES" ] && \
+            echo ". ${WORKDIR}/symlinks/.bashrc" >> ${HOME}/.bashrc
     fi
+
+    case "${1}" in
+        "clean")
+            unlink
+        ;;
+        *)
+            git-contrib
+            symlinks
+            copies
+            brew
+        ;;
+    esac
 }
 
 main $@
