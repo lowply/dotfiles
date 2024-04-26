@@ -8,7 +8,8 @@
 
 [merge]
 	ff = false
-	conflictstyle = zdiff3
+	conflictstyle = diff3
+	tool = vimdiff
 
 [pull]
 	ff = only
@@ -20,7 +21,8 @@
 	s = status
 	b = branch
 	co = checkout
-	d = difftool
+	d = diff
+	dt = difftool
 	l = log --graph -n 20 --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(green)- %an, %cr%Creset'
 
 	# http://blog.blindgaenger.net/advanced_git_aliases.html
@@ -73,16 +75,10 @@
 	gpgsign = true
 
 [diff]
-	tool = difftastic
+	tool = vimdiff
 
 [difftool]
 	prompt = false
-
-[difftool "difftastic"]
-	cmd = difft "$LOCAL" "$REMOTE"
-
-[pager]
-	difftool = true
 
 [rebase]
 	autosquash = true
@@ -104,3 +100,4 @@
 
 [log]
 	date = iso
+
