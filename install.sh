@@ -93,7 +93,8 @@ unlink(){
     done
 }
 
-brew(){
+brew_bundle(){
+    cd ${WORKDIR}
     [[ ${OSTYPE} =~ ^darwin ]] && brew bundle || true
 }
 
@@ -139,7 +140,7 @@ main(){
             git-contrib
             symlinks
             copies
-            brew
+            brew_bundle
         ;;
     esac
 }
