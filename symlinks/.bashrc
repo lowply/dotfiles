@@ -304,9 +304,8 @@ psone(){
         fi
     fi
 
-    # Double escape to suppress printf unicode warning on Linux
-    [[ ${OSTYPE} =~ ^linux ]] && u="\\\u" || u="\u"
-    pc_u=$(colortext "${u}" "${UNAME}")
+    # Double escape to suppress printf unicode warning
+    pc_u=$(colortext "\\\u" "${UNAME}")
     pc_s=$(colortext "@"  "${SYMBOL}")
     pc_h=$(colortext "\h" "${HOST}")
     pc_d=$(colortext "\w" "${DIRNAME}")
