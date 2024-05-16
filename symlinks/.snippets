@@ -32,4 +32,4 @@ killall AMPLibraryAgent
 cd /workspaces/.codespaces/.persistedshare/dotfiles/
 
 # SSH_AUTH_SOCK in CS
-for x in $(find /tmp/ssh-* -type s 2>/dev/null); do if SSH_AUTH_SOCK=${x} ssh-add -l > /dev/null; then export SSH_AUTH_SOCK=${x}; echo "Done"; break; fi; done
+for x in $(find /tmp -type s -path "/tmp/ssh-*" 2>/dev/null); do if SSH_AUTH_SOCK=${x} ssh-add -l > /dev/null; then export SSH_AUTH_SOCK=${x}; echo "Done"; break; fi; done
