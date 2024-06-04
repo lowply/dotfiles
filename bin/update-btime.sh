@@ -6,11 +6,15 @@ set -e
 
 has exiftool
 
+# This isn't timezone compatible. The only way to modify the birth date
+# as I wish when outside of JST is to change the OS timezone to JST
+# before running this script.
 for x in $(ls *.jpg)
 do
-    CURRENT=$(stat ${x} | grep Birth | cut -d ' ' -f 3-4 | cut -d '.' -f 1)
-    UPDATED=$(exiftool -DateCreated ${x} -d '%Y-%m-%d %H:%M:%S' | cut -s -d ':' -f 2- | xargs)
+    CURRENT=$(/bin/date -r $(/usr/bin/stat -f "%B" ${x}) "+%Y-%m-%d %H:%M:%S")
+    DATE_CREATED_UNIX=$(exiftool -DateCreated ${x} -d %s | cut -d ":" -f 2 | xargs)
+    UPDATED=$(/bin/date -r ${DATE_CREATED_UNIX} "+%Y-%m-%d %H:%M:%S")
+    BTIME=$(/bin/date -r ${DATE_CREATED_UNIX} '+%m/%d/%Y %I:%M:%S %p')
     echo "Updating BTIME for ${x}. current: ${CURRENT}, updated: ${UPDATED}"
-    BTIME=$(exiftool -DateCreated ${x} -d '%m/%d/%Y %I:%M:%S %p' | cut -s -d ':' -f 2- | xargs)
     SetFile -d "${BTIME}" ${x}
 done
