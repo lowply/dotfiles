@@ -171,6 +171,10 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
 
     # https://sw.kovidgoyal.net/kitty/faq.html#i-get-errors-about-the-terminal-being-unknown-or-opening-the-terminal-failing-when-sshing-into-a-different-computer
     alias kssh='/Applications/kitty.app/Contents/MacOS/kitty +kitten ssh'
+
+    has gh && alias gsh='gh cs ssh'
+    has gh && alias gcs='gh cs code'
+
 elif [[ ${OSTYPE} =~ ^linux ]]; then
     # noop
     :
