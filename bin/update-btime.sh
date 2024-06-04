@@ -2,6 +2,10 @@
 
 set -e
 
+. $(dirname $0)/lib.sh
+
+has exiftool
+
 for x in $(ls *.jpg)
 do
     CURRENT=$(stat ${x} | grep Birth | cut -d ' ' -f 3-4 | cut -d '.' -f 1)
