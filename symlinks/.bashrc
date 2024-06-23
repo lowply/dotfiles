@@ -135,6 +135,17 @@ shopt -s checkwinsize
 #
 # $PATH
 #
+
+# ~/bin
+addpath ${HOME}/bin
+
+# dotfiles/bin
+DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
+addpath ${DOTFILES_DIR}/bin
+
+# go
+addpath ${HOME}/go/bin
+
 if [[ ${OSTYPE} =~ ^darwin ]]; then
     # Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
     export BASH_SILENCE_DEPRECATION_WARNING=1
@@ -169,8 +180,8 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     has gmake && alias make='gmake'
     has gzcat && alias zcat='gzcat'
 
-    # https://sw.kovidgoyal.net/kitty/faq.html#i-get-errors-about-the-terminal-being-unknown-or-opening-the-terminal-failing-when-sshing-into-a-different-computer
-    alias kssh='/Applications/kitty.app/Contents/MacOS/kitty +kitten ssh'
+    # https://sw.kovidgoyal.net/kitty/kittens/ssh/
+    has kitten && alias kssh='kitten ssh'
 
     has gh && alias gsh='gh cs ssh'
     has gh && alias gcs='gh cs code'
@@ -211,16 +222,6 @@ if has n; then
     export N_PREFIX=${HOME}/.n
     addpath ${HOME}/.n/bin
 fi
-
-# ~/bin
-addpath ${HOME}/bin
-
-# dotfiles/bin
-DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
-addpath ${DOTFILES_DIR}/bin
-
-# go
-addpath ${HOME}/go/bin
 
 #
 # git prompt, bash completion and diff-highlight
