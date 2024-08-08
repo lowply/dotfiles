@@ -109,22 +109,8 @@ main(){
         [ -L $(brew --prefix)/opt/coreutils ] || { echo "Install coreutils first."; exit 1; }
         export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
     else
-        # Install Kitty terminfo
-        [ -f ${HOME}/.terminfo/x/xterm-kitty ] || \
-            curl \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/kovidgoyal/kitty/contents/terminfo/kitty.terminfo \
-            | jq -r .content \
-            | base64 -d \
-            | tic -x -o ~/.terminfo -
-
-        # Install peco
-        [ -x /usr/local/bin/peco ] || \
-            curl -sL https://github.com/peco/peco/releases/latest/download/peco_linux_amd64.tar.gz \
-            | tar xzf - -C /tmp \
-            && sudo mv /tmp/peco_linux_amd64/peco /usr/local/bin/peco \
-            && sudo chown root:root /usr/local/bin/peco
+        # Install Kitty terminfo and peco
+        sudo apt update && sudo apt install kitty-terminfo peco
 
         # There's the Codespaces default .bashrc.
         # Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
