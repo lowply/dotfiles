@@ -2,7 +2,7 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 config.font = wezterm.font('SF Mono')
-config.font_size = 13
+config.font_size = 14
 config.line_height = 1.2
 
 config.window_decorations = 'RESIZE'
@@ -13,7 +13,13 @@ config.window_frame = {
 
 wezterm.on('update-status', function(window)
   window:set_right_status(wezterm.format({
-    { Text = ' ' .. wezterm.hostname() .. ' | ' .. wezterm.strftime('%a %Y-%m-%d %H:%M:%S') .. ' ' },
+    {
+      Text = ' '
+      .. wezterm.hostname()
+      .. ' | '
+      .. wezterm.strftime('%a %Y-%m-%d %H:%M:%S')
+      .. ' '
+    },
   }))
 end)
 
@@ -32,6 +38,11 @@ local function resize_pane(key, direction)
   }
 end
 
+config.leader = {
+  key = 'a',
+  mods = 'CTRL',
+  timeout_milliseconds = 1000 
+}
 
 config.keys = {
   {
@@ -43,14 +54,19 @@ config.keys = {
     },
   },
   {
-    key = '"',
-    mods = 'LEADER',
+    key = 'Enter',
+    mods = 'CMD|SHIFT',
+    action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
+  },
+  {
+    key = 'Enter',
+    mods = 'CMD',
     action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
   },
   {
-    key = '%',
+    key = 'd',
     mods = 'LEADER',
-    action = wezterm.action.SplitVertical { domain = 'CurrentPaneDomain' },
+    action = wezterm.action.ShowDebugOverlay
   },
 
   move_pane('j', 'Down'),
@@ -82,7 +98,5 @@ config.set_environment_variables = {
   PATH = '/opt/homebrew/bin:' .. os.getenv('PATH')
 }
 
-config.leader = { key = 'a', mods = 'CTRL', timeout_milliseconds = 1000 }
-
-
 return config
+
