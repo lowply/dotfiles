@@ -173,6 +173,8 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
     # for dnsmasq, dsvpn etc
     addpath ${BREW_PREFIX}/sbin
 
+    # wezterm
+    addpath /Applications/WezTerm.app/Contents/MacOS
 
     has gsed && alias sed='gsed'
     has gawk && alias awk='gawk'
