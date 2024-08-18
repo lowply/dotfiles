@@ -26,7 +26,7 @@ end)
 local function move_pane(key, direction)
   return {
     key = key,
-    mods = 'LEADER',
+    mods = 'SHIFT',
     action = wezterm.action.ActivatePaneDirection(direction),
   }
 end
@@ -38,16 +38,16 @@ local function resize_pane(key, direction)
   }
 end
 
-config.leader = {
-  key = 'a',
-  mods = 'CTRL',
-  timeout_milliseconds = 1000 
-}
+-- config.leader = {
+--   key = 'a',
+--   mods = 'CTRL',
+--   timeout_milliseconds = 1000 
+-- }
 
 config.keys = {
   {
     key = ',',
-    mods = 'SUPER',
+    mods = 'CMD',
     action = wezterm.action.SpawnCommandInNewTab {
       cwd = wezterm.home_dir,
       args = { 'vim', wezterm.config_file },
@@ -63,20 +63,27 @@ config.keys = {
     mods = 'CMD',
     action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
   },
-  {
-    key = 'd',
-    mods = 'LEADER',
-    action = wezterm.action.ShowDebugOverlay
-  },
+  -- {
+  --   key = 'd',
+  --   mods = 'LEADER',
+  --   action = wezterm.action.ShowDebugOverlay
+  -- },
+  -- {
+  --   key = 'a',
+  --   -- When we're in leader mode _and_ CTRL + A is pressed...
+  --   mods = 'LEADER|CTRL',
+  --   -- Actually send CTRL + A key to the terminal
+  --   action = wezterm.action.SendKey { key = 'a', mods = 'CTRL' },
+  -- },
 
-  move_pane('j', 'Down'),
-  move_pane('k', 'Up'),
-  move_pane('h', 'Left'),
-  move_pane('l', 'Right'),
+  move_pane('DownArrow', 'Down'),
+  move_pane('UpArrow', 'Up'),
+  move_pane('LeftArrow', 'Left'),
+  move_pane('RightArrow', 'Right'),
 
   {
     key = 'r',
-    mods = 'LEADER',
+    mods = 'CMD|SHIFT',
     action = wezterm.action.ActivateKeyTable {
       name = 'resize_panes',
       one_shot = false,
@@ -96,6 +103,14 @@ config.key_tables = {
 
 config.set_environment_variables = {
   PATH = '/opt/homebrew/bin:' .. os.getenv('PATH')
+}
+
+config.ssh_domains = {
+  {
+    name = 'u',
+    remote_address = 'u.svifa.net:1417',
+    username = 'sho',
+  },
 }
 
 return config
