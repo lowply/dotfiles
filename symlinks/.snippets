@@ -7,12 +7,6 @@ dstat -cdnlt --top-io --top-bio --top-cpu --top-cputime --top-cputime-avg --top-
 # ps
 ps auxwww --sort=rss
 
-# netstat
-netstat -tlnp
-
-# supervisord
-supervisorctl status
-
 # open port on macOS
 sudo lsof -PiTCP -sTCP:LISTEN | grep "IPv4"
 
@@ -33,3 +27,6 @@ cd /workspaces/.codespaces/.persistedshare/dotfiles/
 
 # SSH_AUTH_SOCK in CS
 for x in $(find /tmp -type s -path "/tmp/ssh-*" 2>/dev/null); do if SSH_AUTH_SOCK=${x} ssh-add -l > /dev/null; then export SSH_AUTH_SOCK=${x}; echo "Done"; break; fi; done
+
+# cd to iCloud Drive
+cd ~/Library/Mobile\ Documents/com~apple~CloudDocs
