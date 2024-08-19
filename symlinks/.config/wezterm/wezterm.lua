@@ -7,10 +7,9 @@ config.line_height = 1.2
 
 config.colors = {
     foreground = 'white',
-    cursor_bg = '#52ad70',
-    selection_fg = 'white',
-    selection_bg = '#52ad70',
-    split = '#555555',
+    cursor_bg = '#ccc',
+    selection_bg = '#555',
+    split = '#555',
     compose_cursor = 'orange',
 }
 
