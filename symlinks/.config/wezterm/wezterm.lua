@@ -5,6 +5,15 @@ config.font = wezterm.font('SF Mono')
 config.font_size = 14
 config.line_height = 1.2
 
+config.colors = {
+    foreground = 'white',
+    cursor_bg = '#52ad70',
+    selection_fg = 'white',
+    selection_bg = '#52ad70',
+    split = '#555555',
+    compose_cursor = 'orange',
+}
+
 config.window_decorations = 'RESIZE'
 
 config.window_frame = {
