@@ -63,8 +63,6 @@ copies(){
         DST="${FILE/${SRC}/${HOME}}"
         [ -d $(dirname ${DST}) ] || mkdir -p $(dirname ${DST})
 
-        echo ${DST}
-
         if [ -L ${DST} ] || [ -e ${DST} ]; then
             message info "A file or a directory ${DST} already exists, skipping"
         else
