@@ -6,17 +6,17 @@ config.font_size = 14
 config.line_height = 1.2
 
 config.colors = {
-    foreground = 'white',
-    cursor_bg = '#ccc',
-    selection_bg = '#555',
-    split = '#555',
-    compose_cursor = 'orange',
+  foreground = 'white',
+  cursor_bg = '#ccc',
+  selection_bg = '#555',
+  split = '#555',
+  compose_cursor = 'orange',
 }
 
 config.window_decorations = 'RESIZE'
 
 config.window_frame = {
-  font = wezterm.font('SF Mono', { weight = "Bold" }),
+  font = wezterm.font('SF Mono', { weight = 'Bold' }),
 }
 
 wezterm.on('update-status', function(window)
@@ -46,12 +46,6 @@ local function resize_pane(key, direction)
   }
 end
 
--- config.leader = {
---   key = 'a',
---   mods = 'CTRL',
---   timeout_milliseconds = 1000 
--- }
-
 config.keys = {
   {
     key = ',',
@@ -71,24 +65,20 @@ config.keys = {
     mods = 'CMD',
     action = wezterm.action.SplitHorizontal { domain = 'CurrentPaneDomain' },
   },
-  -- {
-  --   key = 'd',
-  --   mods = 'LEADER',
-  --   action = wezterm.action.ShowDebugOverlay
-  -- },
-  -- {
-  --   key = 'a',
-  --   -- When we're in leader mode _and_ CTRL + A is pressed...
-  --   mods = 'LEADER|CTRL',
-  --   -- Actually send CTRL + A key to the terminal
-  --   action = wezterm.action.SendKey { key = 'a', mods = 'CTRL' },
-  -- },
-
-  move_pane('DownArrow', 'Down'),
-  move_pane('UpArrow', 'Up'),
-  move_pane('LeftArrow', 'Left'),
-  move_pane('RightArrow', 'Right'),
-
+  {
+    key = 'p',
+    mods = 'CTRL',
+    action = wezterm.action{
+      ActivatePaneDirection = 'Prev'
+    }
+  },
+  {
+    key = 'n',
+    mods = 'CTRL',
+    action = wezterm.action{
+      ActivatePaneDirection = 'Next'
+    }
+  },
   {
     key = 'r',
     mods = 'CMD|SHIFT',
@@ -119,6 +109,12 @@ config.ssh_domains = {
     remote_address = 'u.svifa.net:1417',
     username = 'sho',
   },
+}
+
+config.inactive_pane_hsb = {
+  hue = 1.0,
+  saturation = 1.0,
+  brightness = 0.6,
 }
 
 return config
