@@ -112,10 +112,17 @@ config.ssh_domains = {
 }
 
 config.inactive_pane_hsb = {
-  hue = 1.0,
-  saturation = 1.0,
-  brightness = 0.6,
+  -- hue = 1.0,
+  -- saturation = 1.0,
+  brightness = 1.0,
 }
+
+config.initial_cols = 270
+config.initial_rows = 78
+
+wezterm.on("window-config-reloaded", function(window, pane)
+  window:set_position(0, 0)
+end)
 
 return config
 
