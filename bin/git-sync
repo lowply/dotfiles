@@ -4,15 +4,11 @@
 
 git fetch --all --prune
 
-modified=$(git status | grep modified | wc -l)
-
-[ $modified -gt 0 ] && git stash
-
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 default_branch=$(git remote show origin | grep 'HEAD branch:' | cut -d ':' -f 2 | xargs)
 
 git checkout ${default_branch}
-git pull --rebase origin ${default_branch}
+git pull --rebase origin ${default_branch} --autostash
 
 if [ ${current_branch} != ${default_branch} ] ; then
     if [ $(git branch --merged | grep ${current_branch} | wc -l) -eq 1 ]; then
@@ -22,4 +18,3 @@ if [ ${current_branch} != ${default_branch} ] ; then
     fi
 fi
 
-[ $modified -gt 0 ] && git stash pop
