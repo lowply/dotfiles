@@ -4,17 +4,17 @@
 
 git fetch --all --prune
 
-current_branch=$(git rev-parse --abbrev-ref HEAD)
-default_branch=$(git remote show origin | grep 'HEAD branch:' | cut -d ':' -f 2 | xargs)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch:' | cut -d ':' -f 2 | xargs)
 
-git checkout ${default_branch}
-git pull --rebase origin ${default_branch} --autostash
+git checkout "${DEFAULT_BRANCH}"
+git pull --rebase origin "${DEFAULT_BRANCH}" --autostash
 
-if [ ${current_branch} != ${default_branch} ] ; then
-    if [ $(git branch --merged | grep ${current_branch} | wc -l) -eq 1 ]; then
-        git branch -d ${current_branch}
-    else
-        git checkout ${current_branch}
-    fi
+[ "${CURRENT_BRANCH}" == "${DEFAULT_BRANCH}" ] && exit 0
+
+if [ $(git branch --merged | grep -c "${CURRENT_BRANCH}") -eq 1 ]; then
+    git branch -d "${CURRENT_BRANCH}"
+else
+    git checkout "${CURRENT_BRANCH}"
 fi
 
