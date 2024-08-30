@@ -34,6 +34,7 @@ symlinks(){
 
     find ${SRC} -type f | while IFS= read -r FILE; do
         [ $(echo $FILE | xargs basename) = ".gitkeep" ] && continue
+        [ $(echo $FILE | xargs basename) = ".DS_Store" ] && continue
 
         # Exclude .bashrc for Codespaces
         [ -n "$CODESPACES" ] && [ $(echo $FILE | xargs basename) = ".bashrc" ] && continue
@@ -59,6 +60,7 @@ copies(){
 
     find ${SRC} -type f | while IFS= read -r FILE; do
         [ $(echo $FILE | xargs basename) = ".gitkeep" ] && continue
+        [ $(echo $FILE | xargs basename) = ".DS_Store" ] && continue
 
         DST="${FILE/${SRC}/${HOME}}"
         [ -d $(dirname ${DST}) ] || mkdir -p $(dirname ${DST})
