@@ -137,7 +137,7 @@ shopt -s checkwinsize
 #
 
 # ~/bin
-addpath ${HOME}/bin
+addpath "${HOME}/bin"
 
 # dotfiles/bin
 DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
@@ -279,9 +279,7 @@ fi
 #
 # acme.sh
 #
-if [ -d ${HOME}/.acme.sh ]; then
-    . "${HOME}/.acme.sh/acme.sh.env"
-fi
+[ -d "${HOME}/.acme.sh" ] && . "${HOME}/.acme.sh/acme.sh.env"
 
 #
 # psone
@@ -342,7 +340,5 @@ fi
 #
 # env specific additions
 #
-if [ -f ${HOME}/.bashrc.local ]; then
-    . ${HOME}/.bashrc.local
-fi
+[ -f "${HOME}/.bashrc.local" ] && . "${HOME}/.bashrc.local"
 
