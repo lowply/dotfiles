@@ -13,6 +13,7 @@
 
 [pull]
 	ff = only
+	rebase = true
 
 [grep]
 	lineNumber = true
