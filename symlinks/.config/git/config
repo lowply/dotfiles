@@ -101,6 +101,7 @@
 
 [fetch]
 	prune = true
+	all = true
 
 [log]
 	date = iso
