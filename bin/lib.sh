@@ -1,17 +1,7 @@
 #/bin/bash
 
-# ------------------------------
-# Variables
-# ------------------------------
-
-DATE=$(date +%y%m%d_%H%M%S)
-
-# ------------------------------
-# Methods
-# ------------------------------
-
 usage() {
-    grep '^#/' < ${0} | cut -c4-
+    grep '^#/' < "${0}" | cut -c4-
     exit 1
 }
 
@@ -19,53 +9,58 @@ logfile(){
 	LOGDIR="${HOME}/.log/$(basename $0)"
 	LOGFILE="${LOGDIR}/$(date +%y%m%d).log"
 
-	automkdir ${LOGDIR}
-	[ -f ${LOGFILE} ] || touch ${LOGFILE}
-	echo ${LOGFILE}
+	mkdir -p "${LOGDIR}"
+	[ -f "${LOGFILE}" ] || touch ${LOGFILE}
+	echo "${LOGFILE}"
 }
 
 logger(){
 	LOGFILE=$(logfile)
-	echo "$(date): [Info] ${1}" | tee -a ${LOGFILE}
+	echo "$(date): [Info] ${1}" | tee -a "${LOGFILE}"
 }
 
 logger_error(){
 	LOGFILE=$(logfile)
-	echo "$(date): [Error] ${1}" | tee -a ${LOGFILE} 1>&2
+	echo "$(date): [Error] ${1}" | tee -a "${LOGFILE}" 1>&2
 	exit 1
 }
 
 abort(){
-	message error "${1}"
-	exit 1
+	message error "${1}"; exit 1
+}
+
+error(){
+    message error "${1}"; return 1
 }
 
 has(){
-	type ${1} >/dev/null 2>&1 || abort "Command not found: ${1}"
+	type "${1}" >/dev/null 2>&1; return $?
 }
 
-automkdir(){
-	[ -d "${1}" ] || mkdir -p ${1}
+is_darwin(){
+	echo "${OSTYPE}" | grep -q "darwin"; return $?
 }
 
-autotouchfile(){
-    [ -f ${1} ] || touch ${1}
+is_linux(){
+	echo "${OSTYPE}" | grep -q "linux"; return $?
 }
 
-check_args(){
-	[ ${1} -eq ${2} ] || abort "${3}"
+is_codespaces(){
+	[ "${CODESPACES}" == "true" ] && return 0 || return 1
 }
 
-check_dir(){
-	[ -d ${1} ] || abort "No such directory: ${1}"
+# ensure_* functions abort if the condition is not met
+
+ensure_args(){
+	[ "${1}" -eq "${2}" ] || abort "${3}"
 }
 
-check_file(){
-	[ -f ${1} ] || abort "No such file: ${1}"
+ensure_dir(){
+	[ -d "${1}" ] || abort "No such directory: ${1}"
 }
 
-check_os(){
-	echo ${OSTYPE} | grep ${1} > /dev/null || abort "Not a Linux OS"
+ensure_file(){
+	[ -f "${1}" ] || abort "No such file: ${1}"
 }
 
 color(){

@@ -6,11 +6,11 @@
 
 . $(dirname $0)/lib.sh
 
-check_args $# 1 "Usage: $0 <filename>"
+ensure_args $# 1 "Usage: $0 <filename>"
 
 has qpdf
 
-check_file $1
+ensure_file $1
 
 read -sp "Password: " PASSWORD
 ORIGINAL=${1}

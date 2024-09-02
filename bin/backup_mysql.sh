@@ -10,10 +10,10 @@ DATE=$(date +%y%m%d.%H%M%S)
 CONF="${HOME}/.mysql_access"
 
 # check if this host is linux
-check_os "linux"
+is_linux || abort "Not a Linux system"
 
 # check if mysql is installed
-has mysql
+has mysql || abort "mysql is not installed"
 
 # check if mysqld is running
 [ ! -z "$(/sbin/pidof mysqld)" ] || logger_error "mysql is not running"
@@ -51,6 +51,7 @@ LIST=$(mysql -u${DBUSER} -N -e 'show databases' | grep -v '_schema')
 [ -d ${BACKUPDIR} ] || mkdir -p ${BACKUPDIR}
 
 # change dir
+DATE="$(date +%y%m%d_%H%M%S)"
 mkdir -p ${BACKUPDIR}/${DATE}
 cd ${BACKUPDIR}/${DATE}
 

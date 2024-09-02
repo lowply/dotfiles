@@ -6,7 +6,7 @@
 
 . $(dirname $0)/lib.sh
 
-check_args $# 1 "Usage: $0 <dns/ip>:<port>"
+ensure_args $# 1 "Usage: $0 <dns/ip>:<port>"
 
 has openssl
 

@@ -1,9 +1,17 @@
 # .bashrc
 
 # Source global definitions
-if [ -f /etc/bashrc ]; then
-    . /etc/bashrc
+[ -f /etc/bashrc ] && . /etc/bashrc
+
+# Set dotfiles dir
+if [ -n "${CODESPACES}" ]; then
+    DOTFILES_DIR="/workspaces/.codespaces/.persistedshare/dotfiles"
+else
+    DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
 fi
+
+# Source dotfiles/bin/lib.sh
+. "${DOTFILES_DIR}/bin/lib.sh"
 
 #
 # Reset default path and add /usr/local/bin and /usr/local/sbin at proper position
@@ -15,53 +23,45 @@ fi
 # functions
 #
 addpath(){
-    [ -d ${1} ] || return
-    export PATH=${1}:${PATH//$1:/}
-}
-
-has(){
-    type ${1} > /dev/null 2>&1
-    return $?
-}
-
-error(){
-    echo "${1}"
-    return 1
+    [ -d "${1}" ] && export PATH="${1}:${PATH//$1:/}"
 }
 
 peco-run-cmd(){
     [ "$#" -ne 1 ] && return
     # Replace the last entry, with $1
-    history -s $1
+    history -s "${1}"
     # Execute it
-    echo $1 >&2
-    eval $1
+    echo "${1}" >&2
+    eval "${1}"
 }
 
 # See ~/.inputrc
 peco-cd-repo () {
-    has "peco" || error "peco is not installed"
-    if [ -n "${CODESPACES}" ]; then
-        local DIR="$(ls -d /workspaces/* | peco)"
-        [ -n "${DIR}" ] && cd "${DIR}"
+    has "peco" || { error "peco is not installed"; return; }
+    if is_codespaces; then
+        local DIR="$(find /workspaces -maxdepth 1 -mindepth 1 -type d -not -path '*/.*' | peco)"
+        [ -n "${DIR}" ] && cd "${DIR}" || return
     else
-        has "ghq" || error "ghq is not installed"
+        has "ghq" || { error "ghq is not installed"; return; }
         local GHQDIR="${HOME}/ghq"
         local DIR="$(ghq list | peco)"
-        [ -n "${DIR}" ] && cd "${GHQDIR}/${DIR}"
+        [ -n "${DIR}" ] && cd "${GHQDIR}/${DIR}" || return
     fi
 }
 
 # See ~/.inputrc
 peco-snippets() {
-    has "peco" || return
-    [ -f ${HOME}/.snippets ] || { echo "Couldn't find ~/.snippets"; return; }
-    local CMD=$(cat ~/.snippets | sed '/^#.*$/d' | sed '/^$/d' | peco)
-    peco-run-cmd "$CMD"
+    has "peco" || { error "peco is not installed"; return; }
+    if [ -f "${HOME}/.snippets" ]; then
+        local CMD=$(cat ~/.snippets | sed '/^#.*$/d' | sed '/^$/d' | peco)
+        peco-run-cmd "$CMD"
+    else
+         error "Couldn't find ~/.snippets"
+    fi
 }
 
 backup() {
-    cp -a $1{,.$(date +%y%m%d_%H%M%S)}
+    cp -a "${1}"{,.$(date +%y%m%d_%H%M%S)}
 }
 
 colortext(){
@@ -106,13 +106,11 @@ export LESS='-X -R -i -P ?f%f:(stdin). ?lb%lb?L/%L.. [?eEOF:?pb%pb\%..]'
 # set EDITOR, PAGER
 #
 
-for P in /usr/bin/vim /usr/local/bin/vim /opt/homebrew/bin/vim
-do
+for P in /usr/bin/vim /usr/local/bin/vim /opt/homebrew/bin/vim; do
     [ -x ${P} ] && export EDITOR=${P}
 done
 
-for P in /usr/bin/less /opt/homebrew/bin/less
-do
+for P in /usr/bin/less /opt/homebrew/bin/less; do
     [ -x ${P} ] && export PAGER=${P}
 done
 
@@ -140,38 +138,37 @@ shopt -s checkwinsize
 addpath "${HOME}/bin"
 
 # dotfiles/bin
-DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
-addpath ${DOTFILES_DIR}/bin
+addpath "${DOTFILES_DIR}"/bin
 
 # go
-addpath ${HOME}/go/bin
+addpath "${HOME}"/go/bin
 
-if [[ ${OSTYPE} =~ ^darwin ]]; then
+if is_darwin; then
     # Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
     export BASH_SILENCE_DEPRECATION_WARNING=1
 
-    [ -f "/opt/homebrew/bin/brew" ] || { echo "brew is not installed"; return; }
+    [ -f "/opt/homebrew/bin/brew" ] || error "brew is not installed"
 
     export BREW_PREFIX="$(/opt/homebrew/bin/brew --prefix)"
 
-    addpath ${BREW_PREFIX}/bin
+    addpath "${BREW_PREFIX}/bin"
 
     # aliasing every command with the 'g' prefix in ${BREW_PREFIX}/bin is not a great idea.
     # instead, let's just add the gnubin dir to the PATH
-    addpath ${BREW_PREFIX}/opt/coreutils/libexec/gnubin
+    addpath "${BREW_PREFIX}/opt/coreutils/libexec/gnubin"
 
     # Prefer OpenSSL over LibreSSL
-    addpath ${BREW_PREFIX}/opt/openssl/bin
+    addpath "${BREW_PREFIX}/opt/openssl/bin"
 
     # Ruby and Gems
-    addpath ${BREW_PREFIX}/opt/ruby/bin
-    has gem && addpath $(gem environment | grep "EXECUTABLE DIRECTORY: " | cut -d ':' -f 2 | xargs)
+    addpath "${BREW_PREFIX}/opt/ruby/bin"
+    has gem && addpath "$(gem environment | grep "EXECUTABLE DIRECTORY: " | cut -d ':' -f 2 | xargs)"
 
     # curl
-    addpath ${BREW_PREFIX}/opt/curl/bin
+    addpath "${BREW_PREFIX}/opt/curl/bin"
 
     # for dnsmasq, dsvpn etc
-    addpath ${BREW_PREFIX}/sbin
+    addpath "${BREW_PREFIX}/sbin"
 
     # wezterm
     addpath /Applications/WezTerm.app/Contents/MacOS
@@ -184,11 +181,7 @@ if [[ ${OSTYPE} =~ ^darwin ]]; then
 
     # https://sw.kovidgoyal.net/kitty/kittens/ssh/
     has kitten && alias kssh='kitten ssh'
-
-    has gh && alias gsh='gh cs ssh'
-    has gh && alias gcs='gh cs code'
-
-elif [[ ${OSTYPE} =~ ^linux ]]; then
+elif is_linux; then
     # noop
     :
 fi
@@ -209,37 +202,40 @@ if has source-highlight; then
 fi
 
 # rbenv
-if [ -z "${CODESPACES}" ] && [ -d ${HOME}/.rbenv ]; then
-    # Only Linux except Codespaces
-    # On macOS, rbenv is supposed to be installed via Homebrew
-    #
-    # Using apt on Debian/Ubuntu is not recommended. See:
-    # https://github.com/rbenv/rbenv#debian-ubuntu-and-their-derivatives
-    [[ ${OSTYPE} =~ ^linux ]] && addpath ${HOME}/.rbenv/bin
+#
+# On macOS, rbenv should be installed via Homebrew
+# On Codespaces, rbenv is pre-installed in the base image
+# On Debian/Ubuntu, installing rbenv via apt is not recommended. See:
+# https://github.com/rbenv/rbenv#debian-ubuntu-and-their-derivatives
+#
+# ~/.rbenv/bin only exists when rbenv is installed via Git
+#
+if [ -d "${HOME}/.rbenv" ]; then
+    addpath "${HOME}/.rbenv/bin"
     eval "$(rbenv init -)"
 fi
 
 # n
 if has n; then
-    export N_PREFIX=${HOME}/.n
-    addpath ${HOME}/.n/bin
+    export N_PREFIX="${HOME}/.n"
+    addpath "${HOME}/.n/bin"
 fi
 
 #
 # git prompt, bash completion and diff-highlight
 #
-if [[ ${OSTYPE} =~ ^darwin ]]; then
+if is_darwin; then
     # bash completion (need brew install bash-completion)
     # This will automatically include
     # ${BREW_PREFIX}/etc/bash_completion.d/git-completion.bash
     # ${BREW_PREFIX}/etc/bash_completion.d/git-prompt.sh
     if [ -h ${BREW_PREFIX}/etc/bash_completion ]; then
-        . ${BREW_PREFIX}/etc/bash_completion
+        . "${BREW_PREFIX}/etc/bash_completion"
     fi
 
     # diff-highlight
     addpath ${BREW_PREFIX}/share/git-core/contrib/diff-highlight
-elif [[ ${OSTYPE} =~ ^linux ]]; then
+elif is_linux; then
     # On Linux. Git is either installed from source or via the package manager
     #
     # /usr/share/git-core/contrib and /usr/share/doc/git/contrib/diff-highlight
@@ -255,9 +251,9 @@ elif [[ ${OSTYPE} =~ ^linux ]]; then
 
     if [ -d /usr/local/git ]; then
         CONTRIB_PATH="/usr/local/git/contrib"
-        addpath ${CONTRIB_PATH}/diff-highlight
-        . ${CONTRIB_PATH}/completion/git-prompt.sh
-        . ${CONTRIB_PATH}/completion/git-completion.bash
+        addpath "${CONTRIB_PATH}/diff-highlight"
+        . "${CONTRIB_PATH}/completion/git-prompt.sh"
+        . "${CONTRIB_PATH}/completion/git-completion.bash"
     fi
 fi
 
@@ -269,11 +265,10 @@ has aws_completer && complete -C aws_completer aws
 #
 # GCP
 #
-if [[ ${OSTYPE} =~ ^darwin ]]; then
-    if [ -d ${HOME}/google-cloud-sdk ]; then
-        source "${HOME}/google-cloud-sdk/path.bash.inc"
-        source "${HOME}/google-cloud-sdk/completion.bash.inc"
-    fi
+
+if is_darwin && [ -d "${HOME}/google-cloud-sdk" ]; then
+    source "${HOME}/google-cloud-sdk/path.bash.inc"
+    source "${HOME}/google-cloud-sdk/completion.bash.inc"
 fi
 
 #
@@ -328,10 +323,10 @@ export LANG=en_US.UTF-8
 
 # For SSH commit signing
 if [ "${CODESPACES}" == "true" ] && [ "${TERM_PROGRAM}" == "vscode" ]; then
-    for x in $(find /tmp/ssh-* -type s 2>/dev/null); do
-        if SSH_AUTH_SOCK=${x} ssh-add -l > /dev/null; then
-            echo "Setting SSH_AUTH_SOCK to ${x}"
-            export SSH_AUTH_SOCK=${x}
+    find /tmp/ssh-* -type s 2>/dev/null | while IFS= read -r SOCKET; do
+        if SSH_AUTH_SOCK=${SOCKET} ssh-add -l > /dev/null; then
+            echo "Setting SSH_AUTH_SOCK to ${SOCKET}"
+            export SSH_AUTH_SOCK=${SOCKET}
             break
         fi
     done

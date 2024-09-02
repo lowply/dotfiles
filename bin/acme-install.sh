@@ -43,7 +43,7 @@ install(){
 main(){
     [ "$(whoami)" == "root" ] || abort "This command should be run by root."
     [ -z "$LE_WORKING_DIR" ] && abort "LE_WORKING_DIR is empty"
-    check_dir "${LE_WORKING_DIR}"
+    ensure_dir "${LE_WORKING_DIR}"
 
     CONFIGS=$(ls -1 /etc/nginx/conf.d/ | sed -e 's/\.conf//g')
 

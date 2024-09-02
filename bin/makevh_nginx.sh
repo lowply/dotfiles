@@ -67,7 +67,7 @@ fi
 # output config
 cat << EOF > ${CONFFILE}
 #
-# added ${DATE}
+# added $(date)
 # ${HOSTNAME}
 #
 
