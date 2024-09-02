@@ -2,19 +2,22 @@
 
 [ -d .git ] || { echo "Not a git repository"; exit 1; }
 
-git fetch --all --prune
+MODIFIED=$(git status | grep -c modified)
+
+[ "${MODIFIED}" -gt 0 ] && git stash
 
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch:' | cut -d ':' -f 2 | xargs)
 
-git checkout "${DEFAULT_BRANCH}"
-git pull --rebase origin "${DEFAULT_BRANCH}" --autostash
+git switch "${DEFAULT_BRANCH}"
+git pull --rebase origin "${DEFAULT_BRANCH}"
 
 [ "${CURRENT_BRANCH}" == "${DEFAULT_BRANCH}" ] && exit 0
 
-if [ $(git branch --merged | grep -c "${CURRENT_BRANCH}") -eq 1 ]; then
+if [ "$(git branch --merged | grep -c "${CURRENT_BRANCH}")" -eq 1 ]; then
     git branch -d "${CURRENT_BRANCH}"
 else
-    git checkout "${CURRENT_BRANCH}"
+    git switch "${CURRENT_BRANCH}"
 fi
 
+[ "${MODIFIED}" -gt 0 ] && git stash pop
