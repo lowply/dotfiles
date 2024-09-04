@@ -30,7 +30,7 @@ git-contrib(){
 }
 
 symlinks(){
-    SRC="${WORKDIR}/symlinks"
+    local SRC="${WORKDIR}/symlinks"
 
     find "${SRC}" -type f | while IFS= read -r FILE; do
         [ "$(echo ${FILE} | xargs basename)" = ".gitkeep" ] && continue
@@ -56,7 +56,7 @@ symlinks(){
 }
 
 copies(){
-    SRC="${WORKDIR}/copies"
+    local SRC="${WORKDIR}/copies"
 
     find "${SRC}" -type f | while IFS= read -r FILE; do
         [ "$(echo ${FILE} | xargs basename)" = ".gitkeep" ] && continue
@@ -75,7 +75,7 @@ copies(){
 }
 
 unlink(){
-    SRC="${WORKDIR}/symlinks"
+    local SRC="${WORKDIR}/symlinks"
 
     find "${SRC}" -type f | while IFS= read -r FILE; do
         [ "$(echo ${FILE} | xargs basename)" = ".gitkeep" ] && continue
