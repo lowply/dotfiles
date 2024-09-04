@@ -2,11 +2,13 @@
 
 [ -d .git ] || { echo "Not a git repository"; exit 1; }
 
+git fetch --all --prune
+
 MODIFIED=$(git status | grep -c modified)
 
 [ "${MODIFIED}" -gt 0 ] && git stash
 
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+CURRENT_BRANCH=$(git branch --show-current)
 DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch:' | cut -d ':' -f 2 | xargs)
 
 git switch "${DEFAULT_BRANCH}"
