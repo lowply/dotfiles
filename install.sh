@@ -103,7 +103,7 @@ main(){
     if is_darwin; then
         export PATH="/opt/homebrew/bin:${PATH}"
         has brew || abort "Install homebrew first."
-        [ -L "$(brew --prefix)/opt/coreutis" ] || abort "Install coreutils first."
+        [ -L "$(brew --prefix)/opt/coreutils" ] || abort "Install coreutils first."
         export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
     else
         # Install peco
