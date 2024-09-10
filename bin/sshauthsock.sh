@@ -6,8 +6,6 @@
 #/ Only supports Codespaces
 #/
 
-[ -n "${CODESPACES}" ] || exit 0
-
 # Prevent this script to run
 echo $- | grep -q i || { echo "source this script, don't run"; exit 1; }
 

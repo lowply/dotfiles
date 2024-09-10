@@ -324,7 +324,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # For SSH commit signing
-source ${DOTFILES_DIR}/bin/sshauthsock.sh
+[ -n "${CODESPACES}" ] && source ${DOTFILES_DIR}/bin/sshauthsock.sh
 
 #
 # env specific additions
