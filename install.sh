@@ -1,13 +1,13 @@
 #!/bin/bash
 
-. $(dirname $0)/bin/lib.sh
-
 #/
-#/ Subcommands:
+#/ Usage: install.sh
 #/
 #/ install.sh          # Run install
 #/ install.sh clean    # Cleanup symlinks
 #/
+
+. $(dirname $0)/bin/lib.sh
 
 [ -f /etc/os-release ] && . /etc/os-release
 
