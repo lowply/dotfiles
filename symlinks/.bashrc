@@ -322,15 +322,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # For SSH commit signing
-if [ "${CODESPACES}" == "true" ] && [ "${TERM_PROGRAM}" == "vscode" ]; then
-    find /tmp/ssh-* -type s 2>/dev/null | while IFS= read -r SOCKET; do
-        if SSH_AUTH_SOCK=${SOCKET} ssh-add -l > /dev/null; then
-            echo "Setting SSH_AUTH_SOCK to ${SOCKET}"
-            export SSH_AUTH_SOCK=${SOCKET}
-            break
-        fi
-    done
-fi
+${DOTFILES_DIR}/bin/sshauthsock.sh
 
 #
 # env specific additions

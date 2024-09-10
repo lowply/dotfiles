@@ -1,7 +1,7 @@
 # date
 date +%Y%m%d
 
-# dstat 
+# dstat
 dstat -cdnlt --top-io --top-bio --top-cpu --top-cputime --top-cputime-avg --top-mem
 
 # ps
@@ -24,9 +24,6 @@ killall AMPLibraryAgent
 
 # cd dotfiles on CS
 cd /workspaces/.codespaces/.persistedshare/dotfiles/
-
-# SSH_AUTH_SOCK in CS
-for x in $(find /tmp -type s -path "/tmp/ssh-*" 2>/dev/null); do if SSH_AUTH_SOCK=${x} ssh-add -l > /dev/null; then export SSH_AUTH_SOCK=${x}; echo "Done"; break; fi; done
 
 # cd to iCloud Drive
 cd ~/Library/Mobile\ Documents/com~apple~CloudDocs
