@@ -461,6 +461,7 @@ autocmd BufWritePre *.go LspDocumentFormatSync
 " https://qiita.com/kitagry/items/216c2cf0066ff046d200
 let g:lsp_signs_enabled = 1
 let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_diagnostics_enabled = 0 " disable diagnostics support
 nnoremap <expr> <C-]> execute(':LspPeekDefinition') =~ "not supported" ? "\<C-]>" : ":LspDefinition<cr>"
 
 " https://github.com/prabirshrestha/asyncomplete.vim
