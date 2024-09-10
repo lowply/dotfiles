@@ -10,6 +10,8 @@ else
     DOTFILES_DIR="$(dirname $(dirname $(realpath ${BASH_SOURCE})))"
 fi
 
+export DOTFILES_DIR
+
 # Source dotfiles/bin/lib.sh
 . "${DOTFILES_DIR}/bin/lib.sh"
 
@@ -322,7 +324,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # For SSH commit signing
-${DOTFILES_DIR}/bin/sshauthsock.sh
+source ${DOTFILES_DIR}/bin/sshauthsock.sh
 
 #
 # env specific additions

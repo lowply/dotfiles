@@ -23,7 +23,10 @@ date -jur $1 '+%F %T %Z';
 killall AMPLibraryAgent
 
 # cd dotfiles on CS
-cd /workspaces/.codespaces/.persistedshare/dotfiles/
+cd ${DOTFILES_DIR}
+
+# source sshauthsock.sh
+source ${DOTFILES_DIR}/bin/sshauthsock.sh
 
 # cd to iCloud Drive
 cd ~/Library/Mobile\ Documents/com~apple~CloudDocs
