@@ -6,7 +6,7 @@ git fetch --all --prune
 
 MODIFIED=$(git status | grep -c modified)
 
-[ "${MODIFIED}" -gt 0 ] && git stash
+[ "${MODIFIED}" -gt 0 ] && git stash -u
 
 CURRENT_BRANCH=$(git branch --show-current)
 DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch:' | cut -d ':' -f 2 | xargs)
