@@ -30,3 +30,6 @@ source ${DOTFILES_DIR}/bin/sshauthsock.sh
 
 # cd to iCloud Drive
 cd ~/Library/Mobile\ Documents/com~apple~CloudDocs
+
+# echo hostname
+echo "https://$(grep HELPHUB_HOSTNAME .env | cut -d '=' -f 2)"
