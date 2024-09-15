@@ -149,7 +149,7 @@ set autoread
 "======================================================
 
 " Use space as the map leader
-" https://sheerun.net/2014/03/21/how-to-boost-your-vim-productivity/
+" n001
 let mapleader = "\<Space>"
 
 "" Split
@@ -252,7 +252,7 @@ vnoremap <silent> y y`]
 vnoremap <silent> p p`]
 nnoremap <silent> p p`]
 
-" http://bit.ly/2CBizVF
+" n002
 " ---------------------
 
 " Disable unsafe keys
@@ -276,7 +276,7 @@ nnoremap <Leader>w :w<CR>
 nnoremap <Leader>q :q<CR>
 nnoremap <Leader>Q :q!<CR>
 
-" http://bit.ly/2SpX9jY
+" n003
 " ---------------------
 
 nnoremap Y y$
@@ -289,7 +289,7 @@ augroup swapchoice-readonly
 	autocmd SwapExists * let v:swapchoice = 'o'
 augroup END
 
-" http://bit.ly/2TfFjA1
+" n004
 " ---------------------
 
 nnoremap <F5> <CR>q:
@@ -300,7 +300,7 @@ nnoremap q: <NOP>
 nnoremap q/ <NOP>
 nnoremap q? <NOP>
 
-" http://bit.ly/2AiqSEm
+" n005
 " ---------------------
 
 " Use F11 for toggling paste mode
@@ -327,7 +327,7 @@ set autoindent
 set smartindent
 
 " Disable builtin matchparen
-" http://bit.ly/2RjLs0N
+" n006
 let loaded_matchparen = 1
 
 "======================================================
@@ -375,7 +375,7 @@ nnoremap sv :vsplit<CR>
 
 "======================================================
 " Backup and swap
-" http://bit.ly/2GWrDJh
+" n008
 "======================================================
 
 let g:backup = $HOME . '/.vim/backup'
@@ -458,7 +458,7 @@ inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 autocmd BufWritePre *.go call execute('LspCodeActionSync source.organizeImports')
 autocmd BufWritePre *.go LspDocumentFormatSync
 
-" https://qiita.com/kitagry/items/216c2cf0066ff046d200
+" n009
 let g:lsp_signs_enabled = 1
 let g:lsp_diagnostics_echo_cursor = 1
 let g:lsp_diagnostics_enabled = 0 " disable diagnostics support
