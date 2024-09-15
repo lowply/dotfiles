@@ -330,6 +330,13 @@ set smartindent
 " n006
 let loaded_matchparen = 1
 
+" n007
+nnoremap x "_x
+nnoremap <nowait> X "_D
+xnoremap x "_x
+nnoremap U <c-r>
+noremap M %
+
 "======================================================
 " vim-json:
 "======================================================
