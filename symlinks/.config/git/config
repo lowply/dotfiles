@@ -70,7 +70,7 @@
 	path = ~/.config/git/config.work
 
 [includeIf "gitdir:/workspaces/"]
-    path = ~/.config/git/config.codespaces
+	path = ~/.config/git/config.codespaces
 
 [include]
 	path = ~/.config/git/config.local
