@@ -30,6 +30,7 @@
 	alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\t=> \\2/' | sort
 	ignore = !([ ! -e .gitignore ] && touch .gitignore) | echo $1 >>.gitignore
 	pushf = push --force-with-lease --force-if-includes
+	pullo = !git pull origin $(git symbolic-ref --short HEAD)
 
 [filter "media"]
 	clean = git-media-clean -- %f
