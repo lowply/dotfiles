@@ -45,8 +45,12 @@ is_linux(){
 	echo "${OSTYPE}" | grep -q "linux"; return $?
 }
 
+is_ubuntu(){
+    [ -f /etc/os-release ] && grep -q "Ubuntu" /etc/os-release; return $?
+}
+
 is_codespaces(){
-	[ "${CODESPACES}" == "true" ] && return 0 || return 1
+	[ "${CODESPACES}" = "true" ]
 }
 
 # ensure_* functions abort if the condition is not met
