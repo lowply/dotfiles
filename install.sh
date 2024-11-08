@@ -18,7 +18,7 @@ backup(){
     mv "${TARGET}" "${BACKUPDIR}"
 }
 
-git-contrib(){
+git_contrib(){
     is_linux || return
     [ -d /usr/local/git ] && return
 
@@ -33,11 +33,10 @@ symlinks(){
     local SRC="${WORKDIR}/symlinks"
 
     find "${SRC}" -type f | while IFS= read -r FILE; do
-        [ "$(echo ${FILE} | xargs basename)" = ".gitkeep" ] && continue
-        [ "$(echo ${FILE} | xargs basename)" = ".DS_Store" ] && continue
+        [ "$(basename ${FILE})" = ".gitkeep" ] && continue
 
-        # Exclude .bashrc for Codespaces
-        is_codespaces && [ "$(echo ${FILE} | xargs basename)" = ".bashrc" ] && continue
+        # Don't symlink .bash_profile on Linux
+        is_linux && [ "$(basename ${FILE})" = ".bash_profile" ] && continue
 
         DST="${FILE/${SRC}/${HOME}}"
         [ -d "$(dirname ${DST})" ] || mkdir -p "$(dirname ${DST})"
@@ -59,8 +58,8 @@ copies(){
     local SRC="${WORKDIR}/copies"
 
     find "${SRC}" -type f | while IFS= read -r FILE; do
-        [ "$(echo ${FILE} | xargs basename)" = ".gitkeep" ] && continue
-        [ "$(echo ${FILE} | xargs basename)" = ".DS_Store" ] && continue
+        [ "$(basename ${FILE})" = ".gitkeep" ] && continue
+        [ "$(basename ${FILE})" = ".DS_Store" ] && continue
 
         DST="${FILE/${SRC}/${HOME}}"
         [ -d "$(dirname ${DST})" ] || mkdir -p "$(dirname ${DST})"
@@ -78,7 +77,7 @@ unlink(){
     local SRC="${WORKDIR}/symlinks"
 
     find "${SRC}" -type f | while IFS= read -r FILE; do
-        [ "$(echo ${FILE} | xargs basename)" = ".gitkeep" ] && continue
+        [ "$(basename ${FILE})" = ".gitkeep" ] && continue
 
         DST="${FILE/${SRC}/${HOME}}"
 
@@ -88,43 +87,53 @@ unlink(){
             message warn "${DST} isn't a symlink, doing nothing"
         fi
     done
+
+    echo "Don't forget to delete the .bashrc_ line from your .bashrc"
 }
 
 brew_bundle(){
     is_darwin && brew bundle || true
 }
 
-main(){
-    [ $# -gt 1 ] && usage
-
-    cd "$(dirname $0)" || return
-    WORKDIR="$(pwd)"
-
-    if is_darwin; then
-        export PATH="/opt/homebrew/bin:${PATH}"
-        has brew || abort "Install homebrew first."
-        [ -L "$(brew --prefix)/opt/coreutils" ] || abort "Install coreutils first."
-        export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
-    else
-        # Install peco
-        has peco || { sudo apt update && sudo apt install peco; }
-    fi
-
-    # There's the Codespaces default .bashrc.
-    # Instead of overriding it, this adds my .bashrc at the end of the default .bashrc
-    is_codespaces && echo ". ${WORKDIR}/symlinks/.bashrc" >> ${HOME}/.bashrc
-
-    case "${1}" in
-        "clean")
-            unlink
-        ;;
-        *)
-            git-contrib
-            symlinks
-            copies
-            brew_bundle
-        ;;
-    esac
+clean_ds_store(){
+    find "${WORKDIR}" -name ".DS_Store" -type f -delete
 }
 
-main $@
+bashrc_(){
+    # Adds .bashrc_ at the end of the default .bashrc
+    local ADDITION=". ${HOME}/.bashrc_"
+    local TARGET="${HOME}/.bashrc"
+    if ! grep -q "${ADDITION}" "${TARGET}"; then
+        message info "Adding ${ADDITION} to ${TARGET}"
+        echo -e "# Added by dotfiles installer\n${ADDITION}" >> "${TARGET}"
+    fi
+}
+
+[ $# -gt 1 ] && usage
+
+cd "$(dirname $0)" || return
+WORKDIR="$(pwd)"
+
+if is_darwin; then
+    export PATH="/opt/homebrew/bin:${PATH}"
+    has brew || abort "Install homebrew first."
+    [ -L "$(brew --prefix)/opt/coreutils" ] || abort "Install coreutils first."
+    export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
+else
+    # Install peco
+    has peco || { sudo apt update && sudo apt install peco; }
+fi
+
+case "${1}" in
+    "clean")
+        unlink
+    ;;
+    *)
+        clean_ds_store
+        git_contrib
+        copies
+        symlinks
+        bashrc_
+        brew_bundle
+    ;;
+esac
