@@ -1,7 +1,4 @@
-# .bashrc
-
-# Source global definitions
-[ -f /etc/bashrc ] && . /etc/bashrc
+# .bashrc_
 
 # Set dotfiles dir
 if [ -n "${CODESPACES}" ]; then
@@ -146,7 +143,7 @@ addpath "${DOTFILES_DIR}"/bin
 addpath "${HOME}"/go/bin
 
 if is_darwin; then
-    # Silence zsh warning when using bash: https://support.apple.com/en-us/HT208050
+    # Silence zsh warning when using bash: https://support.apple.com/en-us/102360
     export BASH_SILENCE_DEPRECATION_WARNING=1
 
     [ -f "/opt/homebrew/bin/brew" ] || error "brew is not installed"
