@@ -35,8 +35,11 @@ symlinks(){
     find "${SRC}" -type f | while IFS= read -r FILE; do
         [ "$(basename ${FILE})" = ".gitkeep" ] && continue
 
-        # Don't symlink .bash_profile on Linux
-        is_linux && [ "$(basename ${FILE})" = ".bash_profile" ] && continue
+        # Don't symlink these files on Linux
+        if is_linux; then
+            [ "$(basename ${FILE})" = ".bash_profile" ] && continue
+            [ "$(basename ${FILE})" = "wezterm.lua" ] && continue
+        fi
 
         DST="${FILE/${SRC}/${HOME}}"
         [ -d "$(dirname ${DST})" ] || mkdir -p "$(dirname ${DST})"
@@ -59,7 +62,11 @@ copies(){
 
     find "${SRC}" -type f | while IFS= read -r FILE; do
         [ "$(basename ${FILE})" = ".gitkeep" ] && continue
-        [ "$(basename ${FILE})" = ".DS_Store" ] && continue
+
+        # Don't copy these files on Linux
+        if is_linux; then
+            echo "${FILE}" | grep -q "karabiner" && continue
+        fi
 
         DST="${FILE/${SRC}/${HOME}}"
         [ -d "$(dirname ${DST})" ] || mkdir -p "$(dirname ${DST})"
