@@ -46,7 +46,7 @@ is_linux(){
 }
 
 is_ubuntu(){
-    [ -f /etc/os-release ] && grep -q "Ubuntu" /etc/os-release; return $?
+    [ "$(source /etc/os-release && echo $NAME)" = "Ubuntu" ]
 }
 
 is_codespaces(){
