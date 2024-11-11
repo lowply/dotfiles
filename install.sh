@@ -100,10 +100,6 @@ brew_bundle(){
     is_darwin && brew bundle || true
 }
 
-clean_ds_store(){
-    find "${WORKDIR}" -name ".DS_Store" -type f -delete
-}
-
 bashrc_(){
     # Adds .bashrc_ at the end of the default .bashrc
     local ADDITION=". ${HOME}/.bashrc_"
@@ -134,7 +130,6 @@ case "${1}" in
         unlink
     ;;
     *)
-        clean_ds_store
         git_contrib
         copies
         symlinks
