@@ -127,17 +127,22 @@ fi
 # aliases
 #
 
+# Taken from Ubuntu .bashrc
+if is_darwin && has dircolors; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
 alias jman='LANG=ja_JP.utf8 man'
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
 alias nstlnp='lsof -nP -iTCP -sTCP:LISTEN'
 alias nstanp='lsof -nP -iTCP'
 alias lsdsstr='find . -name .DS_Store -print'
 alias rmdsstr='find . -name .DS_Store -delete -exec echo removed: {} \;'
 
 has colordiff && alias diff='colordiff'
-has gls && alias ls='ls -v --color=auto'
 has gh && alias openw='gh repo view --web'
 
 # The 'code' command needs to be installed.
