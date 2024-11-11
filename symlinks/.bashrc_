@@ -68,6 +68,62 @@ colortext(){
 }
 
 #
+# $PATH
+#
+
+# ~/bin
+addpath "${HOME}/bin"
+
+# dotfiles/bin
+addpath "${DOTFILES_DIR}"/bin
+
+# go
+addpath "${HOME}"/go/bin
+
+if is_darwin; then
+    # Silence zsh warning when using bash: https://support.apple.com/en-us/102360
+    export BASH_SILENCE_DEPRECATION_WARNING=1
+
+    [ -f "/opt/homebrew/bin/brew" ] || error "brew is not installed"
+
+    export BREW_PREFIX="$(/opt/homebrew/bin/brew --prefix)"
+
+    addpath "${BREW_PREFIX}/bin"
+
+    # aliasing every command with the 'g' prefix in ${BREW_PREFIX}/bin is not a great idea.
+    # instead, let's just add the gnubin dir to the PATH
+    addpath "${BREW_PREFIX}/opt/coreutils/libexec/gnubin"
+
+    # Prefer OpenSSL over LibreSSL
+    addpath "${BREW_PREFIX}/opt/openssl/bin"
+
+    # Ruby and Gems
+    addpath "${BREW_PREFIX}/opt/ruby/bin"
+    has gem && addpath "$(gem environment | grep "EXECUTABLE DIRECTORY: " | cut -d ':' -f 2 | xargs)"
+
+    # curl
+    addpath "${BREW_PREFIX}/opt/curl/bin"
+
+    # for dnsmasq, dsvpn etc
+    addpath "${BREW_PREFIX}/sbin"
+
+    # wezterm
+    addpath /Applications/WezTerm.app/Contents/MacOS
+
+    has gsed && alias sed='gsed'
+    has gawk && alias awk='gawk'
+    has ggrep && alias grep='ggrep'
+    has gmake && alias make='gmake'
+    has gzcat && alias zcat='gzcat'
+
+    # https://sw.kovidgoyal.net/kitty/kittens/ssh/
+    has kitten && alias kssh='kitten ssh'
+elif is_linux; then
+    # noop
+    :
+fi
+
+#
 # aliases
 #
 
@@ -128,62 +184,6 @@ shopt -s histappend
 # update the values of LINES and COLUMNS.
 #
 shopt -s checkwinsize
-
-#
-# $PATH
-#
-
-# ~/bin
-addpath "${HOME}/bin"
-
-# dotfiles/bin
-addpath "${DOTFILES_DIR}"/bin
-
-# go
-addpath "${HOME}"/go/bin
-
-if is_darwin; then
-    # Silence zsh warning when using bash: https://support.apple.com/en-us/102360
-    export BASH_SILENCE_DEPRECATION_WARNING=1
-
-    [ -f "/opt/homebrew/bin/brew" ] || error "brew is not installed"
-
-    export BREW_PREFIX="$(/opt/homebrew/bin/brew --prefix)"
-
-    addpath "${BREW_PREFIX}/bin"
-
-    # aliasing every command with the 'g' prefix in ${BREW_PREFIX}/bin is not a great idea.
-    # instead, let's just add the gnubin dir to the PATH
-    addpath "${BREW_PREFIX}/opt/coreutils/libexec/gnubin"
-
-    # Prefer OpenSSL over LibreSSL
-    addpath "${BREW_PREFIX}/opt/openssl/bin"
-
-    # Ruby and Gems
-    addpath "${BREW_PREFIX}/opt/ruby/bin"
-    has gem && addpath "$(gem environment | grep "EXECUTABLE DIRECTORY: " | cut -d ':' -f 2 | xargs)"
-
-    # curl
-    addpath "${BREW_PREFIX}/opt/curl/bin"
-
-    # for dnsmasq, dsvpn etc
-    addpath "${BREW_PREFIX}/sbin"
-
-    # wezterm
-    addpath /Applications/WezTerm.app/Contents/MacOS
-
-    has gsed && alias sed='gsed'
-    has gawk && alias awk='gawk'
-    has ggrep && alias grep='ggrep'
-    has gmake && alias make='gmake'
-    has gzcat && alias zcat='gzcat'
-
-    # https://sw.kovidgoyal.net/kitty/kittens/ssh/
-    has kitten && alias kssh='kitten ssh'
-elif is_linux; then
-    # noop
-    :
-fi
 
 #
 # brew install source-highlight for macOS
