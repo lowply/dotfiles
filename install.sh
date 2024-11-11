@@ -116,9 +116,11 @@ cd "$(dirname $0)" || return
 WORKDIR="$(pwd)"
 
 if is_darwin; then
-    export PATH="/opt/homebrew/bin:${PATH}"
-    has brew || abort "Install homebrew first."
-    [ -L "$(brew --prefix)/opt/coreutils" ] || abort "Install coreutils first."
+    [ -d "/opt/homebrew" ] || abort "Install homebrew first."
+    if [ -L "$(/opt/homebrew/bin/brew --prefix)/opt/coreutils" ]; then
+        message info "Installing coreutils"
+        /opt/homebrew/bin/brew install coreutils
+    fi
     export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
 else
     # Install peco
