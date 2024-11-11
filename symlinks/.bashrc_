@@ -209,8 +209,9 @@ fi
 #
 # On macOS, rbenv should be installed via Homebrew
 # On Codespaces, rbenv is pre-installed in the base image
-# On Debian/Ubuntu, installing rbenv via apt is not recommended. See:
-# https://github.com/rbenv/rbenv#debian-ubuntu-and-their-derivatives
+# On Debian/Ubuntu, rbenv should be installed via Git.
+#     installing it via apt is not recommended. See:
+#     https://github.com/rbenv/rbenv#debian-ubuntu-and-their-derivatives
 #
 # ~/.rbenv/bin only exists when rbenv is installed via Git
 #
