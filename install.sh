@@ -9,8 +9,6 @@
 
 . $(dirname $0)/bin/lib.sh
 
-[ -f /etc/os-release ] && . /etc/os-release
-
 backup(){
     local TARGET=${1}
     local BACKUPDIR="${HOME}/.dotfiles_backup_$(date +%y%m%d_%H%M%S)"
