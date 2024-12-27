@@ -16,6 +16,11 @@ backup(){
     mv "${TARGET}" "${BACKUPDIR}"
 }
 
+ghostty(){
+    is_linux || return
+    tic -x terminfo-ghostty
+}
+
 git_contrib(){
     is_linux || return
     [ -d /usr/local/git ] && return
@@ -133,6 +138,7 @@ case "${1}" in
         unlink
     ;;
     *)
+        ghostty
         git_contrib
         copies
         symlinks
