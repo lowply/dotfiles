@@ -1,0 +1,10 @@
+font-size = 14
+theme = Tomorrow Night
+keybind = ctrl+a>h=new_split:left
+keybind = ctrl+a>l=new_split:right
+keybind = ctrl+a>k=new_split:up
+keybind = ctrl+a>j=new_split:down
+keybind = cmd+enter=new_split:right
+keybind = ctrl+n=goto_split:left
+keybind = ctrl+p=goto_split:right
+
