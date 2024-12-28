@@ -1,5 +1,7 @@
 font-size = 14
+font-family = SF Mono
 theme = Tomorrow Night
+adjust-cell-height = 10%
 keybind = ctrl+a>h=new_split:left
 keybind = ctrl+a>l=new_split:right
 keybind = ctrl+a>k=new_split:up
@@ -7,4 +9,6 @@ keybind = ctrl+a>j=new_split:down
 keybind = cmd+enter=new_split:right
 keybind = ctrl+n=goto_split:left
 keybind = ctrl+p=goto_split:right
-
+window-save-state = always
+macos-titlebar-style = hidden
+mouse-hide-while-typing = true
