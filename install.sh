@@ -18,7 +18,7 @@ backup(){
 
 ghostty(){
     is_linux || return
-    tic -x terminfo-ghostty
+    [ -f ${HOME}/.terminfo/x/xterm-ghostty ] || tic -x -o ${HOME}/.terminfo terminfo-ghostty
 }
 
 git_contrib(){
