@@ -1,7 +1,7 @@
 font-size = 14
 font-family = SF Mono
-theme = Tomorrow Night
-adjust-cell-height = 10%
+theme = Apple System Colors
+adjust-cell-height = 15%
 keybind = ctrl+a>h=goto_split:left
 keybind = ctrl+a>l=goto_split:right
 keybind = ctrl+a>j=goto_split:bottom
