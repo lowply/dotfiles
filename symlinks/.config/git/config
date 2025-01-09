@@ -61,8 +61,7 @@
 	user = lowply
 
 [user]
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLaQnurE5ml8aUZaaF6BINBT+ThbQ3UGlwkXaRLhQUz
-	username = lowply
+	signingKey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLaQnurE5ml8aUZaaF6BINBT+ThbQ3UGlwkXaRLhQUz
 	name = Sho Mizutani
 	email = sho@svifa.net
 
