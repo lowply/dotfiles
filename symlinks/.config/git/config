@@ -68,7 +68,7 @@
 [credential]
     helper = /usr/local/bin/git-credential-manager
 
-[includeIf "gitdir:~/ghq/github.com/github/"]
+[includeIf "hasconfig:remote.*.url:https://github.com/github/**"]
 	path = ~/.config/git/config.work
 
 [includeIf "gitdir:/workspaces/"]
