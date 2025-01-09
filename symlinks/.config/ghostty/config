@@ -1,7 +1,7 @@
-font-size = 14
 font-family = SF Mono
+font-size = 15
 theme = Apple System Colors
-adjust-cell-height = 15%
+adjust-cell-height = 10%
 keybind = ctrl+a>h=goto_split:left
 keybind = ctrl+a>l=goto_split:right
 keybind = ctrl+a>j=goto_split:bottom
@@ -12,6 +12,8 @@ keybind = cmd+shift+j=resize_split:down,20
 keybind = cmd+shift+k=resize_split:up,20
 keybind = cmd+enter=new_split:right
 keybind = cmd+shift+enter=new_split:down
+keybind = opt+b=text:\x1bb
+keybind = opt+f=text:\x1bf
 window-save-state = always
 macos-titlebar-style = hidden
 mouse-hide-while-typing = true
