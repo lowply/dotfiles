@@ -65,6 +65,9 @@
 	name = Sho Mizutani
 	email = sho@svifa.net
 
+[credential]
+    helper = /usr/local/bin/git-credential-manager
+
 [includeIf "gitdir:~/ghq/github.com/github/"]
 	path = ~/.config/git/config.work
 
