@@ -65,14 +65,12 @@
 	name = Sho Mizutani
 	email = sho@svifa.net
 
-[credential]
-    helper = /usr/local/bin/git-credential-manager
-
 [includeIf "hasconfig:remote.*.url:https://github.com/github/**"]
 	path = ~/.config/git/config.work
 
-[includeIf "gitdir:/workspaces/"]
-	path = ~/.config/git/config.codespaces
+# For macOS / Linux except Codespaces
+[includeIf "gitdir:~/ghq/"]
+	path = ~/.config/git/config.gcm
 
 [include]
 	path = ~/.config/git/config.local
