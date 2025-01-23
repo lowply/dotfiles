@@ -67,6 +67,11 @@ colortext(){
     printf "\[$(tput setaf ${2})\]${1}\[$(tput sgr0)\]"
 }
 
+gssh(){
+    [ -z "$1" ] && return
+    infocmp -x | ssh $1 -- tic -x -
+}
+
 #
 # $PATH
 #
@@ -115,9 +120,6 @@ if is_darwin; then
     has ggrep && alias grep='ggrep'
     has gmake && alias make='gmake'
     has gzcat && alias zcat='gzcat'
-
-    # https://sw.kovidgoyal.net/kitty/kittens/ssh/
-    has kitten && alias kssh='kitten ssh'
 elif is_linux; then
     # noop
     :
