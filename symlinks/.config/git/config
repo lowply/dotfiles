@@ -8,11 +8,12 @@
 
 [merge]
 	ff = false
-	conflictstyle = diff3
+    conflictstyle = zdiff3
 	tool = vimdiff
 
 [pull]
 	ff = only
+    rebase = true
 
 [grep]
 	lineNumber = true
@@ -49,6 +50,8 @@
 	pager = less -FMRiX
 	editor = vim
 	ignorecase = false
+    fsmonitor = true
+    untrackedCache = true
 
 [delta]
 	navigate = true
@@ -81,18 +84,25 @@
 
 [diff]
 	tool = vimdiff
+    algorithm = histogram
+    colorMoved = plain
+    mnemonicPrefix = true
+    renames = true
 
 [difftool]
 	prompt = false
 
 [rebase]
 	autosquash = true
+    autoStash = true
+    updateRefs = true
 
 [gpg]
 	format = ssh
 
 [tag]
 	gpgSign = true
+    sort = version:refname
 
 [init]
 	defaultBranch = main
@@ -102,8 +112,22 @@
 
 [fetch]
 	prune = true
+    pruneTags = true
 	all = true
 
 [log]
 	date = iso
+
+[column]
+    ui = auto
+
+[branch]
+    sort = -committerdate
+
+[help]
+    autocorrect = prompt
+
+[rerere]
+    enabled = true
+    autoupdate = true
 
