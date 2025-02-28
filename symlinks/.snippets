@@ -36,3 +36,7 @@ echo "https://$(grep HELPHUB_HOSTNAME .env | cut -d '=' -f 2)"
 
 # Create a new Codespaces instance
 gh cs create --repo github/github --branch master --devcontainer-path .devcontainer/devcontainer.json --machine 'xLargePremiumLinux' --location 'SouthEastAsia' --display-name "$(date +%Y-%m-%d)"
+
+# Ghostty SSH
+infocmp -x | : ssh HOST -- tic -x -
+
