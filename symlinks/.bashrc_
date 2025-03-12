@@ -72,6 +72,21 @@ gssh(){
     infocmp -x | ssh $1 -- tic -x -
 }
 
+cs_current(){
+    has "gh" || return
+    [ -f ~/.cs_current ] || gh codespace list --json 'name' > ~/.cs_current
+    local LATEST=$(cat ~/.cs_current | jq -r '.[-1].name')
+    [ ${LATEST} = "null" ] && return || echo ${LATEST}
+}
+
+cssh(){
+    gh cs ssh -c "$(cs_current)"
+}
+
+ccode(){
+    gh cs code -c "$(cs_current)"
+}
+
 #
 # $PATH
 #
