@@ -94,6 +94,9 @@ ccode(){
 # ~/bin
 addpath "${HOME}/bin"
 
+# ~/.local/bin
+addpath "${HOME}/.local/bin"
+
 # dotfiles/bin
 addpath "${DOTFILES_DIR}"/bin
 
@@ -353,3 +356,6 @@ export LANG=en_US.UTF-8
 
 # 1Password SSH Agent
 is_darwin && export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
+# mise
+[ -x ${HOME}/.local/bin/mise ] && eval "$(~/.local/bin/mise activate)"
