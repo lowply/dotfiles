@@ -25,11 +25,6 @@ addpath(){
     [ -d "${1}" ] && export PATH="${1}:${PATH//$1:/}"
 }
 
-binlink(){
-    local BIN=$(basename "${1}")
-    [ -h "${HOME}/bin/${BIN}" ] || ln -sf "${1}" "${HOME}/bin/"
-}
-
 peco-run-cmd(){
     [ "$#" -ne 1 ] && return
     # Replace the last entry, with $1
@@ -134,15 +129,6 @@ if is_darwin; then
 
     # for dnsmasq, dsvpn etc
     addpath "${BREW_PREFIX}/sbin"
-
-    # code
-    binlink "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
-
-    # cursor
-    binlink "/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
-
-    # ghostty
-    binlink "/Applications/Ghostty.app/Contents/MacOS/ghostty"
 
     has gsed && alias sed='gsed'
     has gawk && alias awk='gawk'
