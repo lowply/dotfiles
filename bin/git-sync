@@ -3,23 +3,20 @@
 [ -d .git ] || { echo "Not a git repository"; exit 1; }
 
 git fetch --all --prune
+git diff --quiet || MODIFIED=true
 
-MODIFIED=$(git status | grep -c modified)
-
-[ "${MODIFIED}" -gt 0 ] && git stash -u
+[ -n "${MODIFIED}" ] && git stash -u
 
 CURRENT_BRANCH=$(git branch --show-current)
-DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch:' | cut -d ':' -f 2 | xargs)
+DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
+[ ${CURRENT_BRANCH} == ${DEFAULT_BRANCH} ] && IN_DEFAULT=true
 
-git switch "${DEFAULT_BRANCH}"
+[ -z "${IN_DEFAULT}" ] && git switch "${DEFAULT_BRANCH}"
 git pull --rebase origin "${DEFAULT_BRANCH}"
 
-[ "${CURRENT_BRANCH}" == "${DEFAULT_BRANCH}" ] && exit 0
-
-if [ "$(git branch --merged | grep -c "${CURRENT_BRANCH}")" -eq 1 ]; then
-    git branch -d "${CURRENT_BRANCH}"
-else
-    git switch "${CURRENT_BRANCH}"
+if [ -z "${IN_DEFAULT}" ]; then
+    git branch --merged | grep -q "${CURRENT_BRANCH}" && MERGED=true
+    [ -n "${MERGED}" ] && git branch -d "${CURRENT_BRANCH}" || git switch "${CURRENT_BRANCH}"
 fi
 
-[ "${MODIFIED}" -gt 0 ] && git stash pop
+[ -n "${MODIFIED}" ] && git stash pop
