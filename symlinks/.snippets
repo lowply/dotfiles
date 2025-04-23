@@ -40,3 +40,5 @@ gh cs create --repo github/github --branch master --devcontainer-path .devcontai
 # Ghostty SSH
 infocmp -x | : ssh HOST -- tic -x -
 
+# List commits for PR
+git log --reverse main..$(git branch --show-current) --format="%H: %s" | sed -e 's/^/#### /g' | sed -e 's/$/\n/g'
