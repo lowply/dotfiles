@@ -135,6 +135,8 @@ if is_darwin; then
     has ggrep && alias grep='ggrep'
     has gmake && alias make='gmake'
     has gzcat && alias zcat='gzcat'
+
+    alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 elif is_linux; then
     # noop
     :
