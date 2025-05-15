@@ -14,9 +14,9 @@ export DOTFILES_DIR
 
 #
 # Reset default path and add /usr/local/bin and /usr/local/sbin at proper position
-# except on GitHub Codespaces
+# except on GitHub Codespaces or Dev Containers
 #
-[ -z "${CODESPACES}" ] && export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+[ -z "${CODESPACES}" ] && [ -z "${REMOTE_CONTAINERS}" ] && export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
 
 #
 # functions
