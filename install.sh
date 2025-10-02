@@ -21,6 +21,16 @@ ghostty(){
     [ -f ${HOME}/.terminfo/x/xterm-ghostty ] || tic -x -o ${HOME}/.terminfo terminfo-ghostty
 }
 
+install_peco(){
+    is_linux || return
+    local LATEST_RELEASE_URL="https://api.github.com/repos/peco/peco/releases/latest"
+    local QUERY='.assets[] | select(.name=="peco_linux_amd64.tar.gz") | .browser_download_url'
+    local LATEST=$(curl -s ${LATEST_RELEASE_URL} | jq -r "${QUERY}")
+    echo "Downloading ${LATEST}..."
+    curl -sL "${LATEST}" | tar xz -C /tmp
+    cp /tmp/peco_linux_amd64/peco ${HOME}/bin/peco
+}
+
 git_contrib(){
     is_linux || return
     [ -d /usr/local/git ] && return
@@ -120,6 +130,8 @@ bashrc_(){
 cd "$(dirname $0)" || return
 WORKDIR="$(pwd)"
 
+mkdir -p "${HOME}/bin"
+
 if is_darwin; then
     [ -d "/opt/homebrew" ] || abort "Install homebrew first."
     export PATH="/opt/homebrew/bin:$PATH"
@@ -130,7 +142,7 @@ if is_darwin; then
     export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
 else
     # Install peco
-    has peco || { sudo apt update && sudo apt install peco; }
+    has peco || install_peco
 fi
 
 case "${1}" in
