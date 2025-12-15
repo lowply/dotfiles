@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#/ Usage: kssh [ssh arguments]
+#/
+#/ Passes infocmp output to tic via ssh, useful to copy local terminfo to remote host.
+
+set -euo pipefail
+
+. "$(dirname $0)/lib.sh"
+
+usage() {
+  >&1 grep '^#/' <"$0" | cut -c 4-
+  exit 1
+}
+
+if [ $# -eq 0 ]; then
+    usage
+fi
+
+if ! infocmp -x > /dev/null 2>&1; then
+    echo "Error: Failed to get terminal info from infocmp" >&2
+    exit 1
+fi
+
+infocmp -x | ssh "$@" -- tic -x -
