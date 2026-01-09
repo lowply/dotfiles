@@ -74,17 +74,17 @@ gssh(){
 
 cs_current(){
     has "gh" || return
-    [ -f ~/.cs_current ] || gh codespace list --json 'name' > ~/.cs_current
-    local LATEST=$(cat ~/.cs_current | jq -r '.[-1].name')
+    REPO=$1
+    [ -f ~/.cs_current ] || gh codespace list --json 'name,repository' > ~/.cs_current
+    local LATEST=$(cat ~/.cs_current | jq -r "[.[] | select(.repository == \"${REPO}\")] | last | .name")
     [ ${LATEST} = "null" ] && return || echo ${LATEST}
 }
 
-cssh(){
-    gh cs ssh -c "$(cs_current)"
-}
-
-ccode(){
-    gh cs code -c "$(cs_current)"
+cs(){
+    REPO=$1
+    [ -z ${REPO} ] && { echo "cs [repository]"; return; }
+    gh cs code -c "$(cs_current github/${REPO})"
+    gh cs ssh -c "$(cs_current github/${REPO})"
 }
 
 #
