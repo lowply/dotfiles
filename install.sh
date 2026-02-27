@@ -24,11 +24,12 @@ ghostty(){
 install_peco(){
     is_linux || return
     local LATEST_RELEASE_URL="https://api.github.com/repos/peco/peco/releases/latest"
-    local QUERY='.assets[] | select(.name=="peco_linux_amd64.tar.gz") | .browser_download_url'
+    local QUERY='.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url'
     local LATEST=$(curl -s ${LATEST_RELEASE_URL} | jq -r "${QUERY}")
     echo "Downloading ${LATEST}..."
-    curl -sL "${LATEST}" | tar xz -C /tmp
-    cp /tmp/peco_linux_amd64/peco ${HOME}/bin/peco
+    TMP=$(mktemp -d)
+    curl -fsSL "${LATEST}" | tar xz -C ${TMP}
+    mv ${TMP}/peco ${HOME}/bin/peco
 }
 
 git_contrib(){
