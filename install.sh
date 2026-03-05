@@ -46,14 +46,26 @@ git_contrib(){
 symlinks(){
     local SRC="${WORKDIR}/symlinks"
 
+    DIR_SYMLINKS=(".copilot/skills")
     find "${SRC}" -type f | while IFS= read -r FILE; do
         [ "$(basename ${FILE})" = ".gitkeep" ] && continue
 
         # Don't symlink these files on Linux
         if is_linux; then
             [ "$(basename ${FILE})" = ".bash_profile" ] && continue
-            [ "$(basename ${FILE})" = "wezterm.lua" ] && continue
         fi
+
+        for PATTERN in "${DIR_SYMLINKS[@]}"; do
+            if [[ "${FILE}" =~ ${PATTERN} ]]; then
+                SRC_DIR="${SRC}/${PATTERN}"
+                DST="${HOME}/${PATTERN}"
+                [ -d "$(dirname ${DST})" ] || mkdir -p "$(dirname ${DST})"
+                [ -L "${DST}" ] && { message info "Dir level symlink, skipping ${FILE}"; continue 2; }
+                ln -s "${SRC_DIR}" "${DST}"
+                message success "Created a symlink from ${SRC_DIR} to ${DST}"
+                continue 2
+            fi
+        done
 
         DST="${FILE/${SRC}/${HOME}}"
         [ -d "$(dirname ${DST})" ] || mkdir -p "$(dirname ${DST})"
