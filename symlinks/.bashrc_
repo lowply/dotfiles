@@ -357,5 +357,5 @@ export LANG=en_US.UTF-8
 # 1Password SSH Agent
 is_darwin && export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
 
-# mise
-[ -x ${HOME}/.local/bin/mise ] && eval "$(~/.local/bin/mise activate)"
+# Shell integration
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path bash)"
