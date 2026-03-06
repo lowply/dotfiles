@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -euo pipefail
+
+#/
+#/ Usage: git scommit [git commit options]
+#/
+#/ Sets SSH_AUTH_SOCK before running git commit.
+#/ Useful in Codespaces where the SSH agent socket path changes.
+#/
+
+# Find a working SSH agent socket
+for SOCK in $(find /tmp/ssh-* -type s 2>/dev/null); do
+    if SSH_AUTH_SOCK=${SOCK} ssh-add -l >/dev/null 2>&1; then
+        export SSH_AUTH_SOCK=${SOCK}
+        break
+    fi
+done
+
+exec git commit "$@"
