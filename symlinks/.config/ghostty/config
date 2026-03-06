@@ -1,6 +1,7 @@
 font-family = SF Mono
 font-size = 15
 theme = Apple System Colors
+theme = 0x96f
 background-opacity = 0.95
 background-blur-radius = 80
 macos-titlebar-style = tabs
