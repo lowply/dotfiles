@@ -1,22 +1,44 @@
 #!/bin/bash
 
-[ -d .git ] || { echo "Not a git repository"; exit 1; }
+set -euo pipefail
+
+git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { echo "Not a git repository"; exit 1; }
 
 git fetch --all --prune
-git diff --quiet || MODIFIED=true
 
-[ -n "${MODIFIED}" ] && git stash -u
-
-CURRENT_BRANCH=$(git branch --show-current)
-DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
-[ ${CURRENT_BRANCH} == ${DEFAULT_BRANCH} ] && IN_DEFAULT=true
-
-[ -z "${IN_DEFAULT}" ] && git switch "${DEFAULT_BRANCH}"
-git pull --rebase origin "${DEFAULT_BRANCH}"
-
-if [ -z "${IN_DEFAULT}" ]; then
-    git branch --merged | grep -q "${CURRENT_BRANCH}" && MERGED=true
-    [ -n "${MERGED}" ] && git branch -d "${CURRENT_BRANCH}" || git switch "${CURRENT_BRANCH}"
+MODIFIED=false
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    MODIFIED=true
+    git stash -u
 fi
 
-[ -n "${MODIFIED}" ] && git stash pop
+CURRENT_BRANCH=$(git branch --show-current)
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
+
+if [[ -z "${DEFAULT_BRANCH}" ]]; then
+    echo "Cannot determine default branch. Run: git remote set-head origin --auto"
+    exit 1
+fi
+
+IN_DEFAULT=false
+if [[ "${CURRENT_BRANCH}" == "${DEFAULT_BRANCH}" ]]; then
+    IN_DEFAULT=true
+fi
+
+if ! ${IN_DEFAULT}; then
+    git switch "${DEFAULT_BRANCH}"
+fi
+
+git pull --rebase origin "${DEFAULT_BRANCH}"
+
+if ! ${IN_DEFAULT}; then
+    if git branch --merged | sed 's/^[* ]*//' | grep -qxF "${CURRENT_BRANCH}"; then
+        git branch -d "${CURRENT_BRANCH}"
+    else
+        git switch "${CURRENT_BRANCH}"
+    fi
+fi
+
+if ${MODIFIED}; then
+    git stash pop
+fi
