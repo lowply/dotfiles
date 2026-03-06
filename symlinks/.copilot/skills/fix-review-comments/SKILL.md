@@ -12,14 +12,18 @@ Fix all unresolved code review comments on a GitHub pull request, then commit an
 
 ## Workflow
 
-### 1. Parse the PR URL
+### 1. Parse the PR reference
 
-Extract `owner`, `repo`, and `pull_number` from the URL. Accepted formats:
+Extract `owner`, `repo`, and `pull_number` from the user's input. Accepted formats:
 
 - `https://github.com/{owner}/{repo}/pull/{number}`
 - `{owner}/{repo}#{number}`
+- A plain PR number (e.g., `42`)
 
-If the input doesn't match, ask the user for a valid PR URL.
+If only a number is given, infer the repository from the current branch using
+`gh pr view {number} --json url --jq .url` to resolve the full PR reference.
+
+If the input doesn't match any format, ask the user for a valid PR reference.
 
 ### 2. Fetch the pull request
 
@@ -59,6 +63,10 @@ Group comments by file so you can batch edits efficiently.
 
 ### 6. Fix the code
 
+Before making any changes, verify the current branch matches the PR's head
+branch. If it does not, **stop immediately** and inform the user — do not
+proceed on the wrong branch.
+
 For each unresolved comment:
 
 1. Open the file at the referenced path.
@@ -83,24 +91,24 @@ After all edits:
 
 ### 8. Commit and push
 
+Before committing, verify again that the current branch matches the PR's head
+branch. Another agent or user may have switched branches in the meantime, which
+could cause changes to be committed to the wrong branch. If the branch doesn't
+match, **stop and inform the user**.
+
 Commit all changes in a **single commit** with a clear message.
 
-When running in **Codespaces** (`$CODESPACES` is `true`), run
-`source ${DOTFILES_DIR}/bin/sshauthsock.sh` before `git commit` so the SSH
-agent socket is available for commit signing.
-
 ```
-# Codespaces only — set up SSH agent for commit signing
-source ${DOTFILES_DIR}/bin/sshauthsock.sh
-
 git add -A
 git commit -m "Address PR review feedback
 
-Resolve unresolved review comments from PR #{number}.
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+Resolve unresolved review comments from PR #{number}."
 git push origin {branch}
 ```
+
+If commit signing fails (e.g., `error: Load key ... No such file or directory`),
+this likely means the SSH agent doesn't have the auth socket available. **Stop
+and ask the user to SSH into the Codespace instance first**, then retry.
 
 ### 9. Report results
 
@@ -114,7 +122,9 @@ After pushing, provide a short summary to the user:
 ## Guidelines
 
 - **Do not** modify files or lines unrelated to the review feedback.
-- **Do not** mark review threads as resolved — let the reviewer do that.
+- You **may** mark review threads as resolved after addressing them. If resolving
+  fails (e.g., permission issues), do **not** retry via GraphQL — just inform the
+  user that resolving the thread failed and include the reason.
 - **Preserve** the existing code style (indentation, quotes, naming conventions).
 - If a comment references code that no longer exists in the current branch, skip it
   and report it as outdated.
