@@ -348,7 +348,7 @@ export LANG=en_US.UTF-8
 
 # For SSH commit signing in Codespaces
 if [ -n "${CODESPACES}" ]; then
-    _fix_ssh_auth_sock() {
+    fix_ssh_auth_sock() {
         for SOCK in $(find /tmp/ssh-* -type s 2>/dev/null); do
             if SSH_AUTH_SOCK=${SOCK} ssh-add -l >/dev/null 2>&1; then
                 echo "Setting SSH_AUTH_SOCK to ${SOCK}"
@@ -358,12 +358,8 @@ if [ -n "${CODESPACES}" ]; then
         done
     }
 
-    _fix_ssh_auth_sock
-
     git() {
-        if [ -z "${SSH_AUTH_SOCK}" ] || ! ssh-add -l >/dev/null 2>&1; then
-            _fix_ssh_auth_sock
-        fi
+        [ -S "${SSH_AUTH_SOCK}" ] || fix_ssh_auth_sock
         command git "$@"
     }
 fi
