@@ -359,7 +359,11 @@ if [ -n "${CODESPACES}" ]; then
     }
 
     git() {
-        [ -S "${SSH_AUTH_SOCK}" ] || fix_ssh_auth_sock
+        case "$1" in
+            commit|rebase|merge|tag)
+                [ -S "${SSH_AUTH_SOCK}" ] || fix_ssh_auth_sock
+                ;;
+        esac
         command git "$@"
     }
 fi
