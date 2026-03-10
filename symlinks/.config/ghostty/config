@@ -22,4 +22,5 @@ window-padding-x = 20
 window-padding-y = 20
 window-padding-balance = true
 window-save-state = always
+command = /opt/homebrew/bin/bash --login
 shell-integration = bash

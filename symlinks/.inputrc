@@ -1,4 +1,4 @@
 $if Bash
-	"\C-]": "peco-cd-repo\n"
-	"\C-s": "peco-snippets\n"
+	"\C-]": "peco_cd_repo\n"
+	"\C-s": "peco_snippets\n"
 $endif

@@ -1,5 +1,11 @@
 # .bashrc_
 
+# Require bash 5.x
+if [[ "${BASH_VERSINFO[0]}" -lt 5 ]]; then
+    echo "Warning: bash ${BASH_VERSION} is too old. ~/.bashrc_ requires bash 5.x." >&2
+    return 2>/dev/null || exit 1
+fi
+
 # Set dotfiles dir
 if [ -n "${CODESPACES}" ]; then
     DOTFILES_DIR="/workspaces/.codespaces/.persistedshare/dotfiles"
@@ -25,7 +31,7 @@ addpath(){
     [ -d "${1}" ] && export PATH="${1}:${PATH//$1:/}"
 }
 
-peco-run-cmd(){
+peco_run_cmd(){
     [ "$#" -ne 1 ] && return
     # Replace the last entry, with $1
     history -s "${1}"
@@ -35,7 +41,7 @@ peco-run-cmd(){
 }
 
 # See ~/.inputrc
-peco-cd-repo () {
+peco_cd_repo () {
     has "peco" || { error "peco is not installed"; return; }
     if is_codespaces; then
         local DIR="$(find /workspaces -maxdepth 1 -mindepth 1 -type d -not -path '*/.*' | peco)"
@@ -49,11 +55,11 @@ peco-cd-repo () {
 }
 
 # See ~/.inputrc
-peco-snippets() {
+peco_snippets() {
     has "peco" || { error "peco is not installed"; return; }
     if [ -f "${HOME}/.snippets" ]; then
         local CMD=$(cat ~/.snippets | sed '/^#.*$/d' | sed '/^$/d' | peco)
-        peco-run-cmd "$CMD"
+        peco_run_cmd "$CMD"
     else
          error "Couldn't find ~/.snippets"
     fi
