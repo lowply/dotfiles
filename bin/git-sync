@@ -31,12 +31,16 @@ fi
 
 git pull --rebase origin "${DEFAULT_BRANCH}"
 
-if ! ${IN_DEFAULT}; then
-    if git branch --merged | sed 's/^[* ]*//' | grep -qxF "${CURRENT_BRANCH}"; then
-        git branch -d "${CURRENT_BRANCH}"
-    else
-        git switch "${CURRENT_BRANCH}"
+# Delete all merged branches except the default branch
+git branch --merged "${DEFAULT_BRANCH}" | sed 's/^[* ]*//' | while read -r branch; do
+    if [[ "${branch}" != "${DEFAULT_BRANCH}" ]]; then
+        git branch -d "${branch}"
     fi
+done
+
+# Switch back to original branch if it still exists
+if ! ${IN_DEFAULT} && git show-ref --verify --quiet "refs/heads/${CURRENT_BRANCH}"; then
+    git switch "${CURRENT_BRANCH}"
 fi
 
 if ${MODIFIED}; then
