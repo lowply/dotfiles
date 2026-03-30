@@ -29,7 +29,28 @@ git add -A
 
 If the user asked to commit only specific files, stage only those files instead.
 
-### 3. Write and create the commit
+### 3. Fix SSH auth socket (Codespaces only)
+
+If running in a Codespace (`$CODESPACES` is set), ensure the SSH agent socket is
+available for commit signing **before** committing. Run the following to find a
+working socket:
+
+```bash
+if [ -n "${CODESPACES}" ]; then
+  for SOCK in $(find /tmp/ssh-* -type s 2>/dev/null); do
+    if SSH_AUTH_SOCK=${SOCK} ssh-add -l >/dev/null 2>&1; then
+      echo "Setting SSH_AUTH_SOCK to ${SOCK}"
+      export SSH_AUTH_SOCK=${SOCK}
+      break
+    fi
+  done
+fi
+```
+
+If no working socket is found, **stop and ask the user to SSH into the Codespace
+instance first**, then retry.
+
+### 4. Write and create the commit
 
 Write a commit message following these conventions:
 
@@ -45,11 +66,11 @@ git commit -m "Subject line here
 Body paragraph explaining what changed and why."
 ```
 
-If commit signing fails (e.g., `error: Load key ... No such file or directory`),
-this likely means the SSH agent doesn't have the auth socket available. **Stop
-and ask the user to SSH into the Codespace instance first**, then retry.
+If commit signing still fails (e.g., `error: Load key ... No such file or
+directory`), re-run the SSH auth socket fix above and retry once. If it fails
+again, **stop and ask the user to SSH into the Codespace instance first**.
 
-### 4. Push to the remote
+### 5. Push to the remote
 
 ```
 git push origin HEAD
@@ -61,7 +82,7 @@ If the remote branch doesn't exist yet, use:
 git push -u origin HEAD
 ```
 
-### 5. Create a pull request
+### 6. Create a pull request
 
 Use `gh pr create` to open the pull request:
 
@@ -83,7 +104,7 @@ change.
 If `gh pr create` fails because a PR already exists for this branch, inform the
 user and provide the existing PR URL.
 
-### 6. Report results
+### 7. Report results
 
 After creating the PR, provide a short summary:
 
