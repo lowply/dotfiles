@@ -32,19 +32,10 @@ If the user asked to commit only specific files, stage only those files instead.
 ### 3. Fix SSH auth socket (Codespaces only)
 
 If running in a Codespace (`$CODESPACES` is set), ensure the SSH agent socket is
-available for commit signing **before** committing. Run the following to find a
-working socket:
+available for commit signing **before** committing. Run the following once per session to set `SSH_AUTH_SOCK`:
 
 ```bash
-if [ -n "${CODESPACES}" ]; then
-  for SOCK in $(find /tmp/ssh-* -type s 2>/dev/null); do
-    if SSH_AUTH_SOCK=${SOCK} ssh-add -l >/dev/null 2>&1; then
-      echo "Setting SSH_AUTH_SOCK to ${SOCK}"
-      export SSH_AUTH_SOCK=${SOCK}
-      break
-    fi
-  done
-fi
+source ~/.bashrc.sas
 ```
 
 If no working socket is found, **stop and ask the user to SSH into the Codespace
