@@ -348,7 +348,14 @@ psone
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-source "${HOME}/.bashrc.sas"
+git() {
+    case "$1" in
+        commit|rebase|merge|tag)
+            [ -S "${SSH_AUTH_SOCK}" ] || source sshauthsock.sh 2>/dev/null
+            ;;
+    esac
+    command git "$@"
+}
 
 #
 # env specific additions

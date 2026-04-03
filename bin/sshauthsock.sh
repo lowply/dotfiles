@@ -9,6 +9,8 @@
 # Prevent this script to run
 echo $- | grep -q i || { echo "source this script, don't run"; exit 1; }
 
+[ -z "${CODESPACES}" ] && return
+
 # Not using pipe and while to make env var exportable
 for SOCK in $(find /tmp/ssh-* -type s 2>/dev/null); do
     if SSH_AUTH_SOCK=${SOCK} ssh-add -l >/dev/null 2>&1; then
