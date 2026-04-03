@@ -86,13 +86,6 @@ cs_current(){
     [ ${LATEST} = "null" ] && return || echo ${LATEST}
 }
 
-cs(){
-    REPO=$1
-    [ -z ${REPO} ] && { echo "cs [repository]"; return; }
-    gh cs code -c "$(cs_current github/${REPO})"
-    gh cs ssh -c "$(cs_current github/${REPO})"
-}
-
 #
 # $PATH
 #
@@ -173,6 +166,9 @@ has gh && alias openw='gh repo view --web'
 # The 'code' command needs to be installed.
 # See https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line
 has code && alias cr='code . -r'
+
+has gh && alias cc='gh cs code'
+has gh && alias cs='gh cs ssh'
 
 #
 # History size & format
