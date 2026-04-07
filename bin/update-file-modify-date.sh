@@ -17,11 +17,12 @@ echo "Updating FileModifyDate..."
 
 if [ -n "$VERBOSE" ]; then
     find . -type f -name "*.jpg" | while read -r FILE; do
-        FILE_MODIFY_DATE=$(exiftool -s -s -s -d "%Y-%m-%d %H:%M:%S" -FileModifyDate ${FILE})
+        FILE_MODIFY_DATE=$(exiftool -s -s -s -d "%Y-%m-%d %H:%M:%S%z" -FileModifyDate ${FILE})
         DATE_TIME_ORIGINAL=$(exiftool -s -s -s -DateTimeOriginal ${FILE})
-        echo "${FILE#./}: ${FILE_MODIFY_DATE} -> ${DATE_TIME_ORIGINAL}"
+        OFFSET_TIME_ORIGINAL=$(exiftool -s -s -s -OffsetTimeOriginal ${FILE})
+        echo "${FILE#./}: ${FILE_MODIFY_DATE} -> ${DATE_TIME_ORIGINAL}${OFFSET_TIME_ORIGINAL}"
     done
 fi
 
 # As a side effect, btime will also get updated
-exiftool -progress -r -overwrite_original "-FileModifyDate<DateTimeOriginal" .
+exiftool -progress -r -overwrite_original '-FileModifyDate<${DateTimeOriginal}${OffsetTimeOriginal}' .
