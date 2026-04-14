@@ -12,13 +12,30 @@ Push commits to the remote and open a pull request.
 
 ## Workflow
 
-### 1. Commit changes
+### 1. Create a branch if needed
+
+If the current branch is `main` or there is no branch for the changes yet,
+create a new branch before committing. The branch name must:
+
+- Start with the `lowply/` prefix.
+- Use kebab-case (hyphen-delimited) for the rest of the name.
+- Be a short, descriptive slug summarising the change.
+
+Examples: `lowply/auto-resolve`, `lowply/fix-login-redirect`, `lowply/add-retry-logic`.
+
+```
+git switch -c lowply/<descriptive-slug>
+```
+
+If the current branch already follows this convention, skip this step.
+
+### 2. Commit changes
 
 Use the `git-commit` skill to stage and commit the changes. The commit message
 will be referenced for the PR title and description, so make sure to write a
 clear and comprehensive message.
 
-### 2. Push to the remote
+### 3. Push to the remote
 
 ```
 git push origin HEAD
@@ -30,7 +47,7 @@ If the remote branch doesn't exist yet, use:
 git push -u origin HEAD
 ```
 
-### 3. Create a pull request
+### 4. Create a pull request
 
 Reference the commit messages on the branch and the plan document in the current
 session directory (if one exists) to craft the PR title and body. If the plan
@@ -55,7 +72,7 @@ change.
 If `gh pr create` fails because a PR already exists for this branch, inform the
 user and provide the existing PR URL.
 
-### 4. Report results
+### 5. Report results
 
 After creating the PR, provide a short summary:
 
