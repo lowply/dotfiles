@@ -134,7 +134,6 @@ if is_darwin; then
     has ggrep && alias grep='ggrep'
     has gmake && alias make='gmake'
     has gzcat && alias zcat='gzcat'
-    has copilot && alias c='copilot'
 
     alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 elif is_linux; then
@@ -170,6 +169,8 @@ has code && alias cr='code . -r'
 
 has gh && alias cc='gh cs code'
 has gh && alias cs='gh cs ssh'
+
+has copilot && alias c='copilot'
 
 #
 # History size & format
