@@ -119,10 +119,6 @@ if is_darwin; then
     # Prefer OpenSSL over LibreSSL
     addpath "${BREW_PREFIX}/opt/openssl/bin"
 
-    # Ruby and Gems
-    addpath "${BREW_PREFIX}/opt/ruby/bin"
-    has gem && addpath "$(gem environment | grep "EXECUTABLE DIRECTORY: " | cut -d ':' -f 2 | xargs)"
-
     # curl
     addpath "${BREW_PREFIX}/opt/curl/bin"
 
