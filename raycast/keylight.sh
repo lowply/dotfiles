@@ -13,4 +13,5 @@
 # @raycast.author lowply
 # @raycast.authorURL https://raycast.com/lowply
 
-$(dirname $(pwd))/bin/keylight.sh
+DOTFILES_DIR=$(dirname $(dirname $0))
+${DOTFILES_DIR}/bin/keylight.sh
