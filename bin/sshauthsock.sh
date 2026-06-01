@@ -7,7 +7,10 @@
 #/
 
 # Prevent this script to run
-echo $- | grep -q i || { echo "source this script, don't run"; exit 1; }
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    echo "source this script, don't run"
+    exit 1
+fi
 
 [ -z "${CODESPACES}" ] && return
 
