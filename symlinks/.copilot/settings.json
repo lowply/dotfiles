@@ -1,0 +1,24 @@
+{
+  "allowedTools": [
+    "bash(mkdir:*)"
+  ],
+  "renderMarkdown": true,
+  "screenReader": false,
+  "theme": "auto",
+  "logLevel": "all",
+  "allowedUrls": [
+    "https://github.com"
+  ],
+  "showReasoning": false,
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true
+  }
+}
