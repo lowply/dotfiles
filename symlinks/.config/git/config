@@ -71,11 +71,7 @@
 [github]
 	user = lowply
 
-[user]
-	signingKey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLaQnurE5ml8aUZaaF6BINBT+ThbQ3UGlwkXaRLhQUz
-	name = Sho Mizutani
-	email = sho@svifa.net
-
+# [user] name, email, and signingKey are defined in config.local
 [includeIf "hasconfig:remote.*.url:https://github.com/github/**"]
 	path = ~/.config/git/config.work
 
