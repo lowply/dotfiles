@@ -7,7 +7,7 @@
 #/ install.sh clean    # Cleanup symlinks
 #/
 
-. $(dirname $0)/bin/lib.sh
+. "$(dirname "$0")/bin/lib.sh"
 
 backup(){
     local TARGET=${1}
@@ -141,7 +141,7 @@ bashrc_(){
 
 [ $# -gt 1 ] && usage
 
-cd "$(dirname $0)" || return
+cd "$(dirname "$0")" || return
 WORKDIR="$(pwd)"
 
 mkdir -p "${HOME}/bin"

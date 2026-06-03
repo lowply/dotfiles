@@ -1,23 +1,23 @@
 #!/bin/bash
 
-. $(dirname $0)/lib.sh
+. "$(dirname "$0")/lib.sh"
 
 has openssl
 has tar
 
 enc(){
-	DIR=$(echo ${DIR} | sed -e 's/\///g')
+	DIR=$(echo "${DIR}" | sed -e 's/\///g')
 	FILENAME=$(echo "${DIR}.tar.gz.enc")
-	[ -d ${DIR} ] || { echo "Directory ${DIR} not found"; exit 1; }
-	[ -f ${FILENAME} ] && { echo "File ${FILENAME} already exists"; exit 1; }
-	tar cz ${DIR} | openssl enc -aes-256-cbc -pbkdf2 -e > ${DIR}.tar.gz.enc
+	[ -d "${DIR}" ] || { echo "Directory ${DIR} not found"; exit 1; }
+	[ -f "${FILENAME}" ] && { echo "File ${FILENAME} already exists"; exit 1; }
+	tar cz "${DIR}" | openssl enc -aes-256-cbc -pbkdf2 -e > "${DIR}.tar.gz.enc"
 }
 
 dec(){
-	DIRNAME=$(echo ${ENCFILE} | sed -e 's/.tar.gz.enc//g')
-	[ -d ${DIRNAME} ] && { echo "Directory ${DIRNAME} already exists"; exit 1; }
-	[ -f ${ENCFILE} ] || { echo "File ${ENCFILE} was not found"; exit 1; }
-	openssl aes-256-cbc -pbkdf2 -d -in ${ENCFILE} | tar xz
+	DIRNAME=$(echo "${ENCFILE}" | sed -e 's/.tar.gz.enc//g')
+	[ -d "${DIRNAME}" ] && { echo "Directory ${DIRNAME} already exists"; exit 1; }
+	[ -f "${ENCFILE}" ] || { echo "File ${ENCFILE} was not found"; exit 1; }
+	openssl aes-256-cbc -pbkdf2 -d -in "${ENCFILE}" | tar xz
 }
 
 usage(){
