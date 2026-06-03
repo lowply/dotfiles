@@ -71,14 +71,7 @@
 [github]
 	user = lowply
 
-# [user] name, email, and signingKey are defined in config.local
-[includeIf "hasconfig:remote.*.url:https://github.com/github/**"]
-	path = ~/.config/git/config.work
-
-# For macOS / Linux except Codespaces
-[includeIf "gitdir:~/ghq/"]
-	path = ~/.config/git/config.gcm
-
+# Machine-specific and personal config (user, credentials, work overrides)
 [include]
 	path = ~/.config/git/config.local
 
