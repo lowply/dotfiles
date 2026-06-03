@@ -23,6 +23,7 @@ ghostty(){
 
 install_peco(){
     is_linux || return
+    # TODO: Add checksum verification for downloaded binary
     local LATEST_RELEASE_URL="https://api.github.com/repos/peco/peco/releases/latest"
     local QUERY='.assets[] | select(.name | contains("linux_amd64")) | .browser_download_url'
     local LATEST=$(curl -s ${LATEST_RELEASE_URL} | jq -r "${QUERY}")
