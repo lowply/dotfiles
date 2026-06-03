@@ -116,6 +116,7 @@ unlink(){
         DST="${FILE/${SRC}/${HOME}}"
 
         if [ -L "${DST}" ]; then
+            rm "${DST}"
             message success "${DST} has been unlinked"
         else
             message warn "${DST} isn't a symlink, doing nothing"
