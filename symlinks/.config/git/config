@@ -71,9 +71,21 @@
 [github]
 	user = lowply
 
+[user]
+	name = Sho Mizutani
+	signingKey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLaQnurE5ml8aUZaaF6BINBT+ThbQ3UGlwkXaRLhQUz
+
+# For work
+[includeIf "hasconfig:remote.*.url:https://github.com/github/**"]
+	path = ~/.config/git/config.work
+
 # Machine-specific and personal config (user, credentials, work overrides)
 [include]
 	path = ~/.config/git/config.local
+
+# For macOS / Linux except Codespaces
+[includeIf "gitdir:~/ghq/"]
+	path = ~/.config/git/config.gcm
 
 [commit]
 	verbose = true
