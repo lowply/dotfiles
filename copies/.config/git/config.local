@@ -2,3 +2,12 @@
 	name = # TODO: fill in
 	email = # TODO: fill in
 	signingKey = # TODO: fill in (e.g. ssh-ed25519 AAAA...)
+
+# Uncomment and configure for work repositories
+# [includeIf "hasconfig:remote.*.url:https://github.com/github/**"]
+# 	path = ~/.config/git/config.work
+
+# Uncomment and configure for credential manager (macOS / Linux)
+# [credential]
+# 	helper = ""
+# 	helper = /usr/local/bin/git-credential-manager
