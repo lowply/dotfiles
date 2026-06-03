@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 usage() {
     grep '^#/' < "${0}" | cut -c4-
