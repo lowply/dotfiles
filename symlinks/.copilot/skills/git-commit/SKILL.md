@@ -44,19 +44,13 @@ instance first**, then retry.
 
 Write a commit message following these conventions:
 
-- **Subject line**: A concise imperative summary (≤ 72 characters). E.g.,
+- **Default**: Use a single-line commit message — a concise imperative summary. Aim for ≤ 72 characters, but longer is acceptable if needed. E.g.,
   `Add user authentication endpoint`.
-- **Body** (separated by a blank line): Explain *what* changed and *why*. Keep
-  each line ≤ 72 characters. Reference relevant context (issue numbers, review
-  feedback, etc.) when applicable.
+- **Multi-line**: Only use a multi-line commit message (subject + body) when the user explicitly requests it.
 
 ```
-git commit -m "Subject line here
-
-Body paragraph explaining what changed and why."
+git commit -m "Subject line here"
 ```
-
-Later when creating a PR, the commit message will be referenced for the PR title and description, so make sure to write a clear and comprehensive message.
 
 If commit signing still fails (e.g., `error: Load key ... No such file or
 directory`), re-run the SSH auth socket fix above and retry once. If it fails
