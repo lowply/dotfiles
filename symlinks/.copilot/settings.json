@@ -2,23 +2,46 @@
   "allowedTools": [
     "bash(mkdir:*)"
   ],
-  "renderMarkdown": true,
-  "screenReader": false,
-  "theme": "auto",
-  "logLevel": "all",
   "allowedUrls": [
-    "https://github.com"
+    "https://github.com",
+    "https://docs.github.com"
   ],
-  "showReasoning": false,
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true
+  },
   "extraKnownMarketplaces": {
+    "github-slack-mcp": {
+      "source": {
+        "repo": "github/copilot-slack-mcp",
+        "source": "github"
+      }
+    },
     "superpowers-marketplace": {
       "source": {
-        "source": "github",
-        "repo": "obra/superpowers-marketplace"
+        "repo": "obra/superpowers-marketplace",
+        "source": "github"
+      }
+    },
+    "work-iq": {
+      "source": {
+        "repo": "microsoft/work-iq",
+        "source": "github"
       }
     }
   },
-  "enabledPlugins": {
-    "superpowers@superpowers-marketplace": true
-  }
+  "hooks": {
+    "SessionStart": [
+      {
+        "bash": "bash '/Users/sho/.copilot/hooks/herdr-agent-state.sh'",
+        "timeoutSec": 10,
+        "type": "command"
+      }
+    ]
+  },
+  "logLevel": "all",
+  "renderMarkdown": true,
+  "screenReader": false,
+  "showReasoning": false,
+  "theme": "auto"
 }
+
