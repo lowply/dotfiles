@@ -1,5 +1,14 @@
 # .bashrc_
 
+# Prefer Homebrew Bash when available.
+if [[ -x /opt/homebrew/bin/bash ]]; then
+    if [[ "${BASH}" != "/opt/homebrew/bin/bash" ]]; then
+        exec /opt/homebrew/bin/bash -l
+    fi
+else
+    echo "Warning: /opt/homebrew/bin/bash not found. Install Homebrew Bash for full compatibility." >&2
+fi
+
 # Require bash 5.x
 if [[ "${BASH_VERSINFO[0]}" -lt 5 ]]; then
     echo "Warning: bash ${BASH_VERSION} is too old. ~/.bashrc_ requires bash 5.x." >&2
