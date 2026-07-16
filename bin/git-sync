@@ -7,12 +7,15 @@ git rev-parse --is-inside-work-tree > /dev/null 2>&1 || { echo "Not a git reposi
 git fetch --all --prune
 
 MODIFIED=false
-if ! git diff --quiet || ! git diff --cached --quiet; then
-    MODIFIED=true
-    git stash -u
-fi
+stash_if_needed() {
+    if ! git diff --quiet || ! git diff --cached --quiet; then
+        MODIFIED=true
+        git stash -u
+    fi
+}
 
 CURRENT_BRANCH=$(git branch --show-current)
+CURRENT_WORKTREE=$(git rev-parse --show-toplevel)
 DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
 
 if [[ -z "${DEFAULT_BRANCH}" ]]; then
@@ -20,28 +23,42 @@ if [[ -z "${DEFAULT_BRANCH}" ]]; then
     exit 1
 fi
 
+DEFAULT_BRANCH_WORKTREE=$(git for-each-ref --format='%(worktreepath)' "refs/heads/${DEFAULT_BRANCH}")
+
 IN_DEFAULT=false
 if [[ "${CURRENT_BRANCH}" == "${DEFAULT_BRANCH}" ]]; then
     IN_DEFAULT=true
 fi
 
 if ! ${IN_DEFAULT}; then
-    git switch "${DEFAULT_BRANCH}"
+    if [[ -n "${DEFAULT_BRANCH_WORKTREE}" && "${DEFAULT_BRANCH_WORKTREE}" != "${CURRENT_WORKTREE}" ]]; then
+        git -C "${DEFAULT_BRANCH_WORKTREE}" pull --rebase origin "${DEFAULT_BRANCH}"
+    else
+        stash_if_needed
+        git switch "${DEFAULT_BRANCH}"
+        git pull --rebase origin "${DEFAULT_BRANCH}"
+        git switch "${CURRENT_BRANCH}"
+    fi
+else
+    git pull --rebase origin "${DEFAULT_BRANCH}"
 fi
-
-git pull --rebase origin "${DEFAULT_BRANCH}"
 
 # Delete all merged branches except the default branch
-git branch --merged "${DEFAULT_BRANCH}" | sed 's/^[* ]*//' | while read -r branch; do
-    if [[ "${branch}" != "${DEFAULT_BRANCH}" ]]; then
-        git branch -d "${branch}"
+git branch --merged "${DEFAULT_BRANCH}" --format='%(refname:short)' | while read -r branch; do
+    if [[ -z "${branch}" ]]; then
+        continue
     fi
-done
 
-# Switch back to original branch if it still exists
-if ! ${IN_DEFAULT} && git show-ref --verify --quiet "refs/heads/${CURRENT_BRANCH}"; then
-    git switch "${CURRENT_BRANCH}"
-fi
+    if [[ "${branch}" == "${DEFAULT_BRANCH}" || "${branch}" == "${CURRENT_BRANCH}" ]]; then
+        continue
+    fi
+
+    if [[ -n "$(git for-each-ref --format='%(worktreepath)' "refs/heads/${branch}")" ]]; then
+        continue
+    fi
+
+    git branch -d "${branch}"
+done
 
 if ${MODIFIED}; then
     git stash pop
