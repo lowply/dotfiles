@@ -64,6 +64,12 @@ default_shell = "/opt/homebrew/bin/bash"
 # alt+..., cmd/super, and punctuation-with-modifiers may depend on your terminal/tmux setup.
 prefix = "ctrl+a"
 
+# Pane switching: ctrl+a then h/j/k/l
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
 # Prefix-mode actions
 # help = "prefix+?"
 # settings = "prefix+s"
@@ -84,10 +90,10 @@ prefix = "ctrl+a"
 # next_agent = ""         # optional, unset by default
 # focus_agent = ""        # optional indexed binding, e.g. "prefix+alt+1..9"
 # remote_image_paste = "ctrl+v" # only active in herdr --remote; empty disables raw-key image paste
-# new_tab = "prefix+c"
+new_tab = "prefix+n"
 # rename_tab = "prefix+shift+t"
-# previous_tab = "prefix+p"
-# next_tab = "prefix+n"
+previous_tab = "prefix+["
+next_tab = "prefix+]"
 # switch_tab = "prefix+1..9"
 # switch_workspace = ""   # optional indexed binding, e.g. "prefix+shift+1..9"
 # close_tab = "prefix+shift+x"

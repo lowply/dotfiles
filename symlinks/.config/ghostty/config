@@ -6,17 +6,18 @@ background-opacity = 0.95
 background-blur-radius = 80
 macos-titlebar-style = tabs
 adjust-cell-height = 10%
-keybind = ctrl+a>h=goto_split:left
-keybind = ctrl+a>l=goto_split:right
-keybind = ctrl+a>j=goto_split:bottom
-keybind = ctrl+a>k=goto_split:top
 keybind = ctrl+enter=text:\n
-keybind = cmd+shift+h=resize_split:left,20
-keybind = cmd+shift+l=resize_split:right,20
-keybind = cmd+shift+j=resize_split:down,20
-keybind = cmd+shift+k=resize_split:up,20
-keybind = cmd+enter=new_split:right
-keybind = cmd+shift+enter=new_split:down
+keybind = cmd+enter=text:\n
+# keybind = ctrl+a>h=goto_split:left
+# keybind = ctrl+a>l=goto_split:right
+# keybind = ctrl+a>j=goto_split:bottom
+# keybind = ctrl+a>k=goto_split:top
+# keybind = cmd+shift+h=resize_split:left,20
+# keybind = cmd+shift+l=resize_split:right,20
+# keybind = cmd+shift+j=resize_split:down,20
+# keybind = cmd+shift+k=resize_split:up,20
+# keybind = cmd+enter=new_split:right
+# keybind = cmd+shift+enter=new_split:down
 mouse-hide-while-typing = true
 window-padding-x = 20
 window-padding-y = 20
