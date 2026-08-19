@@ -15,8 +15,7 @@ Save memory files under the memo directory:
 
 `[DATE]` uses `YYYY-MM-DD`. The current repository determines `[repo-owner]` and `[repo-name]`.
 
-Using `~/.copilot/memo` keeps memos in a stable location that exists both locally
-and in Codespaces.
+Using `~/.copilot/memo` keeps memos in a stable location that exists both locally and in Codespaces.
 
 ## File format
 
@@ -233,4 +232,5 @@ echo "Marked done: $top_path"
 
 - Keep memories repository-scoped; do not mix notes across repos.
 - Write `summary` as a compact paragraph with enough detail to disambiguate related notes.
+- Do not hard-wrap prose around column 70; keep each paragraph on a single line.
 - Preserve markdown readability so files are human-editable.
