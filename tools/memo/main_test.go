@@ -1,0 +1,494 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
+	"testing"
+)
+
+type readerWithHook struct {
+	reader io.Reader
+	hook   func()
+}
+
+func (r *readerWithHook) Read(buffer []byte) (int, error) {
+	if r.hook != nil {
+		r.hook()
+		r.hook = nil
+	}
+	return r.reader.Read(buffer)
+}
+
+func TestSteadyStateCommandSurface(t *testing.T) {
+	for _, command := range []string{"create", "search", "get", "show", "list", "done", "remove", "rm"} {
+		var output bytes.Buffer
+		if err := run([]string{command, "--help"}, strings.NewReader(""), &output); err != nil {
+			t.Fatalf("%s help: %v", command, err)
+		}
+	}
+	for _, removed := range []string{"update", "import", "export", "import-markdown", "migrate-sqlite"} {
+		err := run([]string{removed, "--help"}, strings.NewReader(""), io.Discard)
+		if err == nil || !strings.Contains(err.Error(), "unknown command") {
+			t.Fatalf("%s unexpectedly remains available: %v", removed, err)
+		}
+	}
+}
+
+func TestGetWritesOnlyCanonicalPathAsJSON(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "get-memo", "Get memo", "Body must not be returned."))
+
+	var output bytes.Buffer
+	if err := run([]string{"get", "abc12345"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var result map[string]any
+	if err := json.Unmarshal(output.Bytes(), &result); err != nil {
+		t.Fatal(err)
+	}
+	if len(result) != 1 || result["path"] != path {
+		t.Fatalf("unexpected get result: %#v", result)
+	}
+}
+
+func TestGetRejectsUnknownID(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	err := run([]string{"get", "missing"}, strings.NewReader(""), io.Discard)
+	if err == nil || !strings.Contains(err.Error(), `no memo found with ID "missing"`) {
+		t.Fatalf("error = %v, want missing memo error", err)
+	}
+}
+
+func TestGetRequiresOneID(t *testing.T) {
+	for _, args := range [][]string{{"get"}, {"get", "first", "second"}} {
+		err := run(args, strings.NewReader(""), io.Discard)
+		if err == nil || err.Error() != "usage: memo get <id>" {
+			t.Fatalf("run(%q) error = %v, want get usage", args, err)
+		}
+	}
+}
+
+func TestShowWritesCanonicalMemoVerbatim(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "show-memo", "Show memo", "Body without a trailing newline."))
+	expected, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var output bytes.Buffer
+	if err := run([]string{"show", "abc12345"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(output.Bytes(), expected) {
+		t.Fatalf("show output = %q, want canonical file %q", output.Bytes(), expected)
+	}
+}
+
+func TestShowRejectsUnknownID(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	err := run([]string{"show", "missing"}, strings.NewReader(""), io.Discard)
+	if err == nil || !strings.Contains(err.Error(), `no memo found with ID "missing"`) {
+		t.Fatalf("error = %v, want missing memo error", err)
+	}
+}
+
+func TestShowRequiresOneID(t *testing.T) {
+	for _, args := range [][]string{{"show"}, {"show", "first", "second"}} {
+		err := run(args, strings.NewReader(""), io.Discard)
+		if err == nil || err.Error() != "usage: memo show <id>" {
+			t.Fatalf("run(%q) error = %v, want show usage", args, err)
+		}
+	}
+}
+
+func TestCreateWritesEmptyCanonicalMemoAndIndexesPath(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	repositoryRoot := t.TempDir()
+	runGit := func(args ...string) {
+		t.Helper()
+		command := exec.Command("git", append([]string{"-C", repositoryRoot}, args...)...)
+		if output, err := command.CombinedOutput(); err != nil {
+			t.Fatalf("git %v: %v\n%s", args, err, output)
+		}
+	}
+	runGit("init", "--quiet")
+	runGit("remote", "add", "origin", "git@github.com:lowply/dotfiles.git")
+	previous, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chdir(repositoryRoot); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(previous) })
+
+	var output bytes.Buffer
+	if err := run([]string{"create", "This is a title"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	if created.Name != "this-is-a-title" ||
+		created.Summary != "This is a title" ||
+		created.Repository != "lowply/dotfiles" ||
+		created.Status != "wip" {
+		t.Fatalf("unexpected created memo: %#v", created)
+	}
+	expectedDirectory := filepath.Join(home, ".copilot", "memo")
+	expectedSuffix := "-" + created.ID + "-lowply-dotfiles-this-is-a-title.md"
+	if filepath.Dir(created.Path) != expectedDirectory ||
+		!strings.HasSuffix(created.Path, expectedSuffix) {
+		t.Fatalf("unexpected canonical path: %q", created.Path)
+	}
+	item, err := parseMemoFile(created.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if item.Body != "" || item.Name != created.Name || item.Summary != created.Summary {
+		t.Fatalf("unexpected canonical memo: %#v", item)
+	}
+
+	index, err := openIndex(filepath.Join(expectedDirectory, "memo.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer index.close()
+	indexed, err := index.getByID(created.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if indexed.Path != created.Path {
+		t.Fatalf("indexed path = %q, want %q", indexed.Path, created.Path)
+	}
+}
+
+func TestCreateRetriesDuplicateMemoID(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	repositoryRoot := t.TempDir()
+	runGit := func(args ...string) {
+		t.Helper()
+		command := exec.Command("git", append([]string{"-C", repositoryRoot}, args...)...)
+		if output, err := command.CombinedOutput(); err != nil {
+			t.Fatalf("git %v: %v\n%s", args, err, output)
+		}
+	}
+	runGit("init", "--quiet")
+	runGit("remote", "add", "origin", "git@github.com:lowply/dotfiles.git")
+	previous, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chdir(repositoryRoot); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(previous) })
+
+	directory := filepath.Join(home, ".copilot", "memo")
+	existing := testMemo("duplicate-id", "existing", "Existing summary", "")
+	writeMemoAt(t, filepath.Join(directory, "existing.md"), existing)
+	ids := []string{"duplicate-id", "unique-id"}
+	originalGenerator := generateMemoID
+	generateMemoID = func() (string, error) {
+		id := ids[0]
+		ids = ids[1:]
+		return id, nil
+	}
+	t.Cleanup(func() { generateMemoID = originalGenerator })
+
+	var output bytes.Buffer
+	if err := run([]string{"create", "Unique title"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	if created.ID != "unique-id" {
+		t.Fatalf("created ID = %q, want unique-id", created.ID)
+	}
+	matches, err := filepath.Glob(filepath.Join(directory, "*duplicate-id-unique-title.md"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(matches) != 0 {
+		t.Fatalf("duplicate-ID file was created: %v", matches)
+	}
+}
+
+func TestNewMemoIDUsesEightHexCharacters(t *testing.T) {
+	id, err := newMemoID()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if matched, err := regexp.MatchString(`^[0-9a-f]{8}$`, id); err != nil {
+		t.Fatal(err)
+	} else if !matched {
+		t.Fatalf("newMemoID() = %q, want eight lowercase hexadecimal characters", id)
+	}
+}
+
+func TestCreateIgnoresLegacyCreateLock(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	directory := filepath.Join(home, ".copilot", "memo")
+	if err := os.MkdirAll(directory, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	lockPath := filepath.Join(directory, ".create.lock")
+	if err := os.WriteFile(lockPath, nil, 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	repositoryRoot := t.TempDir()
+	runGit := func(args ...string) {
+		t.Helper()
+		command := exec.Command("git", append([]string{"-C", repositoryRoot}, args...)...)
+		if output, err := command.CombinedOutput(); err != nil {
+			t.Fatalf("git %v: %v\n%s", args, err, output)
+		}
+	}
+	runGit("init", "--quiet")
+	runGit("remote", "add", "origin", "git@github.com:lowply/dotfiles.git")
+	previous, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chdir(repositoryRoot); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chdir(previous) })
+
+	if err := runCreate([]string{"Concurrent title"}, io.Discard); err != nil {
+		t.Fatal(err)
+	}
+	matches, err := filepath.Glob(filepath.Join(directory, "*.md"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(matches) != 1 {
+		t.Fatalf("created files = %v, want one memo", matches)
+	}
+}
+
+func TestDoneIgnoresLegacyMemoLock(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "locked", "Locked memo", "Body"))
+	if err := os.WriteFile(path+".lock", nil, 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := run([]string{"done", "abc12345"}, strings.NewReader(""), io.Discard); err != nil {
+		t.Fatal(err)
+	}
+	item, err := parseMemoFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if item.Status != "done" {
+		t.Fatalf("status = %q, want done", item.Status)
+	}
+}
+
+func TestDoneUpdatesCanonicalFileAndSearchIndex(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	directory := filepath.Join(home, ".copilot", "memo")
+	path := filepath.Join(directory, "2026-08-22-abc12345-lowply-dotfiles-status.md")
+	writeMemoAt(t, path, testMemo("abc12345", "status", "Status summary", "Body"))
+
+	var output bytes.Buffer
+	if err := run([]string{"done", "abc12345"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := parseMemoFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Status != "done" {
+		t.Fatalf("status = %q", got.Status)
+	}
+	if !strings.Contains(output.String(), `"path": `+strconv.Quote(path)) {
+		t.Fatalf("missing canonical path: %s", output.String())
+	}
+
+	output.Reset()
+	if err := run([]string{"search", "--status", "done", "--", "Status"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), strconv.Quote(path)) {
+		t.Fatalf("updated index missing path: %s", output.String())
+	}
+}
+
+func TestRemoveRequiresConfirmation(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "kept", "Keep this memo", "Body"))
+
+	var output bytes.Buffer
+	if err := run([]string{"remove", "abc12345"}, strings.NewReader("\n"), &output); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(path); err != nil {
+		t.Fatalf("memo removed without confirmation: %v", err)
+	}
+	if !strings.Contains(output.String(), "Remove memo abc12345") ||
+		!strings.Contains(output.String(), "Removal cancelled") {
+		t.Fatalf("unexpected confirmation output: %q", output.String())
+	}
+}
+
+func TestRemoveDeletesCanonicalFileAndIndexRecord(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	directory := filepath.Join(home, ".copilot", "memo")
+	path := filepath.Join(directory, "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "removed", "Remove this memo", "Body"))
+
+	var output bytes.Buffer
+	if err := run([]string{"remove", "abc12345"}, strings.NewReader("y\n"), &output); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Fatalf("memo file still exists: %v", err)
+	}
+	index, err := openIndex(filepath.Join(directory, "memo.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer index.close()
+	if _, err := index.getByID("abc12345"); err == nil {
+		t.Fatal("removed memo remains indexed")
+	}
+}
+
+func TestRemoveForceAliasSkipsConfirmation(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "forced", "Force remove", "Body"))
+
+	if err := run([]string{"rm", "--force", "abc12345"}, strings.NewReader(""), io.Discard); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Fatalf("memo file still exists: %v", err)
+	}
+}
+
+func TestRemoveIgnoresLegacyMemoLock(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "locked", "Locked memo", "Body"))
+	if err := os.WriteFile(path+".lock", nil, 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := run([]string{"remove", "--force", "abc12345"}, strings.NewReader(""), io.Discard); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Fatalf("memo file still exists: %v", err)
+	}
+}
+
+func TestRemoveRefusesMemoChangedDuringConfirmation(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "original", "Original summary", "Original body"))
+	replacement := testMemo("abc12345", "changed", "Changed summary", "Changed body")
+	input := &readerWithHook{
+		reader: strings.NewReader("y\n"),
+		hook: func() {
+			writeMemoAt(t, path, replacement)
+		},
+	}
+
+	err := run([]string{"remove", "abc12345"}, input, io.Discard)
+	if err == nil || !strings.Contains(err.Error(), "changed before removal") {
+		t.Fatalf("remove error = %v, want changed memo error", err)
+	}
+	got, parseErr := parseMemoFile(path)
+	if parseErr != nil {
+		t.Fatal(parseErr)
+	}
+	if got.Name != replacement.Name || got.Body != replacement.Body {
+		t.Fatalf("changed memo was not preserved: %#v", got)
+	}
+}
+
+func TestSearchReconcilesDirectEditsAndRebuildsDeletedIndex(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	directory := filepath.Join(home, ".copilot", "memo")
+	path := filepath.Join(directory, "2026-08-22-abc12345-lowply-dotfiles-direct.md")
+	item := testMemo("abc12345", "direct", "Initial summary", "Initial body")
+	writeMemoAt(t, path, item)
+
+	var output bytes.Buffer
+	if err := run([]string{"search", "--", "Initial"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	item.Summary = "Changed summary"
+	item.Body = "Changed body"
+	item.UpdatedAt = "2026-08-22T02:00:00Z"
+	writeMemoAt(t, path, item)
+	output.Reset()
+	if err := run([]string{"search", "--", "Changed"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+
+	databasePath := filepath.Join(directory, "memo.db")
+	if err := os.Remove(databasePath); err != nil {
+		t.Fatal(err)
+	}
+	for _, suffix := range []string{"-wal", "-shm"} {
+		if err := os.Remove(databasePath + suffix); err != nil && !os.IsNotExist(err) {
+			t.Fatal(err)
+		}
+	}
+	output.Reset()
+	if err := run([]string{"search", "--", "Changed"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), strconv.Quote(path)) {
+		t.Fatalf("rebuilt search missing path: %s", output.String())
+	}
+}
+
+func TestListIncludesCanonicalPath(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "listed", "Listed summary", "Body"))
+
+	var output bytes.Buffer
+	if err := run([]string{"list"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), "PATH") || !strings.Contains(output.String(), path) {
+		t.Fatalf("list omitted canonical path:\n%s", output.String())
+	}
+}

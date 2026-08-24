@@ -171,5 +171,6 @@ case "${1}" in
         symlinks
         bashrc_
         brew_bundle
+        "${WORKDIR}/script/install-memo.sh"
     ;;
 esac
