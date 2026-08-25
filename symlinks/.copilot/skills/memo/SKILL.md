@@ -71,7 +71,7 @@ memo done "$memo_id"
 
 ### List memos
 
-Run `memo list`, optionally with `--status wip` or `--status done`.
+Run `memo list`, optionally with `--status wip` or `--status done`. The latest memo appears last.
 
 ### Delete a memo
 

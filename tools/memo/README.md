@@ -36,7 +36,7 @@ The frontmatter, not the filename, determines memo identity. IDs are globally un
 | `memo search [--limit N] [--status wip\|done] -- <query>` | Search IDs, repositories, names, summaries, and bodies. |
 | `memo get <id>` | Return one memo's canonical path as JSON. |
 | `memo show <id>` | Print one canonical Markdown memo verbatim for quick inspection. |
-| `memo list [--status wip\|done]` | List indexed memos newest first. |
+| `memo list [--status wip\|done]` | List indexed memos oldest first, with the latest at the bottom. |
 | `memo done <id>` | Mark a memo done and update its timestamp. |
 | `memo remove [--force] <id>` | Delete a memo file and index record after confirmation. |
 | `memo rm [--force] <id>` | Alias for `memo remove`. |

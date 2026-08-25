@@ -368,7 +368,7 @@ func (s *store) list(status string) ([]searchResult, error) {
 		query += ` WHERE status = ?`
 		args = append(args, status)
 	}
-	query += ` ORDER BY created_at DESC, rowid DESC`
+	query += ` ORDER BY created_at ASC, rowid ASC`
 	rows, err := s.db.Query(query, args...)
 	if err != nil {
 		return nil, fmt.Errorf("list memos: %w", err)

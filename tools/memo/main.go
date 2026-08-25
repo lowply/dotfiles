@@ -96,7 +96,7 @@ Reconcile canonical Markdown files, then return the exact ID's path as JSON.`,
 Reconcile canonical Markdown files, then print the memo with the exact ID.`,
 	"list": `usage: memo list [--status <wip|done>]
 
-Reconcile and list canonical Markdown memos, newest first.
+Reconcile and list canonical Markdown memos, oldest first.
 
 options:
   --status  optional wip or done filter`,

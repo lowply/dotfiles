@@ -90,7 +90,7 @@ func TestIndexExactIDStatusAndListOrder(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(items) != 2 || items[0].ID != "newer" || items[1].ID != "older" {
+	if len(items) != 2 || items[0].ID != "older" || items[1].ID != "newer" {
 		t.Fatalf("unexpected list order: %#v", items)
 	}
 	done, err := index.list("done")
