@@ -26,7 +26,7 @@ onboarding = false
 # red = "#ff6188"
 # green = "#a6e3a1"
 
-name = "one-dark"
+name = "vesper"
 auto_switch = false
 [terminal]
 # Executable used for new interactive panes.
@@ -211,7 +211,7 @@ delivery = "off"
 # position = "bottom-right"
 
 [ui.toast.clipboard]
-# enabled = true
+enabled = false
 # position = "bottom-center"
 
 # Play sounds when agents change state in background workspaces
