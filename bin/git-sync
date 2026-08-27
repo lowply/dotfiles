@@ -33,23 +33,31 @@ fi
 if ! ${IN_DEFAULT}; then
     if [[ -n "${DEFAULT_BRANCH_WORKTREE}" && "${DEFAULT_BRANCH_WORKTREE}" != "${CURRENT_WORKTREE}" ]]; then
         git -C "${DEFAULT_BRANCH_WORKTREE}" pull --rebase origin "${DEFAULT_BRANCH}"
+
+        if git merge-base --is-ancestor "${CURRENT_BRANCH}" "${DEFAULT_BRANCH}"; then
+            stash_if_needed
+            git switch --detach "${DEFAULT_BRANCH}"
+        fi
     else
         stash_if_needed
         git switch "${DEFAULT_BRANCH}"
         git pull --rebase origin "${DEFAULT_BRANCH}"
-        git switch "${CURRENT_BRANCH}"
+
+        if ! git merge-base --is-ancestor "${CURRENT_BRANCH}" "${DEFAULT_BRANCH}"; then
+            git switch "${CURRENT_BRANCH}"
+        fi
     fi
 else
     git pull --rebase origin "${DEFAULT_BRANCH}"
 fi
 
 # Delete all merged branches except the default branch
-git branch --merged "${DEFAULT_BRANCH}" --format='%(refname:short)' | while read -r branch; do
+git for-each-ref --merged="${DEFAULT_BRANCH}" --format='%(refname:short)' refs/heads/ | while read -r branch; do
     if [[ -z "${branch}" ]]; then
         continue
     fi
 
-    if [[ "${branch}" == "${DEFAULT_BRANCH}" || "${branch}" == "${CURRENT_BRANCH}" ]]; then
+    if [[ "${branch}" == "${DEFAULT_BRANCH}" ]]; then
         continue
     fi
 
