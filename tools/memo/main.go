@@ -78,9 +78,13 @@ commands:
 run "memo help <command>" or "memo <command> --help" for details`
 
 var commandHelp = map[string]string{
-	"create": `usage: memo create <title>
+	"create": `usage: memo create [--repository <owner/name> | --no-repository] <title>
 
-Create an empty wip memo for the current Git repository. The title becomes the searchable summary and its kebab-case form becomes the memo name.`,
+Create an empty wip memo. By default, the repository is detected from remote.origin.url when available; otherwise the memo is unscoped. The title becomes the searchable summary and its kebab-case form becomes the memo name.
+
+options:
+  --repository     explicitly associate the memo with an owner/name repository
+  --no-repository  create an unscoped memo even when a repository can be detected`,
 	"search": `usage: memo search [--limit <count>] [--status <wip|done>] -- <query>
 
 Reconcile canonical Markdown files, then search repository names, memo names, summaries, and bodies. Every query term must match.
@@ -145,10 +149,26 @@ func indexContext() (*store, string, error) {
 }
 
 func runCreate(args []string, stdout io.Writer) error {
-	if len(args) != 1 {
-		return fmt.Errorf("usage: memo create <title>")
+	flags := flag.NewFlagSet("create", flag.ContinueOnError)
+	flags.SetOutput(io.Discard)
+	repositoryOverride := flags.String("repository", "", "repository owner/name")
+	noRepository := flags.Bool("no-repository", false, "create an unscoped memo")
+	if err := flags.Parse(args); err != nil {
+		return err
 	}
-	title := strings.TrimSpace(args[0])
+	if flags.NArg() != 1 {
+		return fmt.Errorf("usage: memo create [--repository <owner/name> | --no-repository] <title>")
+	}
+	repositoryOverrideSet := false
+	flags.Visit(func(item *flag.Flag) {
+		if item.Name == "repository" {
+			repositoryOverrideSet = true
+		}
+	})
+	if repositoryOverrideSet && *noRepository {
+		return fmt.Errorf("--repository and --no-repository cannot be used together")
+	}
+	title := strings.TrimSpace(flags.Arg(0))
 	if title == "" {
 		return fmt.Errorf("memo title must not be empty")
 	}
@@ -163,9 +183,20 @@ func runCreate(args []string, stdout io.Writer) error {
 	if err := ensureMemoDirectory(directory); err != nil {
 		return err
 	}
-	repository, err := resolveRepository()
-	if err != nil {
-		return err
+	repositoryName := ""
+	switch {
+	case repositoryOverrideSet:
+		repositoryName = strings.TrimSpace(*repositoryOverride)
+		owner, name, err := parseRepositoryName(repositoryName)
+		if err != nil {
+			return err
+		}
+		repositoryName = owner + "/" + name
+	case !*noRepository:
+		repositoryName, err = resolveRepository()
+		if err != nil {
+			return err
+		}
 	}
 	index, directory, err := indexContext()
 	if err != nil {
@@ -193,7 +224,7 @@ func runCreate(args []string, stdout io.Writer) error {
 	}
 	item := memo{
 		ID:         id,
-		Repository: repository.Owner + "/" + repository.Name,
+		Repository: repositoryName,
 		Name:       name,
 		Summary:    title,
 		Status:     "wip",
@@ -240,12 +271,19 @@ func titleToName(title string) (string, error) {
 }
 
 func canonicalMemoPath(directory string, createdAt time.Time, item memo) (string, error) {
-	owner, repository, err := parseRepositoryName(item.Repository)
-	if err != nil {
-		return "", err
+	parts := []string{
+		createdAt.UTC().Format("2006-01-02"),
+		item.ID,
 	}
-	filename := fmt.Sprintf("%s-%s-%s-%s-%s.md",
-		createdAt.UTC().Format("2006-01-02"), item.ID, owner, repository, item.Name)
+	if item.Repository != "" {
+		owner, repository, err := parseRepositoryName(item.Repository)
+		if err != nil {
+			return "", err
+		}
+		parts = append(parts, owner, repository)
+	}
+	parts = append(parts, item.Name)
+	filename := strings.Join(parts, "-") + ".md"
 	return filepath.Join(directory, filename), nil
 }
 
@@ -351,8 +389,12 @@ func runList(args []string, stdout io.Writer) error {
 		return fmt.Errorf("write memo table: %w", err)
 	}
 	for _, item := range items {
+		repository := item.Repository
+		if repository == "" {
+			repository = "-"
+		}
 		if _, err := fmt.Fprintf(writer, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
-			item.CreatedAt, item.Status, item.Repository, item.ID, item.Name, item.Summary, item.Path); err != nil {
+			item.CreatedAt, item.Status, repository, item.ID, item.Name, item.Summary, item.Path); err != nil {
 			return fmt.Errorf("write memo table: %w", err)
 		}
 	}

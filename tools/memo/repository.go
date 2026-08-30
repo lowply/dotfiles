@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/url"
 	"os/exec"
@@ -14,22 +15,33 @@ type repository struct {
 	Name  string
 }
 
-func resolveRepository() (repository, error) {
+func resolveRepository() (string, error) {
 	root, err := gitOutput("rev-parse", "--show-toplevel")
 	if err != nil {
-		return repository{}, fmt.Errorf("run inside a Git repository")
+		var exitError *exec.ExitError
+		if errors.As(err, &exitError) {
+			return "", nil
+		}
+		return "", fmt.Errorf("detect Git repository: %w", err)
 	}
 
 	remote, err := gitOutput("-C", root, "config", "--get", "remote.origin.url")
-	if err != nil || remote == "" {
-		return repository{}, fmt.Errorf("could not resolve remote.origin.url")
+	if err != nil {
+		var exitError *exec.ExitError
+		if errors.As(err, &exitError) && exitError.ExitCode() == 1 {
+			return "", nil
+		}
+		return "", fmt.Errorf("resolve remote.origin.url: %w", err)
+	}
+	if remote == "" {
+		return "", nil
 	}
 
 	owner, name, err := parseRemoteURL(remote)
 	if err != nil {
-		return repository{}, err
+		return "", err
 	}
-	return repository{Root: root, Owner: owner, Name: name}, nil
+	return owner + "/" + name, nil
 }
 
 func gitOutput(args ...string) (string, error) {

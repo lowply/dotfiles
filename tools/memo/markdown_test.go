@@ -99,6 +99,56 @@ func TestParseMemoFileAcceptsEmptyBody(t *testing.T) {
 	}
 }
 
+func TestParseMemoFileAcceptsEmptyOrMissingRepository(t *testing.T) {
+	for _, test := range []struct {
+		name      string
+		transform func(string) string
+	}{
+		{
+			name: "Empty",
+			transform: func(content string) string {
+				return strings.Replace(content, `repository: "lowply/dotfiles"`, `repository: ""`, 1)
+			},
+		},
+		{
+			name: "Missing",
+			transform: func(content string) string {
+				return strings.Replace(content, "repository: \"lowply/dotfiles\"\n", "", 1)
+			},
+		},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			data, err := marshalMemoFile(testMemo("abc12345", "unscoped", "Unscoped memo", "Body."))
+			if err != nil {
+				t.Fatal(err)
+			}
+			path := filepath.Join(t.TempDir(), "memo.md")
+			if err := os.WriteFile(path, []byte(test.transform(string(data))), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			parsed, err := parseMemoFile(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if parsed.Repository != "" {
+				t.Fatalf("repository = %q, want empty", parsed.Repository)
+			}
+		})
+	}
+}
+
+func TestMarshalUnscopedMemoEmitsEmptyRepository(t *testing.T) {
+	item := testMemo("abc12345", "unscoped", "Unscoped memo", "")
+	item.Repository = ""
+	data, err := marshalMemoFile(item)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(data), "repository: \"\"\n") {
+		t.Fatalf("missing empty repository metadata: %q", data)
+	}
+}
+
 func TestMemoFileRoundTripPreservesBodyWhitespace(t *testing.T) {
 	item := testMemo("abc12345", "whitespace", "Whitespace summary",
 		"    indented first line\n\nTrailing blanks follow\n\n")

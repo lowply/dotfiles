@@ -1,13 +1,13 @@
 # Memo
 
-`memo` stores repository-specific notes as Markdown and provides an SQLite FTS5 index for fast search. Markdown files are the source of truth; the database is derived state that can be deleted and rebuilt.
+`memo` stores scoped and unscoped notes as Markdown and provides an SQLite FTS5 index for fast search. Markdown files are the source of truth; the database is derived state that can be deleted and rebuilt.
 
 ## Storage
 
 Canonical memos live under `~/.copilot/memo`:
 
 ```text
-YYYY-MM-DD-ID-owner-repository-kebab-case-title.md
+YYYY-MM-DD-ID-[owner-repository-]kebab-case-title.md
 ```
 
 Each file contains required YAML frontmatter followed by an optional Markdown body:
@@ -27,12 +27,17 @@ Memo details go here.
 ```
 
 The frontmatter, not the filename, determines memo identity. IDs are globally unique, and status is either `wip` or `done`.
+The `repository` value is an optional `owner/name`. Unscoped memos use an empty value:
+
+```yaml
+repository: ""
+```
 
 ## Commands
 
 | Command | Purpose |
 | --- | --- |
-| `memo create <title>` | Create and index an empty `wip` memo for the current Git repository. |
+| `memo create [--repository owner/name \| --no-repository] <title>` | Create and index an empty `wip` memo. |
 | `memo search [--limit N] [--status wip\|done] -- <query>` | Search IDs, repositories, names, summaries, and bodies. |
 | `memo get <id>` | Return one memo's canonical path as JSON. |
 | `memo show <id>` | Print one canonical Markdown memo verbatim for quick inspection. |
@@ -42,6 +47,19 @@ The frontmatter, not the filename, determines memo identity. IDs are globally un
 | `memo rm [--force] <id>` | Alias for `memo remove`. |
 
 Search and list results include the canonical path so the file can be read or edited directly. `memo get <id>` returns only `{"path":"..."}` for minimal machine-readable output. `memo show <id>` is the human-oriented shortcut for printing the complete canonical file, including its YAML frontmatter and Markdown body.
+
+By default, `memo create` uses `remote.origin.url` when the current directory is in a Git repository with a configured origin. It creates an unscoped memo when run outside Git or in a repository without an origin. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to create an unscoped memo even when an origin is available.
+
+```bash
+# Detect lowply/dotfiles from the current repository's origin.
+memo create "Repository research"
+
+# Associate a memo while outside the repository.
+memo create --repository lowply/dotfiles "Repository research"
+
+# Create a general research memo from any directory.
+memo create --no-repository "General research"
+```
 
 ## Search
 
@@ -60,7 +78,7 @@ memo search -- sqlite index
 memo search --status wip -- sqlite index
 ```
 
-Full-text results are ordered by FTS5 `bm25()` relevance, then by `updated_at` newest first when scores tie. The ranking weights are repository `0.5`, name `1.0`, summary `2.0`, and body `1.0`, so summary matches contribute most strongly. Search uses FTS5's `unicode61` tokenizer and returns five results by default; `--limit` accepts values from 1 through 100.
+Full-text results are ordered by FTS5 `bm25()` relevance, then by `updated_at` newest first when scores tie. The ranking weights are repository `0.5`, name `1.0`, summary `2.0`, and body `1.0`, so summary matches contribute most strongly. An unscoped memo indexes an empty repository value. Search uses FTS5's `unicode61` tokenizer and returns five results by default; `--limit` accepts values from 1 through 100.
 
 ## Index and Consistency
 
@@ -106,6 +124,7 @@ CREATE VIRTUAL TABLE memo_fts USING fts5(
 ```
 
 Insert, update, and delete triggers keep `memo_fts` synchronized with `memos`. The `file_size` and `mod_time_ns` columns are filesystem fingerprints used only to detect which canonical Markdown files need reparsing.
+The index represents an unscoped memo with an empty `repository` string, so the derived database does not require nullable columns or a schema migration.
 
 ## Development
 

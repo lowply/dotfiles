@@ -164,7 +164,6 @@ func validateCanonicalMemo(item *memo) error {
 		value string
 	}{
 		{"memo_id", item.ID},
-		{"repository", item.Repository},
 		{"name", item.Name},
 		{"summary", item.Summary},
 		{"status", item.Status},
@@ -179,8 +178,10 @@ func validateCanonicalMemo(item *memo) error {
 	if err := validateMemoID(item.ID); err != nil {
 		return err
 	}
-	if _, _, err := parseRepositoryName(item.Repository); err != nil {
-		return err
+	if item.Repository != "" {
+		if _, _, err := parseRepositoryName(item.Repository); err != nil {
+			return err
+		}
 	}
 	if err := validateName(item.Name); err != nil {
 		return err

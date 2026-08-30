@@ -1,25 +1,25 @@
 ---
 name: memo
-description: Use when the user asks to remember or recall searchable repository-specific notes across sessions.
+description: Use when the user asks to remember or recall searchable notes across sessions.
 ---
 
 # Memo
 
-Persist and recall repository-specific notes through canonical Markdown files.
+Persist and recall scoped or unscoped notes through canonical Markdown files.
 
 ## Storage
 
 Markdown is the source of truth. `memo create` writes:
 
-`~/.copilot/memo/YYYY-MM-DD-ID-owner-repository-kebab-case-title.md`
+`~/.copilot/memo/YYYY-MM-DD-ID-[owner-repository-]kebab-case-title.md`
 
-Each file requires YAML frontmatter containing `memo_id`, `repository`, `name`, `summary`, `status`, `created_at`, and `updated_at`, followed by an optional Markdown body. `~/.copilot/memo/memo.db` is a disposable FTS5 index rebuilt from these files. Every command reconciles direct changes first.
+Each file requires YAML frontmatter containing `memo_id`, `name`, `summary`, `status`, `created_at`, and `updated_at`, followed by an optional Markdown body. `repository` is an optional `owner/name`; unscoped memos use `repository: ""`. `~/.copilot/memo/memo.db` is a disposable FTS5 index rebuilt from these files. Every command reconciles direct changes first.
 
 ## Commands
 
 | Task | Command |
 | --- | --- |
-| Create | `memo create "<title>"` |
+| Create | `memo create [--repository owner/name \| --no-repository] "<title>"` |
 | Search | `memo search [--limit N] [--status wip\|done] -- "<query>"` |
 | Locate by ID | `memo get "<id>"` |
 | Inspect quickly | `memo show "<id>"` |
@@ -33,13 +33,13 @@ Report command errors and stop. If `memo` is unavailable, rerun the dotfiles ins
 
 ### Save a memo
 
-Run from the repository the memo belongs to:
+Run from any directory:
 
 ```bash
 memo create "This is a title"
 ```
 
-The command returns the canonical `path` and creates an empty body. When details exceed the title, immediately edit that path: add durable context, preserve `memo_id` and `created_at`, and refresh `updated_at` in UTC.
+The command detects `remote.origin.url` when available and otherwise creates an unscoped memo. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to force an unscoped memo. The command returns the canonical `path` and creates an empty body. When details exceed the title, immediately edit that path: add durable context, preserve `memo_id` and `created_at`, and refresh `updated_at` in UTC.
 
 ### Recall a memo
 
@@ -49,7 +49,7 @@ Search for the memo:
 memo search --limit 1 -- "$query"
 ```
 
-Search is global. Select by repository and summary, then read the canonical `path`. For a known ID:
+Search is global. Select by repository when present and by summary, then read the canonical `path`. For a known ID:
 
 ```bash
 memo get "$memo_id"
@@ -93,4 +93,4 @@ memo remove --force "$memo_id"
 - Do not query SQLite for a known memo; use `memo get` and read its canonical path.
 - Do not treat search terms as alternatives; FTS5 joins them with `AND`.
 - Do not edit `memo.db`; fix canonical Markdown when files are malformed or IDs are duplicated.
-- Keep memos repository-specific, write disambiguating summaries, and keep prose paragraphs on single lines.
+- Use repository scope only when it adds useful context, write disambiguating summaries, and keep prose paragraphs on single lines.

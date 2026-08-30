@@ -18,6 +18,30 @@ type readerWithHook struct {
 	hook   func()
 }
 
+func runGitAt(t *testing.T, directory string, args ...string) {
+	t.Helper()
+	command := exec.Command("git", append([]string{"-C", directory}, args...)...)
+	if output, err := command.CombinedOutput(); err != nil {
+		t.Fatalf("git %v: %v\n%s", args, err, output)
+	}
+}
+
+func withWorkingDirectory(t *testing.T, directory string) {
+	t.Helper()
+	previous, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chdir(directory); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := os.Chdir(previous); err != nil {
+			t.Error(err)
+		}
+	})
+}
+
 func (r *readerWithHook) Read(buffer []byte) (int, error) {
 	if r.hook != nil {
 		r.hook()
@@ -177,6 +201,129 @@ func TestCreateWritesEmptyCanonicalMemoAndIndexesPath(t *testing.T) {
 	}
 }
 
+func TestCreateOutsideGitCreatesUnscopedMemo(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	workingDirectory := t.TempDir()
+	withWorkingDirectory(t, workingDirectory)
+
+	var output bytes.Buffer
+	if err := run([]string{"create", "General research"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	if created.Repository != "" {
+		t.Fatalf("repository = %q, want empty", created.Repository)
+	}
+	expectedSuffix := "-" + created.ID + "-general-research.md"
+	if !strings.HasSuffix(created.Path, expectedSuffix) {
+		t.Fatalf("canonical path = %q, want suffix %q", created.Path, expectedSuffix)
+	}
+	item, err := parseMemoFile(created.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if item.Repository != "" {
+		t.Fatalf("canonical repository = %q, want empty", item.Repository)
+	}
+}
+
+func TestCreateInGitRepositoryWithoutRemoteCreatesUnscopedMemo(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	repositoryRoot := t.TempDir()
+	runGitAt(t, repositoryRoot, "init", "--quiet")
+	withWorkingDirectory(t, repositoryRoot)
+
+	var output bytes.Buffer
+	if err := run([]string{"create", "Local research"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	if created.Repository != "" {
+		t.Fatalf("repository = %q, want empty", created.Repository)
+	}
+}
+
+func TestCreateAcceptsExplicitRepositoryOutsideGit(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	withWorkingDirectory(t, t.TempDir())
+
+	var output bytes.Buffer
+	if err := run([]string{"create", "--repository", "lowply/research", "Explicit repository"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	if created.Repository != "lowply/research" {
+		t.Fatalf("repository = %q, want lowply/research", created.Repository)
+	}
+	if !strings.Contains(filepath.Base(created.Path), "-lowply-research-explicit-repository.md") {
+		t.Fatalf("unexpected canonical path: %q", created.Path)
+	}
+}
+
+func TestCreateCanForceUnscopedMemoInsideRepository(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	repositoryRoot := t.TempDir()
+	runGitAt(t, repositoryRoot, "init", "--quiet")
+	runGitAt(t, repositoryRoot, "remote", "add", "origin", "git@github.com:lowply/dotfiles.git")
+	withWorkingDirectory(t, repositoryRoot)
+
+	var output bytes.Buffer
+	if err := run([]string{"create", "--no-repository", "Unscoped research"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	if created.Repository != "" {
+		t.Fatalf("repository = %q, want empty", created.Repository)
+	}
+}
+
+func TestCreateRejectsConflictingRepositoryOptions(t *testing.T) {
+	err := run([]string{
+		"create", "--repository", "lowply/dotfiles", "--no-repository", "Conflicting options",
+	}, strings.NewReader(""), io.Discard)
+	if err == nil || !strings.Contains(err.Error(), "--repository and --no-repository cannot be used together") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestCreateRejectsInvalidExplicitRepository(t *testing.T) {
+	err := run([]string{
+		"create", "--repository", "not-an-nwo", "Invalid repository",
+	}, strings.NewReader(""), io.Discard)
+	if err == nil || !strings.Contains(err.Error(), "repository must use owner/name format") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestCreateRejectsMalformedConfiguredRemote(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	repositoryRoot := t.TempDir()
+	runGitAt(t, repositoryRoot, "init", "--quiet")
+	runGitAt(t, repositoryRoot, "remote", "add", "origin", "not-a-repository")
+	withWorkingDirectory(t, repositoryRoot)
+
+	err := run([]string{"create", "Malformed remote"}, strings.NewReader(""), io.Discard)
+	if err == nil || !strings.Contains(err.Error(), "could not parse repository owner/name") {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
 func TestCreateRetriesDuplicateMemoID(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -228,6 +375,64 @@ func TestCreateRetriesDuplicateMemoID(t *testing.T) {
 	}
 	if len(matches) != 0 {
 		t.Fatalf("duplicate-ID file was created: %v", matches)
+	}
+}
+
+func TestListDisplaysDashForUnscopedMemo(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	item := testMemo("abc12345", "general", "General memo", "")
+	item.Repository = ""
+	writeMemoAt(t, path, item)
+
+	var output bytes.Buffer
+	if err := run([]string{"list"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	lines := strings.Split(strings.TrimSpace(output.String()), "\n")
+	if len(lines) != 2 {
+		t.Fatalf("unexpected list output: %q", output.String())
+	}
+	fields := strings.Fields(lines[1])
+	if len(fields) < 3 || fields[2] != "-" {
+		t.Fatalf("list output does not mark unscoped repository: %q", output.String())
+	}
+}
+
+func TestUnscopedMemoSupportsSearchDoneAndRemove(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	item := testMemo("abc12345", "general-lifecycle", "General lifecycle", "Unscoped body")
+	item.Repository = ""
+	writeMemoAt(t, path, item)
+
+	var output bytes.Buffer
+	if err := run([]string{"search", "--", "Unscoped"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), strconv.Quote(path)) {
+		t.Fatalf("search result missing unscoped memo: %q", output.String())
+	}
+
+	output.Reset()
+	if err := run([]string{"done", "abc12345"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	done, err := parseMemoFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if done.Status != "done" || done.Repository != "" {
+		t.Fatalf("unexpected completed memo: %#v", done)
+	}
+
+	if err := run([]string{"remove", "--force", "abc12345"}, strings.NewReader(""), io.Discard); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Fatalf("unscoped memo remains after removal: %v", err)
 	}
 }
 
