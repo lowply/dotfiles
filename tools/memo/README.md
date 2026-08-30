@@ -37,7 +37,7 @@ repository: ""
 
 | Command | Purpose |
 | --- | --- |
-| `memo create [--repository owner/name \| --no-repository] <title>` | Create and index an empty `wip` memo. |
+| `memo create [--repository owner/name \| --no-repository] <title>` | Create and index a `wip` memo, optionally reading its body from stdin. |
 | `memo search [--limit N] [--status wip\|done] -- <query>` | Search IDs, repositories, names, summaries, and bodies. |
 | `memo get <id>` | Return one memo's canonical path as JSON. |
 | `memo show <id>` | Print one canonical Markdown memo verbatim for quick inspection. |
@@ -50,6 +50,8 @@ Search and list results include the canonical path so the file can be read or ed
 
 By default, `memo create` uses `remote.origin.url` when the current directory is in a Git repository with a configured origin. It creates an unscoped memo when run outside Git or in a repository without an origin. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to create an unscoped memo even when an origin is available.
 
+When stdin is piped or redirected, `memo create` preserves it as the initial Markdown body. Interactive terminal stdin is not read, so the command continues to create an empty body without waiting for EOF.
+
 ```bash
 # Detect lowply/dotfiles from the current repository's origin.
 memo create "Repository research"
@@ -59,6 +61,12 @@ memo create --repository lowply/dotfiles "Repository research"
 
 # Create a general research memo from any directory.
 memo create --no-repository "General research"
+
+# Create a memo with an initial body.
+printf '# Findings\n\nDetails.\n' | memo create --no-repository "General research"
+
+# Read a longer initial body from a file.
+memo create --repository lowply/dotfiles "Repository research" < findings.md
 ```
 
 ## Search

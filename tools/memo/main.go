@@ -45,7 +45,7 @@ func run(args []string, stdin io.Reader, stdout io.Writer) error {
 	}
 	switch args[0] {
 	case "create":
-		return runCreate(args[1:], stdout)
+		return runCreate(args[1:], stdin, stdout)
 	case "search":
 		return runSearch(args[1:], stdout)
 	case "get":
@@ -66,7 +66,7 @@ func run(args []string, stdin io.Reader, stdout io.Writer) error {
 const usageText = `usage: memo <command> [options]
 
 commands:
-  create          create an empty canonical Markdown memo
+  create          create a canonical Markdown memo
   search          search all canonical Markdown memos
   get             get one memo's path by ID
   show            print one canonical Markdown memo by ID
@@ -80,7 +80,7 @@ run "memo help <command>" or "memo <command> --help" for details`
 var commandHelp = map[string]string{
 	"create": `usage: memo create [--repository <owner/name> | --no-repository] <title>
 
-Create an empty wip memo. By default, the repository is detected from remote.origin.url when available; otherwise the memo is unscoped. The title becomes the searchable summary and its kebab-case form becomes the memo name.
+Create a wip memo. Piped or redirected stdin becomes the memo body; terminal stdin creates an empty body. By default, the repository is detected from remote.origin.url when available; otherwise the memo is unscoped. The title becomes the searchable summary and its kebab-case form becomes the memo name.
 
 options:
   --repository     explicitly associate the memo with an owner/name repository
@@ -148,7 +148,7 @@ func indexContext() (*store, string, error) {
 	return index, directory, nil
 }
 
-func runCreate(args []string, stdout io.Writer) error {
+func runCreate(args []string, stdin io.Reader, stdout io.Writer) error {
 	flags := flag.NewFlagSet("create", flag.ContinueOnError)
 	flags.SetOutput(io.Discard)
 	repositoryOverride := flags.String("repository", "", "repository owner/name")
@@ -173,6 +173,10 @@ func runCreate(args []string, stdout io.Writer) error {
 		return fmt.Errorf("memo title must not be empty")
 	}
 	name, err := titleToName(title)
+	if err != nil {
+		return err
+	}
+	body, err := readMemoBody(stdin)
 	if err != nil {
 		return err
 	}
@@ -227,6 +231,7 @@ func runCreate(args []string, stdout io.Writer) error {
 		Repository: repositoryName,
 		Name:       name,
 		Summary:    title,
+		Body:       body,
 		Status:     "wip",
 		CreatedAt:  formatTimestamp(now),
 		UpdatedAt:  formatTimestamp(now),
@@ -247,6 +252,23 @@ func runCreate(args []string, stdout io.Writer) error {
 		return err
 	}
 	return writeJSON(stdout, created)
+}
+
+func readMemoBody(stdin io.Reader) (string, error) {
+	if file, ok := stdin.(*os.File); ok {
+		info, err := file.Stat()
+		if err != nil {
+			return "", fmt.Errorf("inspect stdin: %w", err)
+		}
+		if info.Mode()&os.ModeCharDevice != 0 {
+			return "", nil
+		}
+	}
+	body, err := io.ReadAll(stdin)
+	if err != nil {
+		return "", fmt.Errorf("read memo body from stdin: %w", err)
+	}
+	return string(body), nil
 }
 
 func titleToName(title string) (string, error) {

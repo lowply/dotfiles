@@ -39,7 +39,13 @@ Run from any directory:
 memo create "This is a title"
 ```
 
-The command detects `remote.origin.url` when available and otherwise creates an unscoped memo. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to force an unscoped memo. The command returns the canonical `path` and creates an empty body. When details exceed the title, immediately edit that path: add durable context, preserve `memo_id` and `created_at`, and refresh `updated_at` in UTC.
+The command detects `remote.origin.url` when available and otherwise creates an unscoped memo. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to force an unscoped memo. Piped or redirected stdin becomes the initial body:
+
+```bash
+printf '# Findings\n\nDurable details.\n' | memo create --no-repository "This is a title"
+```
+
+Interactive terminal stdin is not read. The command returns the canonical `path`; when an empty memo needs details, immediately edit that path: add durable context, preserve `memo_id` and `created_at`, and refresh `updated_at` in UTC.
 
 ### Recall a memo
 

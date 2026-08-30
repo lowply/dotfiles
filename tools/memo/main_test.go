@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"os"
 	"os/exec"
@@ -16,6 +17,12 @@ import (
 type readerWithHook struct {
 	reader io.Reader
 	hook   func()
+}
+
+type errorReader struct{}
+
+func (errorReader) Read([]byte) (int, error) {
+	return 0, errors.New("read failed")
 }
 
 func runGitAt(t *testing.T, directory string, args ...string) {
@@ -228,6 +235,39 @@ func TestCreateOutsideGitCreatesUnscopedMemo(t *testing.T) {
 	}
 	if item.Repository != "" {
 		t.Fatalf("canonical repository = %q, want empty", item.Repository)
+	}
+}
+
+func TestCreateUsesPipedStdinAsMemoBody(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	withWorkingDirectory(t, t.TempDir())
+	body := "# Findings\n\nPreserve this body exactly.\n"
+
+	var output bytes.Buffer
+	if err := run([]string{"create", "--no-repository", "Piped research"}, strings.NewReader(body), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	item, err := parseMemoFile(created.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if item.Body != body {
+		t.Fatalf("body = %q, want %q", item.Body, body)
+	}
+}
+
+func TestCreateReturnsStdinReadError(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	withWorkingDirectory(t, t.TempDir())
+
+	err := run([]string{"create", "--no-repository", "Unreadable body"}, errorReader{}, io.Discard)
+	if err == nil || !strings.Contains(err.Error(), "read memo body from stdin") {
+		t.Fatalf("unexpected error: %v", err)
 	}
 }
 
@@ -479,7 +519,7 @@ func TestCreateIgnoresLegacyCreateLock(t *testing.T) {
 	}
 	t.Cleanup(func() { os.Chdir(previous) })
 
-	if err := runCreate([]string{"Concurrent title"}, io.Discard); err != nil {
+	if err := runCreate([]string{"Concurrent title"}, strings.NewReader(""), io.Discard); err != nil {
 		t.Fatal(err)
 	}
 	matches, err := filepath.Glob(filepath.Join(directory, "*.md"))
