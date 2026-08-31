@@ -40,13 +40,13 @@ repository: ""
 | `memo create [--repository owner/name \| --no-repository] <title>` | Create and index a `wip` memo, optionally reading its body from stdin. |
 | `memo search [--limit N] [--status wip\|done] -- <query>` | Search IDs, repositories, names, summaries, and bodies. |
 | `memo get <id>` | Return one memo's canonical path as JSON. |
-| `memo show <id>` | Print one canonical Markdown memo verbatim for quick inspection. |
+| `memo show [--raw] <id>` | Print a memo body, or the complete canonical file with `--raw`. |
 | `memo list [--status wip\|done]` | List indexed memos oldest first, with the latest at the bottom. |
 | `memo done <id>` | Mark a memo done and update its timestamp. |
 | `memo remove [--force] <id>` | Delete a memo file and index record after confirmation. |
 | `memo rm [--force] <id>` | Alias for `memo remove`. |
 
-Search and list results include the canonical path so the file can be read or edited directly. `memo get <id>` returns only `{"path":"..."}` for minimal machine-readable output. `memo show <id>` is the human-oriented shortcut for printing the complete canonical file, including its YAML frontmatter and Markdown body.
+Search and list results include the canonical path so the file can be read or edited directly. `memo get <id>` returns only `{"path":"..."}` for minimal machine-readable output. `memo show <id>` prints only the Markdown body. Use `memo show --raw <id>` to print the complete canonical file, including its YAML frontmatter.
 
 By default, `memo create` uses `remote.origin.url` when the current directory is in a Git repository with a configured origin. It creates an unscoped memo when run outside Git or in a repository without an origin. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to create an unscoped memo even when an origin is available.
 

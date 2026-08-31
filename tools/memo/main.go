@@ -69,7 +69,7 @@ commands:
   create          create a canonical Markdown memo
   search          search all canonical Markdown memos
   get             get one memo's path by ID
-  show            print one canonical Markdown memo by ID
+  show            print one memo's body by ID
   list            list all canonical Markdown memos
   done            mark a memo done by ID
   remove, rm      delete a memo by ID
@@ -95,9 +95,12 @@ options:
 	"get": `usage: memo get <id>
 
 Reconcile canonical Markdown files, then return the exact ID's path as JSON.`,
-	"show": `usage: memo show <id>
+	"show": `usage: memo show [--raw] <id>
 
-Reconcile canonical Markdown files, then print the memo with the exact ID.`,
+Reconcile canonical Markdown files, then print the body of the memo with the exact ID.
+
+options:
+  --raw  print the complete canonical file, including YAML frontmatter`,
 	"list": `usage: memo list [--status <wip|done>]
 
 Reconcile and list canonical Markdown memos, oldest first.
@@ -358,21 +361,36 @@ func runGet(args []string, stdout io.Writer) error {
 }
 
 func runShow(args []string, stdout io.Writer) error {
-	if len(args) != 1 || args[0] == "" {
-		return fmt.Errorf("usage: memo show <id>")
+	flags := flag.NewFlagSet("show", flag.ContinueOnError)
+	flags.SetOutput(io.Discard)
+	raw := flags.Bool("raw", false, "print YAML frontmatter and body")
+	if err := flags.Parse(args); err != nil {
+		return err
+	}
+	if flags.NArg() != 1 || flags.Arg(0) == "" {
+		return fmt.Errorf("usage: memo show [--raw] <id>")
 	}
 	index, _, err := indexContext()
 	if err != nil {
 		return err
 	}
 	defer index.close()
-	item, err := index.getByID(args[0])
+	item, err := index.getByID(flags.Arg(0))
 	if err != nil {
 		return err
 	}
-	data, err := os.ReadFile(item.Path)
-	if err != nil {
-		return fmt.Errorf("read memo %s: %w", item.Path, err)
+	var data []byte
+	if *raw {
+		data, err = os.ReadFile(item.Path)
+		if err != nil {
+			return fmt.Errorf("read memo %s: %w", item.Path, err)
+		}
+	} else {
+		parsed, err := parseMemoFile(item.Path)
+		if err != nil {
+			return err
+		}
+		data = []byte(parsed.Body)
 	}
 	written, err := stdout.Write(data)
 	if err != nil {

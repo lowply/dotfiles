@@ -22,7 +22,8 @@ Each file requires YAML frontmatter containing `memo_id`, `name`, `summary`, `st
 | Create | `memo create [--repository owner/name \| --no-repository] "<title>"` |
 | Search | `memo search [--limit N] [--status wip\|done] -- "<query>"` |
 | Locate by ID | `memo get "<id>"` |
-| Inspect quickly | `memo show "<id>"` |
+| Inspect body | `memo show "<id>"` |
+| Inspect canonical file | `memo show --raw "<id>"` |
 | List | `memo list [--status wip\|done]` |
 | Complete | `memo done "<id>"` |
 | Delete | `memo remove "<id>"` |
@@ -61,7 +62,7 @@ Search is global. Select by repository when present and by summary, then read th
 memo get "$memo_id"
 ```
 
-`memo get` returns only `{"path":"..."}`. `memo show "$memo_id"` prints the complete file for human or quick agent inspection. An ID query performs exact lookup; otherwise every term must match repository, name, summary, or body. Summary matches rank highest.
+`memo get` returns only `{"path":"..."}`. `memo show "$memo_id"` prints the Markdown body, while `memo show --raw "$memo_id"` includes YAML frontmatter. An ID query performs exact lookup; otherwise every term must match repository, name, summary, or body. Summary matches rank highest.
 
 ### Edit a memo
 

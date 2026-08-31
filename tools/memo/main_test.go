@@ -108,22 +108,38 @@ func TestGetRequiresOneID(t *testing.T) {
 	}
 }
 
-func TestShowWritesCanonicalMemoVerbatim(t *testing.T) {
+func TestShowWritesMemoBodyOnly(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 	path := filepath.Join(home, ".copilot", "memo", "memo.md")
-	writeMemoAt(t, path, testMemo("abc12345", "show-memo", "Show memo", "Body without a trailing newline."))
+	body := "# Heading\n\nBody without a trailing newline."
+	writeMemoAt(t, path, testMemo("abc12345", "show-memo", "Show memo", body))
+
+	var output bytes.Buffer
+	if err := run([]string{"show", "abc12345"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if output.String() != body {
+		t.Fatalf("show output = %q, want body %q", output.String(), body)
+	}
+}
+
+func TestShowRawWritesCanonicalMemoVerbatim(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "show-memo", "Show memo", "Raw body."))
 	expected, err := os.ReadFile(path)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	var output bytes.Buffer
-	if err := run([]string{"show", "abc12345"}, strings.NewReader(""), &output); err != nil {
+	if err := run([]string{"show", "--raw", "abc12345"}, strings.NewReader(""), &output); err != nil {
 		t.Fatal(err)
 	}
 	if !bytes.Equal(output.Bytes(), expected) {
-		t.Fatalf("show output = %q, want canonical file %q", output.Bytes(), expected)
+		t.Fatalf("raw show output = %q, want canonical file %q", output.Bytes(), expected)
 	}
 }
 
@@ -136,9 +152,9 @@ func TestShowRejectsUnknownID(t *testing.T) {
 }
 
 func TestShowRequiresOneID(t *testing.T) {
-	for _, args := range [][]string{{"show"}, {"show", "first", "second"}} {
+	for _, args := range [][]string{{"show"}, {"show", "--raw"}, {"show", "first", "second"}} {
 		err := run(args, strings.NewReader(""), io.Discard)
-		if err == nil || err.Error() != "usage: memo show <id>" {
+		if err == nil || err.Error() != "usage: memo show [--raw] <id>" {
 			t.Fatalf("run(%q) error = %v, want show usage", args, err)
 		}
 	}
