@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 )
 
 func writeTestMemoFile(t *testing.T, item memo) string {
@@ -149,6 +148,38 @@ func TestMarshalUnscopedMemoEmitsEmptyRepository(t *testing.T) {
 	}
 }
 
+func TestMemoCodecEmitsExistingCanonicalFormat(t *testing.T) {
+	item := testMemo("abc12345", "canonical-format", "Canonical format", "Body.")
+	data, err := (memoCodec{}).Marshal(recordFromMemo(item))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "---\n" +
+		"memo_id: \"abc12345\"\n" +
+		"repository: \"lowply/dotfiles\"\n" +
+		"name: \"canonical-format\"\n" +
+		"summary: \"Canonical format\"\n" +
+		"status: \"wip\"\n" +
+		"created_at: \"" + item.CreatedAt + "\"\n" +
+		"updated_at: \"" + item.UpdatedAt + "\"\n" +
+		"---\n\nBody."
+	if string(data) != want {
+		t.Fatalf("canonical data changed:\nwant %q\ngot  %q", want, data)
+	}
+}
+
+func TestDefaultMemoDirectoryUsesEnvironmentOverride(t *testing.T) {
+	override := filepath.Join(t.TempDir(), "custom-memos")
+	t.Setenv("MEMO_DIR", override)
+	got, err := defaultMemoDirectory()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got != override {
+		t.Fatalf("directory = %q, want %q", got, override)
+	}
+}
+
 func TestMemoFileRoundTripPreservesBodyWhitespace(t *testing.T) {
 	item := testMemo("abc12345", "whitespace", "Whitespace summary",
 		"    indented first line\n\nTrailing blanks follow\n\n")
@@ -188,31 +219,6 @@ func TestMemoFileRoundTripPreservesMissingFinalNewline(t *testing.T) {
 	}
 }
 
-func TestMarkMemoFileDonePreservesIdentityAndBody(t *testing.T) {
-	item := testMemo("abc12345", "markdown-source", "Canonical summary", "# Heading\n\nBody.")
-	item.CreatedAt = "2026-08-22T01:00:00Z"
-	item.UpdatedAt = item.CreatedAt
-	path := writeTestMemoFile(t, item)
-
-	got, err := markMemoFileDone(path, time.Date(2026, 8, 22, 2, 0, 0, 0, time.UTC))
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got.Status != "done" || got.UpdatedAt != "2026-08-22T02:00:00Z" {
-		t.Fatalf("unexpected status update: %#v", got)
-	}
-	if got.ID != item.ID || got.CreatedAt != item.CreatedAt || got.Body != item.Body {
-		t.Fatalf("immutable content changed: %#v", got)
-	}
-	info, err := os.Stat(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if info.Mode().Perm() != 0o600 {
-		t.Fatalf("mode = %v", info.Mode().Perm())
-	}
-}
-
 func TestParseMemoFileRetriesAfterAtomicReplacement(t *testing.T) {
 	path := writeTestMemoFile(t, testMemo("abc12345", "original", "Original summary", "Original body"))
 	replacement := testMemo("abc12345", "replacement", "Replacement summary", "Replacement body")
@@ -234,28 +240,5 @@ func TestParseMemoFileRetriesAfterAtomicReplacement(t *testing.T) {
 	}
 	if got.Name != replacement.Name || got.Body != replacement.Body {
 		t.Fatalf("parsed stale content: %#v", got)
-	}
-}
-
-func TestMarkMemoFileDoneRefusesConcurrentEdit(t *testing.T) {
-	path := writeTestMemoFile(t, testMemo("abc12345", "original", "Original summary", "Original body"))
-	replacement := testMemo("abc12345", "replacement", "Replacement summary", "Replacement body")
-	beforeMemoStatusReplace = func() {
-		if err := writeMemoFileAtomic(path, replacement); err != nil {
-			t.Fatal(err)
-		}
-		beforeMemoStatusReplace = nil
-	}
-	t.Cleanup(func() { beforeMemoStatusReplace = nil })
-
-	if _, err := markMemoFileDone(path, time.Now()); err == nil || !strings.Contains(err.Error(), "changed while marking done") {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	got, err := parseMemoFile(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if got.Name != replacement.Name || got.Body != replacement.Body || got.Status != "wip" {
-		t.Fatalf("concurrent edit was overwritten: %#v", got)
 	}
 }

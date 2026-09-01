@@ -15,6 +15,8 @@ import (
 	"strings"
 	"text/tabwriter"
 	"time"
+
+	"github.com/lowply/markdownstore"
 )
 
 var generateMemoID = newMemoID
@@ -140,7 +142,7 @@ func indexContext() (*store, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	index, err := openIndex(databasePath)
+	index, err := openIndexAt(directory, databasePath)
 	if err != nil {
 		return nil, "", err
 	}
@@ -187,9 +189,6 @@ func runCreate(args []string, stdin io.Reader, stdout io.Writer) error {
 	if err != nil {
 		return err
 	}
-	if err := ensureMemoDirectory(directory); err != nil {
-		return err
-	}
 	repositoryName := ""
 	switch {
 	case repositoryOverrideSet:
@@ -205,7 +204,7 @@ func runCreate(args []string, stdin io.Reader, stdout io.Writer) error {
 			return err
 		}
 	}
-	index, directory, err := indexContext()
+	index, _, err := indexContext()
 	if err != nil {
 		return err
 	}
@@ -243,11 +242,7 @@ func runCreate(args []string, stdin io.Reader, stdout io.Writer) error {
 	if err != nil {
 		return err
 	}
-	createdFile, err := writeNewMemoFileAtomic(path, item)
-	if err != nil {
-		return err
-	}
-	if err := index.replaceIndexRecords([]memoFile{createdFile}, nil); err != nil {
+	if _, err := index.inner.Create(path, recordFromMemo(item)); err != nil {
 		return err
 	}
 	created, err := index.getByID(id)
@@ -448,7 +443,7 @@ func runDone(args []string, stdout io.Writer) error {
 	if len(args) != 1 || args[0] == "" {
 		return fmt.Errorf("usage: memo done <id>")
 	}
-	index, directory, err := indexContext()
+	index, _, err := indexContext()
 	if err != nil {
 		return err
 	}
@@ -457,10 +452,11 @@ func runDone(args []string, stdout io.Writer) error {
 	if err != nil {
 		return err
 	}
-	if _, err := markMemoFileDone(item.Path, time.Now()); err != nil {
-		return err
-	}
-	if err := reconcile(directory, index); err != nil {
+	if _, err := index.inner.Update(item.Path, func(document markdownstore.Document) (markdownstore.Document, error) {
+		document.Metadata["status"] = "done"
+		document.Metadata["updated_at"] = formatTimestamp(time.Now())
+		return document, nil
+	}); err != nil {
 		return err
 	}
 	item, err = index.getByID(args[0])
@@ -519,10 +515,12 @@ func runRemove(args []string, stdin io.Reader, stdout io.Writer) error {
 	if !equalMemo(current.memo, snapshot.memo) {
 		return fmt.Errorf("memo changed before removal: %s", snapshot.Path)
 	}
-	if err := os.Remove(snapshot.Path); err != nil {
-		return fmt.Errorf("remove memo %s: %w", snapshot.Path, err)
-	}
-	if err := index.replaceIndexRecords(nil, []string{snapshot.Path}); err != nil {
+	if err := index.inner.Remove(snapshot.Path, markdownstore.Fingerprint{
+		Size: snapshot.Size, ModTimeNS: snapshot.ModTime,
+	}); err != nil {
+		if errors.Is(err, markdownstore.ErrChanged) {
+			return fmt.Errorf("memo changed before removal: %s", snapshot.Path)
+		}
 		return err
 	}
 	if _, err := fmt.Fprintf(stdout, "Removed %s\n", snapshot.Path); err != nil {

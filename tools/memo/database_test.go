@@ -86,6 +86,13 @@ func TestIndexExactIDStatusAndListOrder(t *testing.T) {
 	if err != nil || len(results) != 1 || results[0].MatchReason != "id" {
 		t.Fatalf("exact results = %#v, err = %v", results, err)
 	}
+	encoded, err := json.Marshal(results[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(encoded), `"rank"`) {
+		t.Fatalf("exact ID result included rank: %s", encoded)
+	}
 	items, err := index.list("")
 	if err != nil {
 		t.Fatal(err)
@@ -129,7 +136,7 @@ func TestIndexReplacesAndRemovesCanonicalRecords(t *testing.T) {
 	}
 }
 
-func TestStoreRejectsUnsupportedLegacySchema(t *testing.T) {
+func TestStoreRebuildsUnsupportedLegacySchema(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "memo.db")
 	database, err := sql.Open("sqlite", path)
 	if err != nil {
@@ -142,11 +149,23 @@ func TestStoreRejectsUnsupportedLegacySchema(t *testing.T) {
 	if err := database.Close(); err != nil {
 		t.Fatal(err)
 	}
-	_, err = openIndex(path)
-	if err == nil || !strings.Contains(err.Error(), "legacy memo database schema version 1 is unsupported") {
-		t.Fatalf("error = %v, want unsupported legacy schema error", err)
+	index, err := openIndex(path)
+	if err != nil {
+		t.Fatal(err)
 	}
-	if strings.Contains(err.Error(), "migrate-sqlite") {
-		t.Fatalf("error refers to removed command: %v", err)
+	defer index.close()
+	database, err = sql.Open("sqlite", path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer database.Close()
+	var exists int
+	if err := database.QueryRow(`SELECT EXISTS(
+		SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'markdownstore_documents'
+	)`).Scan(&exists); err != nil {
+		t.Fatal(err)
+	}
+	if exists != 1 {
+		t.Fatal("generic schema was not created")
 	}
 }

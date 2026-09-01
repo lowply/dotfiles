@@ -33,6 +33,10 @@ The `repository` value is an optional `owner/name`. Unscoped memos use an empty 
 repository: ""
 ```
 
+Set `MEMO_DIR` to override the canonical Markdown directory. Set
+`MEMO_DB_PATH` to place the disposable SQLite index elsewhere. When only
+`MEMO_DIR` is set, the database remains `<MEMO_DIR>/memo.db`.
+
 ## Commands
 
 | Command | Purpose |
@@ -94,45 +98,20 @@ Before operating, the CLI reconciles `~/.copilot/memo/*.md` with `memo.db`. For 
 
 Invalid files and duplicate IDs abort reconciliation rather than serving stale results. Mutations use atomic replacement where applicable. Status changes and removals revalidate the parsed memo before modifying it, so an intervening edit causes the operation to abort.
 
+Canonical Markdown and SQLite behavior comes from the reusable
+`github.com/lowply/markdownstore` module.
+
 ## Database Schema
 
-`memo.db` uses schema version 2:
+`memo.db` is a disposable index whose schema is owned by the pinned
+`github.com/lowply/markdownstore` module. Metadata is stored as normalized
+key/value rows and search content is stored in weighted FTS slots. Table names
+and columns are implementation details. An index created for an incompatible
+configuration is replaced and rebuilt from canonical Markdown automatically.
 
-```sql
-CREATE TABLE schema_migrations (
-    version INTEGER PRIMARY KEY,
-    applied_at TEXT NOT NULL
-);
-
-CREATE TABLE memos (
-    path TEXT PRIMARY KEY,
-    file_size INTEGER NOT NULL,
-    mod_time_ns INTEGER NOT NULL,
-    id TEXT NOT NULL UNIQUE,
-    repository TEXT NOT NULL,
-    name TEXT NOT NULL,
-    summary TEXT NOT NULL,
-    body TEXT NOT NULL,
-    status TEXT NOT NULL CHECK(status IN ('wip', 'done')),
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-);
-
-CREATE INDEX memos_status ON memos(status);
-
-CREATE VIRTUAL TABLE memo_fts USING fts5(
-    repository,
-    name,
-    summary,
-    body,
-    content='memos',
-    content_rowid='rowid',
-    tokenize='unicode61'
-);
-```
-
-Insert, update, and delete triggers keep `memo_fts` synchronized with `memos`. The `file_size` and `mod_time_ns` columns are filesystem fingerprints used only to detect which canonical Markdown files need reparsing.
-The index represents an unscoped memo with an empty `repository` string, so the derived database does not require nullable columns or a schema migration.
+The index stores file size and nanosecond modification time as filesystem
+fingerprints. It represents an unscoped memo with an empty `repository`
+string.
 
 ## Development
 

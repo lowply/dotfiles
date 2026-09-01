@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"io"
@@ -600,6 +601,34 @@ func TestDoneUpdatesCanonicalFileAndSearchIndex(t *testing.T) {
 	}
 }
 
+func TestDoneRefusesConcurrentEdit(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "original", "Original summary", "Original body"))
+	if err := run([]string{"list"}, strings.NewReader(""), io.Discard); err != nil {
+		t.Fatal(err)
+	}
+	replacement := testMemo("abc12345", "replacement", "Replacement summary", "Replacement body")
+	beforeMemoWrite = func() {
+		beforeMemoWrite = nil
+		writeMemoAt(t, path, replacement)
+	}
+	t.Cleanup(func() { beforeMemoWrite = nil })
+
+	err := run([]string{"done", "abc12345"}, strings.NewReader(""), io.Discard)
+	if err == nil || !strings.Contains(err.Error(), "changed while updating memo") {
+		t.Fatalf("done error = %v, want changed memo error", err)
+	}
+	got, parseErr := parseMemoFile(path)
+	if parseErr != nil {
+		t.Fatal(parseErr)
+	}
+	if got.Name != replacement.Name || got.Body != replacement.Body || got.Status != "wip" {
+		t.Fatalf("concurrent edit was overwritten: %#v", got)
+	}
+}
+
 func TestRemoveRequiresConfirmation(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -700,6 +729,46 @@ func TestRemoveRefusesMemoChangedDuringConfirmation(t *testing.T) {
 	}
 }
 
+func TestRemoveRefusesMemoChangedWithoutFingerprintChange(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "original", "Original summary", "Original body"))
+	originalInfo, err := os.Stat(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	replacement := testMemo("abc12345", "replaced", "Replaced summary", "Changed body!")
+	input := &readerWithHook{
+		reader: strings.NewReader("y\n"),
+		hook: func() {
+			writeMemoAt(t, path, replacement)
+			replacementInfo, statErr := os.Stat(path)
+			if statErr != nil {
+				t.Fatal(statErr)
+			}
+			if replacementInfo.Size() != originalInfo.Size() {
+				t.Fatalf("replacement size = %d, want %d", replacementInfo.Size(), originalInfo.Size())
+			}
+			if chtimesErr := os.Chtimes(path, originalInfo.ModTime(), originalInfo.ModTime()); chtimesErr != nil {
+				t.Fatal(chtimesErr)
+			}
+		},
+	}
+
+	err = run([]string{"remove", "abc12345"}, input, io.Discard)
+	if err == nil || !strings.Contains(err.Error(), "changed before removal") {
+		t.Fatalf("remove error = %v, want changed memo error", err)
+	}
+	got, parseErr := parseMemoFile(path)
+	if parseErr != nil {
+		t.Fatal(parseErr)
+	}
+	if got.Name != replacement.Name || got.Body != replacement.Body {
+		t.Fatalf("changed memo was not preserved: %#v", got)
+	}
+}
+
 func TestSearchReconcilesDirectEditsAndRebuildsDeletedIndex(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -751,5 +820,68 @@ func TestListIncludesCanonicalPath(t *testing.T) {
 	}
 	if !strings.Contains(output.String(), "PATH") || !strings.Contains(output.String(), path) {
 		t.Fatalf("list omitted canonical path:\n%s", output.String())
+	}
+}
+
+func TestCreateSupportsSeparateMemoDirectoryAndDatabasePath(t *testing.T) {
+	root := t.TempDir()
+	directory := filepath.Join(root, "canonical")
+	databasePath := filepath.Join(root, "index", "memo.db")
+	t.Setenv("MEMO_DIR", directory)
+	t.Setenv("MEMO_DB_PATH", databasePath)
+	withWorkingDirectory(t, t.TempDir())
+
+	var output bytes.Buffer
+	if err := run([]string{"create", "--no-repository", "Configured paths"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	if filepath.Dir(created.Path) != directory {
+		t.Fatalf("canonical path = %q, want directory %q", created.Path, directory)
+	}
+	if _, err := os.Stat(databasePath); err != nil {
+		t.Fatalf("database path was not used: %v", err)
+	}
+}
+
+func TestCreateRebuildsIncompatibleDatabase(t *testing.T) {
+	root := t.TempDir()
+	directory := filepath.Join(root, "canonical")
+	databasePath := filepath.Join(root, "index", "memo.db")
+	if err := os.MkdirAll(directory, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(filepath.Dir(databasePath), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	database, err := sql.Open("sqlite", databasePath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := database.Exec(`CREATE TABLE schema_migrations(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);
+		INSERT INTO schema_migrations(version, applied_at) VALUES(999, '2026-08-31T00:00:00Z')`); err != nil {
+		t.Fatal(err)
+	}
+	if err := database.Close(); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("MEMO_DIR", directory)
+	t.Setenv("MEMO_DB_PATH", databasePath)
+	withWorkingDirectory(t, t.TempDir())
+
+	var output bytes.Buffer
+	err = run([]string{"create", "--no-repository", "Rebuilt"}, strings.NewReader(""), &output)
+	if err != nil {
+		t.Fatal(err)
+	}
+	info, err := os.Stat(directory)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if info.Mode().Perm() != 0o700 {
+		t.Fatalf("directory mode = %o, want 0700", info.Mode().Perm())
 	}
 }

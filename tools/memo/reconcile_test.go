@@ -80,13 +80,11 @@ func TestReconcileSkipsUnchangedFiles(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	original := parseCanonicalMemo
 	calls := 0
-	parseCanonicalMemo = func(path string) (memoFile, error) {
+	afterMemoRead = func() {
 		calls++
-		return original(path)
 	}
-	t.Cleanup(func() { parseCanonicalMemo = original })
+	t.Cleanup(func() { afterMemoRead = nil })
 	if err := reconcile(directory, index); err != nil {
 		t.Fatal(err)
 	}
