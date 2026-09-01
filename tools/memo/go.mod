@@ -3,7 +3,7 @@ module github.com/lowply/dotfiles/tools/memo
 go 1.24.0
 
 require (
-	github.com/lowply/markdownstore v0.1.2-0.20260901015353-40dac149178a
+	github.com/lowply/markdownstore v0.1.2
 	gopkg.in/yaml.v3 v3.0.1
 )
 
