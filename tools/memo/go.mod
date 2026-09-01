@@ -3,9 +3,8 @@ module github.com/lowply/dotfiles/tools/memo
 go 1.24.0
 
 require (
-	github.com/lowply/markdownstore v0.1.1
+	github.com/lowply/markdownstore v0.1.2-0.20260901015353-40dac149178a
 	gopkg.in/yaml.v3 v3.0.1
-	modernc.org/sqlite v1.39.1
 )
 
 require (
@@ -19,4 +18,5 @@ require (
 	modernc.org/libc v1.66.10 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
+	modernc.org/sqlite v1.39.1 // indirect
 )
