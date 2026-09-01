@@ -356,6 +356,11 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 git() {
+    if [ -z "${CODESPACES}" ]; then
+        command git "$@"
+        return
+    fi
+
     case "$1" in
         commit|rebase|merge|tag)
             [ -S "${SSH_AUTH_SOCK}" ] || source sshauthsock.sh 2>/dev/null

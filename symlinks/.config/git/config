@@ -77,6 +77,8 @@
 
 [include]
 	path = ~/.config/git/config.local
+	# install.sh only symlinks this file on macOS.
+	path = ~/.config/git/config.darwin
 
 # For work
 [includeIf "hasconfig:remote.*.url:https://github.com/github/**"]
@@ -135,4 +137,3 @@
 [rerere]
 	enabled = true
 	autoupdate = true
-

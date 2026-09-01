@@ -53,7 +53,9 @@ symlinks(){
 
         # Don't symlink these files on Linux
         if is_linux; then
-            [ "$(basename ${FILE})" = ".bash_profile" ] && continue
+            case "$(basename "${FILE}")" in
+                .bash_profile|config.darwin) continue ;;
+            esac
         fi
 
         for PATTERN in "${DIR_SYMLINKS[@]}"; do
