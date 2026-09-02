@@ -457,6 +457,54 @@ func TestListDisplaysDashForUnscopedMemo(t *testing.T) {
 	}
 }
 
+func TestListDefaultsToWIPMemos(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	directory := filepath.Join(home, ".copilot", "memo")
+	writeMemoAt(t, filepath.Join(directory, "wip.md"), testMemo("wip12345", "wip", "WIP memo", ""))
+	done := testMemo("done1234", "done", "Done memo", "")
+	done.Status = "done"
+	writeMemoAt(t, filepath.Join(directory, "done.md"), done)
+
+	var output bytes.Buffer
+	if err := run([]string{"list"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), "wip12345") {
+		t.Fatalf("list omitted wip memo: %q", output.String())
+	}
+	if strings.Contains(output.String(), "done1234") {
+		t.Fatalf("list included done memo by default: %q", output.String())
+	}
+}
+
+func TestListAllIncludesDoneMemos(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	directory := filepath.Join(home, ".copilot", "memo")
+	writeMemoAt(t, filepath.Join(directory, "wip.md"), testMemo("wip12345", "wip", "WIP memo", ""))
+	done := testMemo("done1234", "done", "Done memo", "")
+	done.Status = "done"
+	writeMemoAt(t, filepath.Join(directory, "done.md"), done)
+
+	var output bytes.Buffer
+	if err := run([]string{"list", "--all"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(output.String(), "wip12345") || !strings.Contains(output.String(), "done1234") {
+		t.Fatalf("list --all omitted a memo: %q", output.String())
+	}
+}
+
+func TestListRejectsAllWithStatus(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+
+	err := run([]string{"list", "--all", "--status", "done"}, strings.NewReader(""), io.Discard)
+	if err == nil || err.Error() != "--all and --status cannot be used together" {
+		t.Fatalf("error = %v, want conflicting options error", err)
+	}
+}
+
 func TestUnscopedMemoSupportsSearchDoneAndRemove(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)

@@ -103,12 +103,13 @@ Reconcile canonical Markdown files, then print the body of the memo with the exa
 
 options:
   --raw  print the complete canonical file, including YAML frontmatter`,
-	"list": `usage: memo list [--status <wip|done>]
+	"list": `usage: memo list [--all | --status <wip|done>]
 
-Reconcile and list canonical Markdown memos, oldest first.
+Reconcile and list wip canonical Markdown memos, oldest first.
 
 options:
-  --status  optional wip or done filter`,
+  --all     include memos with every status
+  --status  filter by wip or done (default: wip)`,
 	"done": `usage: memo done <id>
 
 Atomically mark one canonical Markdown memo done and refresh its updated timestamp.`,
@@ -400,15 +401,28 @@ func runShow(args []string, stdout io.Writer) error {
 func runList(args []string, stdout io.Writer) error {
 	flags := flag.NewFlagSet("list", flag.ContinueOnError)
 	flags.SetOutput(io.Discard)
-	status := flags.String("status", "", "filter by wip or done")
+	all := flags.Bool("all", false, "include memos with every status")
+	status := flags.String("status", "wip", "filter by wip or done")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 	if flags.NArg() != 0 {
 		return fmt.Errorf("list does not accept positional arguments")
 	}
+	statusSet := false
+	flags.Visit(func(item *flag.Flag) {
+		if item.Name == "status" {
+			statusSet = true
+		}
+	})
+	if *all && statusSet {
+		return fmt.Errorf("--all and --status cannot be used together")
+	}
 	if err := validateOptionalStatus(*status); err != nil {
 		return err
+	}
+	if *all {
+		*status = ""
 	}
 	index, _, err := indexContext()
 	if err != nil {
