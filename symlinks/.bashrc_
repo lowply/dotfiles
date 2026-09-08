@@ -1,10 +1,12 @@
 # .bashrc_
 
-# Prefer Homebrew Bash when available.
+# Prefer Homebrew Bash on macOS when available.
 if [[ -x /opt/homebrew/bin/bash ]]; then
     if [[ "${BASH}" != "/opt/homebrew/bin/bash" ]]; then
         exec /opt/homebrew/bin/bash -l
     fi
+elif [[ "${OSTYPE}" == linux* ]]; then
+    :
 else
     echo "Warning: /opt/homebrew/bin/bash not found. Install Homebrew Bash for full compatibility." >&2
 fi
