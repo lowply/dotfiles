@@ -173,6 +173,7 @@ case "${1}" in
         symlinks
         bashrc_
         brew_bundle
+        "${WORKDIR}/script/setup-gh-auth.sh" || abort "Failed to configure GitHub CLI as Git credential helper"
         "${WORKDIR}/script/install-memo.sh"
     ;;
 esac
