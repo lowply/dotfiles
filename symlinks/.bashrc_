@@ -145,8 +145,8 @@ if is_darwin; then
 
     alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 elif is_linux; then
-    # noop
-    :
+    # go
+    addpath "/usr/local/go/bin"
 fi
 
 #
