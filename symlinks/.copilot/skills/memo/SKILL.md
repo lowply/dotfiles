@@ -13,13 +13,13 @@ Markdown is the source of truth. `memo create` writes:
 
 `~/.copilot/memo/YYYY-MM-DD-ID-[owner-repository-]kebab-case-title.md`
 
-Each file requires YAML frontmatter containing `memo_id`, `name`, `summary`, `status`, `created_at`, and `updated_at`, followed by an optional Markdown body. `repository` is an optional `owner/name`; unscoped memos use `repository: ""`. `~/.copilot/memo/memo.db` is a disposable FTS5 index rebuilt from these files. Every command reconciles direct changes first.
+Each file requires YAML frontmatter containing `memo_id`, `name`, `summary`, `status`, `created_at`, and `updated_at`, followed by an optional Markdown body. `repository` is an optional `owner/name`; unscoped memos use `repository: ""`. `copilot_session_id` is optional and records the Copilot CLI session that created the memo. `~/.copilot/memo/memo.db` is a disposable FTS5 index rebuilt from these files. Every command reconciles direct changes first.
 
 ## Commands
 
 | Task | Command |
 | --- | --- |
-| Create | `memo create [--repository owner/name \| --no-repository] "<title>"` |
+| Create | `memo create [--repository owner/name \| --no-repository] [--copilot-session-id id] "<title>"` |
 | Search | `memo search [--limit N] [--status wip\|done] -- "<query>"` |
 | Locate by ID | `memo get "<id>"` |
 | Inspect body | `memo show "<id>"` |
@@ -40,7 +40,13 @@ Run from any directory:
 memo create "This is a title"
 ```
 
-The command detects `remote.origin.url` when available and otherwise creates an unscoped memo. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to force an unscoped memo. Piped or redirected stdin becomes the initial body:
+The command detects `remote.origin.url` when available and otherwise creates an unscoped memo. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to force an unscoped memo. When the runtime provides the current Copilot session ID, pass it so the memo can resume that session later:
+
+```bash
+memo create --copilot-session-id "$copilot_session_id" "This is a title"
+```
+
+Omit the flag when no session ID is available. Piped or redirected stdin becomes the initial body:
 
 ```bash
 printf '# Findings\n\nDurable details.\n' | memo create --no-repository "This is a title"
@@ -62,7 +68,7 @@ Search is global. Select by repository when present and by summary, then read th
 memo get "$memo_id"
 ```
 
-`memo get` returns only `{"path":"..."}`. `memo show "$memo_id"` prints the Markdown body, while `memo show --raw "$memo_id"` includes YAML frontmatter. An ID query performs exact lookup; otherwise every term must match repository, name, summary, or body. Summary matches rank highest.
+`memo get` returns `path` and, when recorded, `copilot_session_id`. Use the session ID with `/resume <id>` when the user wants to continue the original Copilot session. `memo show "$memo_id"` prints the Markdown body, while `memo show --raw "$memo_id"` includes YAML frontmatter. An ID query performs exact lookup; otherwise every term must match repository, name, summary, or body. Summary matches rank highest.
 
 ### Edit a memo
 
@@ -98,6 +104,7 @@ memo remove --force "$memo_id"
 
 - Do not stop after `memo create` when the user supplied body details; edit the returned file.
 - Do not query SQLite for a known memo; use `memo get` and read its canonical path.
+- Do not omit `--copilot-session-id` when the runtime provides the current session ID.
 - Do not treat search terms as alternatives; FTS5 joins them with `AND`.
 - Do not edit `memo.db`; fix canonical Markdown when files are malformed or IDs are duplicated.
 - Use repository scope only when it adds useful context, write disambiguating summaries, and keep prose paragraphs on single lines.

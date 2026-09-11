@@ -73,11 +73,34 @@ func TestSteadyStateCommandSurface(t *testing.T) {
 	}
 }
 
-func TestGetWritesOnlyCanonicalPathAsJSON(t *testing.T) {
+func TestGetWritesCanonicalPathAndCopilotSessionIDAsJSON(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 	path := filepath.Join(home, ".copilot", "memo", "memo.md")
-	writeMemoAt(t, path, testMemo("abc12345", "get-memo", "Get memo", "Body must not be returned."))
+	item := testMemo("abc12345", "get-memo", "Get memo", "Body must not be returned.")
+	item.CopilotSessionID = "08051670-f3bc-4c3e-8f9e-df26439173b2"
+	writeMemoAt(t, path, item)
+
+	var output bytes.Buffer
+	if err := run([]string{"get", "abc12345"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var result map[string]any
+	if err := json.Unmarshal(output.Bytes(), &result); err != nil {
+		t.Fatal(err)
+	}
+	if len(result) != 2 ||
+		result["path"] != path ||
+		result["copilot_session_id"] != item.CopilotSessionID {
+		t.Fatalf("unexpected get result: %#v", result)
+	}
+}
+
+func TestGetOmitsMissingCopilotSessionID(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	writeMemoAt(t, path, testMemo("abc12345", "get-memo", "Get memo", "Body."))
 
 	var output bytes.Buffer
 	if err := run([]string{"get", "abc12345"}, strings.NewReader(""), &output); err != nil {
@@ -275,6 +298,37 @@ func TestCreateUsesPipedStdinAsMemoBody(t *testing.T) {
 	}
 	if item.Body != body {
 		t.Fatalf("body = %q, want %q", item.Body, body)
+	}
+}
+
+func TestCreateRecordsCopilotSessionID(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	withWorkingDirectory(t, t.TempDir())
+
+	var output bytes.Buffer
+	if err := run([]string{
+		"create",
+		"--no-repository",
+		"--copilot-session-id",
+		"08051670-f3bc-4c3e-8f9e-df26439173b2",
+		"Session findings",
+	}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	var created searchResult
+	if err := json.Unmarshal(output.Bytes(), &created); err != nil {
+		t.Fatal(err)
+	}
+	if created.CopilotSessionID != "08051670-f3bc-4c3e-8f9e-df26439173b2" {
+		t.Fatalf("CopilotSessionID = %q, want session ID", created.CopilotSessionID)
+	}
+	item, err := parseMemoFile(created.Path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if item.CopilotSessionID != created.CopilotSessionID {
+		t.Fatalf("canonical CopilotSessionID = %q, want %q", item.CopilotSessionID, created.CopilotSessionID)
 	}
 }
 

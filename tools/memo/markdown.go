@@ -25,13 +25,14 @@ type memoFile struct {
 }
 
 type memoFrontmatter struct {
-	ID         string `yaml:"memo_id"`
-	Repository string `yaml:"repository"`
-	Name       string `yaml:"name"`
-	Summary    string `yaml:"summary"`
-	Status     string `yaml:"status"`
-	CreatedAt  string `yaml:"created_at"`
-	UpdatedAt  string `yaml:"updated_at"`
+	ID               string `yaml:"memo_id"`
+	Repository       string `yaml:"repository"`
+	CopilotSessionID string `yaml:"copilot_session_id"`
+	Name             string `yaml:"name"`
+	Summary          string `yaml:"summary"`
+	Status           string `yaml:"status"`
+	CreatedAt        string `yaml:"created_at"`
+	UpdatedAt        string `yaml:"updated_at"`
 }
 
 type memoCodec struct{}
@@ -57,7 +58,8 @@ func (memoCodec) Parse(_ string, frontmatterData, body []byte) (markdownstore.Do
 	}
 	item := memo{
 		ID: strings.TrimSpace(frontmatter.ID), Repository: strings.TrimSpace(frontmatter.Repository),
-		Name: strings.TrimSpace(frontmatter.Name), Summary: strings.TrimSpace(frontmatter.Summary),
+		CopilotSessionID: strings.TrimSpace(frontmatter.CopilotSessionID),
+		Name:             strings.TrimSpace(frontmatter.Name), Summary: strings.TrimSpace(frontmatter.Summary),
 		Body: string(body), Status: strings.TrimSpace(frontmatter.Status),
 		CreatedAt: strings.TrimSpace(frontmatter.CreatedAt),
 		UpdatedAt: strings.TrimSpace(frontmatter.UpdatedAt),
@@ -87,12 +89,13 @@ func documentFromMemo(item memo) markdownstore.Document {
 	return markdownstore.Document{
 		ID: item.ID,
 		Metadata: map[string]string{
-			"repository": item.Repository,
-			"name":       item.Name,
-			"summary":    item.Summary,
-			"status":     item.Status,
-			"created_at": item.CreatedAt,
-			"updated_at": item.UpdatedAt,
+			"repository":         item.Repository,
+			"copilot_session_id": item.CopilotSessionID,
+			"name":               item.Name,
+			"summary":            item.Summary,
+			"status":             item.Status,
+			"created_at":         item.CreatedAt,
+			"updated_at":         item.UpdatedAt,
 		},
 		Body:        item.Body,
 		SortKey:     item.CreatedAt,
@@ -107,7 +110,8 @@ func recordFromMemo(item memo) markdownstore.Document {
 func memoFromDocument(document markdownstore.Document) memo {
 	return memo{
 		ID: document.ID, Repository: document.Metadata["repository"],
-		Name: document.Metadata["name"], Summary: document.Metadata["summary"],
+		CopilotSessionID: document.Metadata["copilot_session_id"],
+		Name:             document.Metadata["name"], Summary: document.Metadata["summary"],
 		Body: document.Body, Status: document.Metadata["status"],
 		CreatedAt: document.Metadata["created_at"], UpdatedAt: document.Metadata["updated_at"],
 	}
@@ -177,6 +181,7 @@ func validateCanonicalMemo(item *memo) error {
 		return fmt.Errorf("updated_at: %w", err)
 	}
 	item.Summary = strings.TrimSpace(item.Summary)
+	item.CopilotSessionID = strings.TrimSpace(item.CopilotSessionID)
 	item.CreatedAt = createdAt
 	item.UpdatedAt = updatedAt
 	return nil

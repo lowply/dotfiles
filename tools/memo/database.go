@@ -18,14 +18,15 @@ type store struct {
 }
 
 type memo struct {
-	ID         string `json:"id"`
-	Repository string `json:"repository"`
-	Name       string `json:"name"`
-	Summary    string `json:"summary"`
-	Body       string `json:"body"`
-	Status     string `json:"status"`
-	CreatedAt  string `json:"created_at"`
-	UpdatedAt  string `json:"updated_at"`
+	ID               string `json:"id"`
+	Repository       string `json:"repository"`
+	CopilotSessionID string `json:"copilot_session_id,omitempty"`
+	Name             string `json:"name"`
+	Summary          string `json:"summary"`
+	Body             string `json:"body"`
+	Status           string `json:"status"`
+	CreatedAt        string `json:"created_at"`
+	UpdatedAt        string `json:"updated_at"`
 }
 
 type indexedFile struct {
@@ -35,16 +36,17 @@ type indexedFile struct {
 }
 
 type searchResult struct {
-	ID          string   `json:"id"`
-	Repository  string   `json:"repository"`
-	Name        string   `json:"name"`
-	Summary     string   `json:"summary"`
-	Status      string   `json:"status"`
-	CreatedAt   string   `json:"created_at"`
-	UpdatedAt   string   `json:"updated_at"`
-	Path        string   `json:"path"`
-	MatchReason string   `json:"match_reason,omitempty"`
-	Rank        *float64 `json:"rank,omitempty"`
+	ID               string   `json:"id"`
+	Repository       string   `json:"repository"`
+	CopilotSessionID string   `json:"copilot_session_id,omitempty"`
+	Name             string   `json:"name"`
+	Summary          string   `json:"summary"`
+	Status           string   `json:"status"`
+	CreatedAt        string   `json:"created_at"`
+	UpdatedAt        string   `json:"updated_at"`
+	Path             string   `json:"path"`
+	MatchReason      string   `json:"match_reason,omitempty"`
+	Rank             *float64 `json:"rank,omitempty"`
 }
 
 func defaultDatabasePath() (string, error) {
@@ -81,7 +83,7 @@ func openIndex(databasePath string) (*store, error) {
 func openIndexAt(directory, databasePath string) (*store, error) {
 	inner, err := markdownstore.Open(markdownstore.Config{
 		Directory: directory, DatabasePath: databasePath, Pattern: "*.md",
-		EntityName: "memo", SchemaID: "memo/1", Fields: memoMetadataFields(),
+		EntityName: "memo", SchemaID: "memo/2", Fields: memoMetadataFields(),
 		SearchWeights: memoSearchWeights, Codec: memoCodec{},
 	})
 	if err != nil {
@@ -142,7 +144,8 @@ func searchResultsFromLibrary(results []markdownstore.Result, includeRank bool) 
 
 func searchResultFromLibrary(result markdownstore.Result, includeRank bool) searchResult {
 	converted := searchResult{
-		ID: result.ID, Repository: result.Metadata["repository"], Name: result.Metadata["name"],
+		ID: result.ID, Repository: result.Metadata["repository"],
+		CopilotSessionID: result.Metadata["copilot_session_id"], Name: result.Metadata["name"],
 		Summary: result.Metadata["summary"], Status: result.Metadata["status"],
 		CreatedAt: result.Metadata["created_at"], UpdatedAt: result.Metadata["updated_at"],
 		Path:        result.Path,
@@ -166,6 +169,7 @@ func statusFilter(status string) map[string]string {
 func memoMetadataFields() []markdownstore.MetadataField {
 	return []markdownstore.MetadataField{
 		{Name: "repository"},
+		{Name: "copilot_session_id"},
 		{Name: "name", Required: true},
 		{Name: "summary", Required: true},
 		{Name: "status", Required: true},

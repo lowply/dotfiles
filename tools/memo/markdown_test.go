@@ -148,6 +148,20 @@ func TestMarshalUnscopedMemoEmitsEmptyRepository(t *testing.T) {
 	}
 }
 
+func TestMemoFileRoundTripPreservesCopilotSessionID(t *testing.T) {
+	item := testMemo("abc12345", "session-metadata", "Session metadata", "")
+	item.CopilotSessionID = "08051670-f3bc-4c3e-8f9e-df26439173b2"
+	path := writeTestMemoFile(t, item)
+
+	parsed, err := parseMemoFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if parsed.CopilotSessionID != item.CopilotSessionID {
+		t.Fatalf("CopilotSessionID = %q, want %q", parsed.CopilotSessionID, item.CopilotSessionID)
+	}
+}
+
 func TestMemoCodecEmitsExistingCanonicalFormat(t *testing.T) {
 	item := testMemo("abc12345", "canonical-format", "Canonical format", "Body.")
 	data, err := (memoCodec{}).Marshal(recordFromMemo(item))

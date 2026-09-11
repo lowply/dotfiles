@@ -80,13 +80,14 @@ commands:
 run "memo help <command>" or "memo <command> --help" for details`
 
 var commandHelp = map[string]string{
-	"create": `usage: memo create [--repository <owner/name> | --no-repository] <title>
+	"create": `usage: memo create [--repository <owner/name> | --no-repository] [--copilot-session-id <id>] <title>
 
 Create a wip memo. Piped or redirected stdin becomes the memo body; terminal stdin creates an empty body. By default, the repository is detected from remote.origin.url when available; otherwise the memo is unscoped. The title becomes the searchable summary and its kebab-case form becomes the memo name.
 
 options:
-  --repository     explicitly associate the memo with an owner/name repository
-  --no-repository  create an unscoped memo even when a repository can be detected`,
+  --repository          explicitly associate the memo with an owner/name repository
+  --no-repository       create an unscoped memo even when a repository can be detected
+  --copilot-session-id  associate the memo with a Copilot CLI session`,
 	"search": `usage: memo search [--limit <count>] [--status <wip|done>] -- <query>
 
 Reconcile canonical Markdown files, then search repository names, memo names, summaries, and bodies. Every query term must match.
@@ -159,11 +160,12 @@ func runCreate(args []string, stdin io.Reader, stdout io.Writer) error {
 	flags.SetOutput(io.Discard)
 	repositoryOverride := flags.String("repository", "", "repository owner/name")
 	noRepository := flags.Bool("no-repository", false, "create an unscoped memo")
+	copilotSessionID := flags.String("copilot-session-id", "", "Copilot CLI session ID")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 	if flags.NArg() != 1 {
-		return fmt.Errorf("usage: memo create [--repository <owner/name> | --no-repository] <title>")
+		return fmt.Errorf("usage: memo create [--repository <owner/name> | --no-repository] [--copilot-session-id <id>] <title>")
 	}
 	repositoryOverrideSet := false
 	flags.Visit(func(item *flag.Flag) {
@@ -230,14 +232,15 @@ func runCreate(args []string, stdin io.Reader, stdout io.Writer) error {
 		return fmt.Errorf("could not generate a unique memo ID")
 	}
 	item := memo{
-		ID:         id,
-		Repository: repositoryName,
-		Name:       name,
-		Summary:    title,
-		Body:       body,
-		Status:     "wip",
-		CreatedAt:  formatTimestamp(now),
-		UpdatedAt:  formatTimestamp(now),
+		ID:               id,
+		Repository:       repositoryName,
+		CopilotSessionID: strings.TrimSpace(*copilotSessionID),
+		Name:             name,
+		Summary:          title,
+		Body:             body,
+		Status:           "wip",
+		CreatedAt:        formatTimestamp(now),
+		UpdatedAt:        formatTimestamp(now),
 	}
 	path, err := canonicalMemoPath(directory, now, item)
 	if err != nil {
@@ -352,8 +355,9 @@ func runGet(args []string, stdout io.Writer) error {
 		return err
 	}
 	return writeJSON(stdout, struct {
-		Path string `json:"path"`
-	}{Path: item.Path})
+		Path             string `json:"path"`
+		CopilotSessionID string `json:"copilot_session_id,omitempty"`
+	}{Path: item.Path, CopilotSessionID: item.CopilotSessionID})
 }
 
 func runShow(args []string, stdout io.Writer) error {
@@ -600,15 +604,20 @@ func writeMarkdown(writer io.Writer, item memo) error {
 		"---",
 		"memo_id: " + strconv.Quote(item.ID),
 		"repository: " + strconv.Quote(item.Repository),
-		"name: " + strconv.Quote(item.Name),
-		"summary: " + strconv.Quote(item.Summary),
-		"status: " + strconv.Quote(item.Status),
-		"created_at: " + strconv.Quote(item.CreatedAt),
-		"updated_at: " + strconv.Quote(item.UpdatedAt),
+	}
+	if item.CopilotSessionID != "" {
+		lines = append(lines, "copilot_session_id: "+strconv.Quote(item.CopilotSessionID))
+	}
+	lines = append(lines,
+		"name: "+strconv.Quote(item.Name),
+		"summary: "+strconv.Quote(item.Summary),
+		"status: "+strconv.Quote(item.Status),
+		"created_at: "+strconv.Quote(item.CreatedAt),
+		"updated_at: "+strconv.Quote(item.UpdatedAt),
 		"---",
 		"",
 		item.Body,
-	}
+	)
 	if _, err := fmt.Fprint(writer, strings.Join(lines, "\n")); err != nil {
 		return fmt.Errorf("write Markdown memo: %w", err)
 	}

@@ -16,6 +16,7 @@ Each file contains required YAML frontmatter followed by an optional Markdown bo
 ---
 memo_id: "abc12345"
 repository: "lowply/dotfiles"
+copilot_session_id: "08051670-f3bc-4c3e-8f9e-df26439173b2"
 name: "markdown-memos"
 summary: "Use Markdown as the canonical memo store."
 status: "wip"
@@ -33,6 +34,8 @@ The `repository` value is an optional `owner/name`. Unscoped memos use an empty 
 repository: ""
 ```
 
+`copilot_session_id` is optional and omitted when a memo is not associated with a Copilot CLI session.
+
 Set `MEMO_DIR` to override the canonical Markdown directory. Set
 `MEMO_DB_PATH` to place the disposable SQLite index elsewhere. When only
 `MEMO_DIR` is set, the database remains `<MEMO_DIR>/memo.db`.
@@ -41,7 +44,7 @@ Set `MEMO_DIR` to override the canonical Markdown directory. Set
 
 | Command | Purpose |
 | --- | --- |
-| `memo create [--repository owner/name \| --no-repository] <title>` | Create and index a `wip` memo, optionally reading its body from stdin. |
+| `memo create [--repository owner/name \| --no-repository] [--copilot-session-id id] <title>` | Create and index a `wip` memo, optionally reading its body from stdin. |
 | `memo search [--limit N] [--status wip\|done] -- <query>` | Search IDs, repositories, names, summaries, and bodies. |
 | `memo get <id>` | Return one memo's canonical path as JSON. |
 | `memo show [--raw] <id>` | Print a memo body, or the complete canonical file with `--raw`. |
@@ -50,7 +53,7 @@ Set `MEMO_DIR` to override the canonical Markdown directory. Set
 | `memo remove [--force] <id>` | Delete a memo file and index record after confirmation. |
 | `memo rm [--force] <id>` | Alias for `memo remove`. |
 
-Search and list results include the canonical path so the file can be read or edited directly. `memo get <id>` returns only `{"path":"..."}` for minimal machine-readable output. `memo show <id>` prints only the Markdown body. Use `memo show --raw <id>` to print the complete canonical file, including its YAML frontmatter.
+Search and list results include the canonical path so the file can be read or edited directly. `memo get <id>` returns the path and, when present, `copilot_session_id` for minimal machine-readable recall and session resumption. `memo show <id>` prints only the Markdown body. Use `memo show --raw <id>` to print the complete canonical file, including its YAML frontmatter.
 
 `memo list` shows only `wip` memos by default. Use `memo list --all` to include `done` memos, or `--status done` to list only completed memos.
 
@@ -61,6 +64,9 @@ When stdin is piped or redirected, `memo create` preserves it as the initial Mar
 ```bash
 # Detect lowply/dotfiles from the current repository's origin.
 memo create "Repository research"
+
+# Associate a memo with the current Copilot CLI session.
+memo create --copilot-session-id "$session_id" "Repository research"
 
 # Associate a memo while outside the repository.
 memo create --repository lowply/dotfiles "Repository research"
