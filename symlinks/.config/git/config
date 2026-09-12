@@ -74,6 +74,7 @@
 [user]
 	name = Sho Mizutani
 	signingKey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOLaQnurE5ml8aUZaaF6BINBT+ThbQ3UGlwkXaRLhQUz
+	email = 18643+lowply@users.noreply.github.com
 
 [include]
 	path = ~/.config/git/config.local
