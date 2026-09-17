@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -10,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -391,6 +393,19 @@ func runShow(args []string, stdout io.Writer) error {
 			return err
 		}
 		data = []byte(parsed.Body)
+		glowPath, lookupErr := exec.LookPath("glow")
+		if lookupErr == nil {
+			command := exec.Command(glowPath, "--pager")
+			command.Stdin = bytes.NewReader(data)
+			command.Stdout = stdout
+			if err := command.Run(); err != nil {
+				return fmt.Errorf("render memo %s: %w", item.Path, err)
+			}
+			return nil
+		}
+		if !errors.Is(lookupErr, exec.ErrNotFound) {
+			return fmt.Errorf("find glow: %w", lookupErr)
+		}
 	}
 	written, err := stdout.Write(data)
 	if err != nil {

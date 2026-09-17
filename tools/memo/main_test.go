@@ -132,9 +132,10 @@ func TestGetRequiresOneID(t *testing.T) {
 	}
 }
 
-func TestShowWritesMemoBodyOnly(t *testing.T) {
+func TestShowWritesRawMemoBodyWhenGlowIsUnavailable(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
+	t.Setenv("PATH", t.TempDir())
 	path := filepath.Join(home, ".copilot", "memo", "memo.md")
 	body := "# Heading\n\nBody without a trailing newline."
 	writeMemoAt(t, path, testMemo("abc12345", "show-memo", "Show memo", body))
@@ -145,6 +146,62 @@ func TestShowWritesMemoBodyOnly(t *testing.T) {
 	}
 	if output.String() != body {
 		t.Fatalf("show output = %q, want body %q", output.String(), body)
+	}
+}
+
+func TestShowRendersMemoBodyWithGlow(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	body := "# Heading\n\nBody without frontmatter."
+	writeMemoAt(t, path, testMemo("abc12345", "show-memo", "Show memo", body))
+
+	binDir := t.TempDir()
+	glowInput := filepath.Join(t.TempDir(), "input.md")
+	glowPath := filepath.Join(binDir, "glow")
+	if err := os.WriteFile(glowPath, []byte("#!/bin/sh\n[ \"$#\" -eq 1 ] && [ \"$1\" = \"--pager\" ] || exit 24\ncat > \"$GLOW_INPUT\"\nprintf 'rendered output'\n"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("GLOW_INPUT", glowInput)
+	t.Setenv("PATH", binDir+string(os.PathListSeparator)+os.Getenv("PATH"))
+
+	var output bytes.Buffer
+	if err := run([]string{"show", "abc12345"}, strings.NewReader(""), &output); err != nil {
+		t.Fatal(err)
+	}
+	if output.String() != "rendered output" {
+		t.Fatalf("show output = %q, want rendered output", output.String())
+	}
+	input, err := os.ReadFile(glowInput)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(input) != body {
+		t.Fatalf("glow input = %q, want body %q", input, body)
+	}
+}
+
+func TestShowReturnsGlowExecutionFailure(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	path := filepath.Join(home, ".copilot", "memo", "memo.md")
+	body := "# Heading\n\nBody without frontmatter."
+	writeMemoAt(t, path, testMemo("abc12345", "show-memo", "Show memo", body))
+
+	binDir := t.TempDir()
+	glowPath := filepath.Join(binDir, "glow")
+	if err := os.WriteFile(glowPath, []byte("#!/bin/sh\nexit 23\n"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("PATH", binDir)
+
+	var output bytes.Buffer
+	err := run([]string{"show", "abc12345"}, strings.NewReader(""), &output)
+	if err == nil || !strings.Contains(err.Error(), "exit status 23") {
+		t.Fatalf("error = %v, want glow exit failure", err)
+	}
+	if output.Len() != 0 {
+		t.Fatalf("show output = %q, want no fallback output", output.String())
 	}
 }
 

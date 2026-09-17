@@ -47,13 +47,13 @@ Set `MEMO_DIR` to override the canonical Markdown directory. Set
 | `memo create [--repository owner/name \| --no-repository] [--copilot-session-id id] <title>` | Create and index a `wip` memo, optionally reading its body from stdin. |
 | `memo search [--limit N] [--status wip\|done] -- <query>` | Search IDs, repositories, names, summaries, and bodies. |
 | `memo get <id>` | Return one memo's canonical path as JSON. |
-| `memo show [--raw] <id>` | Print a memo body, or the complete canonical file with `--raw`. |
+| `memo show [--raw] <id>` | Render a memo body with `glow` when available, or print raw Markdown; print the complete canonical file with `--raw`. |
 | `memo list [--all \| --status wip\|done]` | List `wip` memos oldest first, or include every status with `--all`. |
 | `memo done <id>` | Mark a memo done and update its timestamp. |
 | `memo remove [--force] <id>` | Delete a memo file and index record after confirmation. |
 | `memo rm [--force] <id>` | Alias for `memo remove`. |
 
-Search and list results include the canonical path so the file can be read or edited directly. `memo get <id>` returns the path and, when present, `copilot_session_id` for minimal machine-readable recall and session resumption. `memo show <id>` prints only the Markdown body. Use `memo show --raw <id>` to print the complete canonical file, including its YAML frontmatter.
+Search and list results include the canonical path so the file can be read or edited directly. `memo get <id>` returns the path and, when present, `copilot_session_id` for minimal machine-readable recall and session resumption. `memo show <id>` omits YAML frontmatter and renders the Markdown body with `glow --pager` when `glow` is available on `PATH`, otherwise it prints the raw Markdown. Use `memo show --raw <id>` to print the complete canonical file, including its YAML frontmatter.
 
 `memo list` shows only `wip` memos by default. Use `memo list --all` to include `done` memos, or `--status done` to list only completed memos.
 
