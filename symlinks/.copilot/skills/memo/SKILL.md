@@ -62,13 +62,15 @@ Search for the memo:
 memo search --limit 1 -- "$query"
 ```
 
-Search is global. Select by repository when present and by summary, then read the canonical `path`. For a known ID:
+Search is global. Select by repository when present and by summary. For a known or selected ID, skip `memo get` and recall it directly:
 
 ```bash
-memo get "$memo_id"
+memo show --raw "$memo_id"
 ```
 
-`memo get` returns `path` and, when recorded, `copilot_session_id`. Use the session ID with `/resume <id>` when the user wants to continue the original Copilot session. `memo show "$memo_id"` prints the Markdown body, while `memo show --raw "$memo_id"` includes YAML frontmatter. An ID query performs exact lookup; otherwise every term must match repository, name, summary, or body. Summary matches rank highest.
+Always use `memo show --raw` when recalling so the canonical Markdown body and frontmatter are available together. When the frontmatter contains `copilot_session_id`, use `session_store_sql` to read the matching session by exact ID: retrieve its summary, checkpoints, and ordered conversation turns, then synthesize that history with the memo. Treat the memo as the curated record and the session as supporting context; report conflicts instead of silently choosing one. If no session ID is recorded or its history is unavailable, recall from the memo and state that limitation.
+
+Use `/resume <id>` only when the user explicitly wants to continue the original Copilot session. An ID query performs exact lookup; otherwise every search term must match repository, name, summary, or body. Summary matches rank highest.
 
 ### Edit a memo
 
@@ -103,7 +105,8 @@ memo remove --force "$memo_id"
 ## Common Mistakes
 
 - Do not stop after `memo create` when the user supplied body details; edit the returned file.
-- Do not query SQLite for a known memo; use `memo get` and read its canonical path.
+- Do not query `memo.db` directly; use the `memo` CLI.
+- When recalling, read `memo show --raw "$memo_id"` and any session history identified by `copilot_session_id`.
 - Do not omit `--copilot-session-id` when the runtime provides the current session ID.
 - Do not treat search terms as alternatives; FTS5 joins them with `AND`.
 - Do not edit `memo.db`; fix canonical Markdown when files are malformed or IDs are duplicated.
