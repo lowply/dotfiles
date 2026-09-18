@@ -453,16 +453,16 @@ func runList(args []string, stdout io.Writer) error {
 		return err
 	}
 	writer := tabwriter.NewWriter(stdout, 0, 4, 2, ' ', 0)
-	if _, err := fmt.Fprintln(writer, "CREATED\tSTATUS\tREPOSITORY\tID\tNAME\tSUMMARY\tPATH"); err != nil {
+	if _, err := fmt.Fprintln(writer, "CREATED\tID\tSUMMARY"); err != nil {
 		return fmt.Errorf("write memo table: %w", err)
 	}
 	for _, item := range items {
-		repository := item.Repository
-		if repository == "" {
-			repository = "-"
+		summary := []rune(item.Summary)
+		if len(summary) > 100 {
+			summary = append(summary[:97], '.', '.', '.')
 		}
-		if _, err := fmt.Fprintf(writer, "%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
-			item.CreatedAt, item.Status, repository, item.ID, item.Name, item.Summary, item.Path); err != nil {
+		if _, err := fmt.Fprintf(writer, "%s\t%s\t%s\n",
+			item.CreatedAt, item.ID, string(summary)); err != nil {
 			return fmt.Errorf("write memo table: %w", err)
 		}
 	}

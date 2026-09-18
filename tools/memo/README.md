@@ -53,9 +53,9 @@ Set `MEMO_DIR` to override the canonical Markdown directory. Set
 | `memo remove [--force] <id>` | Delete a memo file and index record after confirmation. |
 | `memo rm [--force] <id>` | Alias for `memo remove`. |
 
-Search and list results include the canonical path so the file can be read or edited directly. `memo get <id>` returns the path and, when present, `copilot_session_id` for minimal machine-readable recall and session resumption. `memo show <id>` omits YAML frontmatter and renders the Markdown body with `glow --pager` when `glow` is available on `PATH`, otherwise it prints the raw Markdown. Use `memo show --raw <id>` to print the complete canonical file, including its YAML frontmatter.
+Search results include the canonical path so the file can be read or edited directly. `memo get <id>` returns the path and, when present, `copilot_session_id` for minimal machine-readable recall and session resumption. `memo show <id>` omits YAML frontmatter and renders the Markdown body with `glow --pager` when `glow` is available on `PATH`, otherwise it prints the raw Markdown. Use `memo show --raw <id>` to print the complete canonical file, including its YAML frontmatter.
 
-`memo list` shows only `wip` memos by default. Use `memo list --all` to include `done` memos, or `--status done` to list only completed memos.
+`memo list` shows only `wip` memos by default and truncates summaries longer than 100 Unicode code points with `...`. Use `memo list --all` to include `done` memos, or `--status done` to list only completed memos.
 
 By default, `memo create` uses `remote.origin.url` when the current directory is in a Git repository with a configured origin. It creates an unscoped memo when run outside Git or in a repository without an origin. Use `--repository owner/name` to set the repository explicitly, or `--no-repository` to create an unscoped memo even when an origin is available.
 

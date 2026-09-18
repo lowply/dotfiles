@@ -546,28 +546,6 @@ func TestCreateRetriesDuplicateMemoID(t *testing.T) {
 	}
 }
 
-func TestListDisplaysDashForUnscopedMemo(t *testing.T) {
-	home := t.TempDir()
-	t.Setenv("HOME", home)
-	path := filepath.Join(home, ".copilot", "memo", "memo.md")
-	item := testMemo("abc12345", "general", "General memo", "")
-	item.Repository = ""
-	writeMemoAt(t, path, item)
-
-	var output bytes.Buffer
-	if err := run([]string{"list"}, strings.NewReader(""), &output); err != nil {
-		t.Fatal(err)
-	}
-	lines := strings.Split(strings.TrimSpace(output.String()), "\n")
-	if len(lines) != 2 {
-		t.Fatalf("unexpected list output: %q", output.String())
-	}
-	fields := strings.Fields(lines[1])
-	if len(fields) < 3 || fields[2] != "-" {
-		t.Fatalf("list output does not mark unscoped repository: %q", output.String())
-	}
-}
-
 func TestListDefaultsToWIPMemos(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
@@ -967,18 +945,58 @@ func TestSearchReconcilesDirectEditsAndRebuildsDeletedIndex(t *testing.T) {
 	}
 }
 
-func TestListIncludesCanonicalPath(t *testing.T) {
+func TestListOmitsStatusRepositoryNameAndCanonicalPath(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 	path := filepath.Join(home, ".copilot", "memo", "memo.md")
-	writeMemoAt(t, path, testMemo("abc12345", "listed", "Listed summary", "Body"))
+	item := testMemo("abc12345", "listed", "Listed summary", "Body")
+	writeMemoAt(t, path, item)
 
 	var output bytes.Buffer
 	if err := run([]string{"list"}, strings.NewReader(""), &output); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(output.String(), "PATH") || !strings.Contains(output.String(), path) {
-		t.Fatalf("list omitted canonical path:\n%s", output.String())
+	lines := strings.Split(strings.TrimSpace(output.String()), "\n")
+	if got := strings.Join(strings.Fields(lines[0]), " "); got != "CREATED ID SUMMARY" {
+		t.Fatalf("list header = %q", got)
+	}
+	if got, want := strings.Join(strings.Fields(lines[1]), " "), item.CreatedAt+" abc12345 Listed summary"; got != want {
+		t.Fatalf("list row = %q, want %q", got, want)
+	}
+	if strings.Contains(output.String(), "lowply/dotfiles") ||
+		strings.Contains(output.String(), "listed") ||
+		strings.Contains(output.String(), path) {
+		t.Fatalf("list included repository, name, or canonical path:\n%s", output.String())
+	}
+}
+
+func TestListTruncatesLongSummaries(t *testing.T) {
+	tests := []struct {
+		name    string
+		summary string
+		want    string
+	}{
+		{name: "one hundred characters", summary: strings.Repeat("a", 100), want: strings.Repeat("a", 100)},
+		{name: "one hundred one characters", summary: strings.Repeat("a", 101), want: strings.Repeat("a", 97) + "..."},
+		{name: "one hundred multibyte characters", summary: strings.Repeat("界", 100), want: strings.Repeat("界", 100)},
+		{name: "one hundred one multibyte characters", summary: strings.Repeat("界", 101), want: strings.Repeat("界", 97) + "..."},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			home := t.TempDir()
+			t.Setenv("HOME", home)
+			path := filepath.Join(home, ".copilot", "memo", "memo.md")
+			writeMemoAt(t, path, testMemo("abc12345", "listed", tt.summary, "Body"))
+
+			var output bytes.Buffer
+			if err := run([]string{"list"}, strings.NewReader(""), &output); err != nil {
+				t.Fatal(err)
+			}
+			lines := strings.Split(strings.TrimSpace(output.String()), "\n")
+			if got := strings.Join(strings.Fields(lines[1])[2:], " "); got != tt.want {
+				t.Fatalf("summary = %q, want %q", got, tt.want)
+			}
+		})
 	}
 }
 
