@@ -143,10 +143,11 @@ bashrc_(){
 }
 
 bin_link(){
-    # Read binlinks.txt and create symlinks in /usr/local/bin
+    # Read binlinks.txt and create symlinks in ~/.local/bin
     # Skip if the target file does not exist
     # Skip if the sylink already exists
     local BINLINKS_FILE="${WORKDIR}/binlinks.txt"
+    mkdir -p "${HOME}/.local/bin"
     while IFS= read -r LINE; do
         [ -z "${LINE}" ] && continue
         local SRC="${LINE}"
