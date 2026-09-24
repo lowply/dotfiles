@@ -142,6 +142,28 @@ bashrc_(){
     fi
 }
 
+bin_link(){
+    # Read binlinks.txt and create symlinks in /usr/local/bin
+    # Skip if the target file does not exist
+    # Skip if the sylink already exists
+    local BINLINKS_FILE="${WORKDIR}/binlinks.txt"
+    while IFS= read -r LINE; do
+        [ -z "${LINE}" ] && continue
+        local SRC="${LINE}"
+        local DST="${HOME}/.local/bin/$(basename ${LINE})"
+        if [ ! -e "${SRC}" ]; then
+            message warn "Source file ${SRC} does not exist, skipping"
+            continue
+        fi
+        if [ -L "${DST}" ]; then
+            message info "Symlink ${DST} already exists, skipping"
+            continue
+        fi
+        ln -s "${SRC}" "${DST}"
+        message success "Created a symlink from ${SRC} to ${DST}"
+    done < "${BINLINKS_FILE}"
+}
+
 [ $# -gt 1 ] && usage
 
 cd "$(dirname "$0")" || return
@@ -173,6 +195,7 @@ case "${1}" in
         symlinks
         bashrc_
         brew_bundle
+        bin_link
         "${WORKDIR}/script/setup-gh-auth.sh" || abort "Failed to configure GitHub CLI as Git credential helper"
         "${WORKDIR}/script/install-memo.sh"
     ;;

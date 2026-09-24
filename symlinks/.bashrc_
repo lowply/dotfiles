@@ -101,9 +101,6 @@ cs_current(){
 # $PATH
 #
 
-# ~/bin
-addpath "${HOME}/bin"
-
 # ~/.local/bin
 addpath "${HOME}/.local/bin"
 
