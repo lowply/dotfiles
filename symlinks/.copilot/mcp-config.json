@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "bear": {
+      "tools": [
+        "*"
+      ],
+      "type": "local",
+      "command": "bearcli",
+      "args": [
+        "mcp-server"
+      ]
+    }
+  }
+}
