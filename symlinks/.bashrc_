@@ -255,6 +255,9 @@ if has n; then
     addpath "${HOME}/.n/bin"
 fi
 
+# bun
+addpath "${HOME}/.bun"
+
 #
 # git prompt, bash completion and diff-highlight
 #
