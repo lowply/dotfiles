@@ -33,3 +33,6 @@ cd ~/Library/Mobile\ Documents/com~apple~CloudDocs
 
 # List commits for PR
 git log --reverse main..$(git branch --show-current) --format="%H: %s" | sed -e 's/^/#### /g' | sed -e 's/$/\n/g'
+
+# unlock keychain
+security unlock-keychain "$HOME/Library/Keychains/login.keychain-db"
