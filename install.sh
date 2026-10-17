@@ -1,9 +1,10 @@
 #!/bin/bash
 
 #/
-#/ Usage: install.sh
+#/ Usage: install.sh [-f] [clean]
 #/
 #/ install.sh          # Run install
+#/ install.sh -f       # Replace existing symlinks
 #/ install.sh clean    # Cleanup symlinks
 #/
 
@@ -63,8 +64,15 @@ symlinks(){
                 SRC_DIR="${SRC}/${PATTERN}"
                 DST="${HOME}/${PATTERN}"
                 [ -d "$(dirname ${DST})" ] || mkdir -p "$(dirname ${DST})"
-                [ -L "${DST}" ] && { message info "Dir level symlink, skipping ${FILE}"; continue 2; }
-                ln -s "${SRC_DIR}" "${DST}"
+                if [ -L "${DST}" ]; then
+                    if [ "${FORCE}" != true ] || [ "$(readlink "${DST}")" = "${SRC_DIR}" ]; then
+                        message info "Dir level symlink, skipping ${FILE}"
+                        continue 2
+                    fi
+                    ln -sfn "${SRC_DIR}" "${DST}" || abort "Failed to update symlink ${DST}"
+                else
+                    ln -s "${SRC_DIR}" "${DST}"
+                fi
                 message success "Created a symlink from ${SRC_DIR} to ${DST}"
                 continue 2
             fi
@@ -74,7 +82,12 @@ symlinks(){
         [ -d "$(dirname ${DST})" ] || mkdir -p "$(dirname ${DST})"
 
         if [ -L "${DST}" ]; then
-            message info "A symlink ${DST} already exists, skipping"
+            if [ "${FORCE}" = true ]; then
+                ln -sfn "${FILE}" "${DST}" || abort "Failed to update symlink ${DST}"
+                message success "Updated symlink from ${FILE} to ${DST}"
+            else
+                message info "A symlink ${DST} already exists, skipping"
+            fi
         elif [ -e "${DST}" ]; then
             message warn "A file or a directory ${DST} already exists, taking a backup and creating a symlink"
             backup "${DST}"
@@ -145,7 +158,7 @@ bashrc_(){
 bin_link(){
     # Read binlinks.txt and create symlinks in ~/.local/bin
     # Skip if the target file does not exist
-    # Skip if the sylink already exists
+    # Skip existing symlinks unless forced
     local BINLINKS_FILE="${WORKDIR}/binlinks.txt"
     mkdir -p "${HOME}/.local/bin"
     while IFS= read -r LINE; do
@@ -157,7 +170,12 @@ bin_link(){
             continue
         fi
         if [ -L "${DST}" ]; then
-            message info "Symlink ${DST} already exists, skipping"
+            if [ "${FORCE}" = true ]; then
+                ln -sfn "${SRC}" "${DST}" || abort "Failed to update symlink ${DST}"
+                message success "Updated symlink from ${SRC} to ${DST}"
+            else
+                message info "Symlink ${DST} already exists, skipping"
+            fi
             continue
         fi
         ln -s "${SRC}" "${DST}"
@@ -165,6 +183,14 @@ bin_link(){
     done < "${BINLINKS_FILE}"
 }
 
+FORCE=false
+while getopts ":f" OPTION; do
+    case "${OPTION}" in
+        f) FORCE=true ;;
+        *) usage ;;
+    esac
+done
+shift $((OPTIND - 1))
 [ $# -gt 1 ] && usage
 
 cd "$(dirname "$0")" || return
@@ -193,7 +219,7 @@ case "${1}" in
         ghostty
         git_contrib
         copies
-        symlinks
+        symlinks || abort "Failed to create symlinks"
         bashrc_
         brew_bundle
         bin_link

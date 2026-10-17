@@ -136,3 +136,5 @@
 [rerere]
 	enabled = true
 	autoupdate = true
+[ghq]
+	root = /Volumes/Workspace/ghq
