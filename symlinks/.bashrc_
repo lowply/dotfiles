@@ -54,15 +54,21 @@ peco_run_cmd(){
 # See ~/.inputrc
 peco_cd_repo () {
     has "peco" || { error "peco is not installed"; return; }
+    local DIR
     if is_codespaces; then
-        local DIR="$(find /workspaces -maxdepth 1 -mindepth 1 -type d -not -path '*/.*' | peco)"
-        [ -n "${DIR}" ] && cd "${DIR}" || return
+        DIR="$(find /workspaces -maxdepth 1 -mindepth 1 -type d -not -path '*/.*' | peco)"
     else
         has "ghq" || { error "ghq is not installed"; return; }
-        local GHQDIR="${HOME}/ghq"
-        local DIR="$(ghq list | peco)"
-        [ -n "${DIR}" ] && cd "${GHQDIR}/${DIR}" || return
+        DIR="$(ghq list | peco)"
+        if [ -n "${DIR}" ]; then
+            if [ -d "/Volumes/Workspace" ]; then
+                DIR="/Volumes/Workspace/ghq/${DIR}"
+            else
+                DIR="${HOME}/ghq/${DIR}"
+            fi
+        fi
     fi
+    [ -n "${DIR}" ] && cd "${DIR}" || return
 }
 
 # See ~/.inputrc
