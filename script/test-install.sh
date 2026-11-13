@@ -68,4 +68,53 @@ if run_links -z > "${TMP}/invalid.log" 2>&1; then
     exit 1
 fi
 
-echo 'Installer symlink tests passed'
+KARABINER=".config/karabiner/assets/complex_modifications/lowply.json"
+mkdir -p "${WORKDIR}/symlinks/$(dirname "${KARABINER}")"
+cp "${ROOT}/symlinks/${KARABINER}" "${WORKDIR}/symlinks/${KARABINER}"
+
+HOME="${TMP}/linux-home" OSTYPE=linux-gnu run_links > "${TMP}/linux.log"
+[ ! -e "${TMP}/linux-home/.config/karabiner" ]
+
+mkdir -p "${TMP}/darwin-home/$(dirname "${KARABINER}")"
+printf 'original rules\n' > "${TMP}/darwin-home/${KARABINER}"
+HOME="${TMP}/darwin-home" OSTYPE=darwin run_links > "${TMP}/darwin.log"
+assert_link "${TMP}/darwin-home/${KARABINER}" "${WORKDIR}/symlinks/${KARABINER}"
+BACKUP="$(find "${TMP}/darwin-home" -name lowply.json -type f)"
+[ "$(cat "${BACKUP}")" = 'original rules' ]
+
+brew() {
+    printf '%s\n' "$@" >> "${BREW_LOG}"
+    return "${BREW_STATUS:-0}"
+}
+export -f brew
+export BREW_LOG="${TMP}/brew.log"
+
+mkdir -p "${WORKDIR}/bin" "${WORKDIR}/copies" "${WORKDIR}/script" \
+    "${TMP}/install-home"
+cp "${ROOT}/install.sh" "${WORKDIR}/install.sh"
+cp "${ROOT}/bin/lib.sh" "${WORKDIR}/bin/lib.sh"
+printf '#!/bin/bash\nexit 0\n' > "${WORKDIR}/script/setup-gh-auth.sh"
+printf '#!/bin/bash\nexit 0\n' > "${WORKDIR}/script/install-memo.sh"
+chmod +x "${WORKDIR}/script/setup-gh-auth.sh" "${WORKDIR}/script/install-memo.sh"
+touch "${TMP}/install-home/.bashrc"
+HOME="${TMP}/install-home" OSTYPE=darwin bash "${WORKDIR}/install.sh" > "${TMP}/install.log"
+[ ! -e "${BREW_LOG}" ]
+
+(cd "${TMP}" && OSTYPE=darwin bash "${ROOT}/script/brew.sh")
+printf 'bundle\n--file=%s/Brewfile\n' "${ROOT}" > "${TMP}/expected-brew.log"
+cmp "${BREW_LOG}" "${TMP}/expected-brew.log"
+
+if BREW_STATUS=7 OSTYPE=darwin bash "${ROOT}/script/brew.sh"; then
+    echo 'FAIL: Homebrew failure was ignored' >&2
+    exit 1
+else
+    [ "$?" -eq 7 ]
+fi
+
+if BREW_LOG="${TMP}/linux-brew.log" OSTYPE=linux-gnu bash "${ROOT}/script/brew.sh" > "${TMP}/linux-brew-output.log" 2>&1; then
+    echo 'FAIL: Homebrew setup ran on Linux' >&2
+    exit 1
+fi
+[ ! -e "${TMP}/linux-brew.log" ]
+
+echo 'Installer tests passed'

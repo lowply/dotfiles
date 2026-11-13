@@ -54,6 +54,9 @@ symlinks(){
 
         # Don't symlink these files on Linux
         if is_linux; then
+            case "${FILE#"${SRC}"/}" in
+                .config/karabiner/*) continue ;;
+            esac
             case "$(basename "${FILE}")" in
                 .bash_profile|config.darwin) continue ;;
             esac
@@ -141,10 +144,6 @@ unlink(){
     echo "Don't forget to delete the .bashrc_ line from your .bashrc"
 }
 
-brew_bundle(){
-    is_darwin && brew bundle || true
-}
-
 bashrc_(){
     # Adds .bashrc_ at the end of the default .bashrc
     local ADDITION=". ${HOME}/.bashrc_"
@@ -198,15 +197,7 @@ WORKDIR="$(pwd)"
 
 mkdir -p "${HOME}/bin"
 
-if is_darwin; then
-    [ -d "/opt/homebrew" ] || abort "Install homebrew first."
-    export PATH="/opt/homebrew/bin:$PATH"
-    if [ ! -L "$(brew --prefix)/opt/coreutils" ]; then
-        message info "Installing coreutils"
-        brew install coreutils
-    fi
-    export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
-else
+if is_linux; then
     # Install peco
     has peco || install_peco
 fi
@@ -221,7 +212,6 @@ case "${1}" in
         copies
         symlinks || abort "Failed to create symlinks"
         bashrc_
-        brew_bundle
         bin_link
         "${WORKDIR}/script/setup-gh-auth.sh" || abort "Failed to configure GitHub CLI as Git credential helper"
         "${WORKDIR}/script/install-memo.sh"
