@@ -68,7 +68,7 @@ if run_links -z > "${TMP}/invalid.log" 2>&1; then
     exit 1
 fi
 
-KARABINER=".config/karabiner/assets/complex_modifications/lowply.json"
+KARABINER=".config/karabiner/assets/complex_modifications/lowply.js"
 mkdir -p "${WORKDIR}/symlinks/$(dirname "${KARABINER}")"
 cp "${ROOT}/symlinks/${KARABINER}" "${WORKDIR}/symlinks/${KARABINER}"
 
@@ -79,7 +79,7 @@ mkdir -p "${TMP}/darwin-home/$(dirname "${KARABINER}")"
 printf 'original rules\n' > "${TMP}/darwin-home/${KARABINER}"
 HOME="${TMP}/darwin-home" OSTYPE=darwin run_links > "${TMP}/darwin.log"
 assert_link "${TMP}/darwin-home/${KARABINER}" "${WORKDIR}/symlinks/${KARABINER}"
-BACKUP="$(find "${TMP}/darwin-home" -name lowply.json -type f)"
+BACKUP="$(find "${TMP}/darwin-home" -name lowply.js -type f)"
 [ "$(cat "${BACKUP}")" = 'original rules' ]
 
 brew() {

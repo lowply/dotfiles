@@ -16,7 +16,13 @@ On macOS, install or update Homebrew packages separately with `./dotfiles/script
 
 ## Karabiner-Elements
 
-After editing `symlinks/.config/karabiner/assets/complex_modifications/lowply.json`, remove the affected rules in Karabiner-Elements Settings > Complex Modifications, then re-add them through Add predefined rule > @lowply's keymaps. Enabled rules are copied into the profile's `karabiner.json`, so updating the symlinked asset or restarting Karabiner-Elements does not update existing rules.
+I use [Kanary](https://kanary.to) for Eisuu/Kana switching and Karabiner-Elements only for Ctrl+HJKL arrow-key navigation.
+
+The mappings in `symlinks/.config/karabiner/assets/complex_modifications/lowply.js` are combined into one JavaScript rule for the Apple Internal Keyboard and HHKB Studio. Run `./install.sh` to symlink it, then add it in Karabiner-Elements Settings > Complex Modifications > Add predefined rule > @lowply's keymaps. Alternatively, paste the file into Add your own rule using JavaScript.
+
+When migrating from the JSON version, remove the old `~/.config/karabiner/assets/complex_modifications/lowply.json` symlink and the individual rules from your profile to avoid duplicate mappings.
+
+After editing `lowply.js`, remove and re-add the combined rule. Karabiner-Elements stores a copy of the script in the profile's `karabiner.json`, so updating the symlinked asset or restarting Karabiner-Elements does not update the existing rule.
 
 ## Development
 
