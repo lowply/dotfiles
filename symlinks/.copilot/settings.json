@@ -1,11 +1,10 @@
 {
-  "allowedTools": [
-    "bash(mkdir:*)"
-  ],
   "allowedUrls": [
     "https://github.com",
-    "https://docs.github.com"
+    "https://docs.github.com",
+    "https://raw.githubusercontent.com"
   ],
+  "defaultPermissionMode": "assisted",
   "enabledPlugins": {
     "superpowers@superpowers-marketplace": true
   },
@@ -44,4 +43,3 @@
   "showReasoning": false,
   "theme": "auto"
 }
-
