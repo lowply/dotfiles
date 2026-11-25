@@ -214,6 +214,5 @@ case "${1}" in
         bashrc_
         bin_link
         "${WORKDIR}/script/setup-gh-auth.sh" || abort "Failed to configure GitHub CLI as Git credential helper"
-        "${WORKDIR}/script/install-memo.sh"
     ;;
 esac

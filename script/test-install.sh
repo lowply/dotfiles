@@ -94,8 +94,7 @@ mkdir -p "${WORKDIR}/bin" "${WORKDIR}/copies" "${WORKDIR}/script" \
 cp "${ROOT}/install.sh" "${WORKDIR}/install.sh"
 cp "${ROOT}/bin/lib.sh" "${WORKDIR}/bin/lib.sh"
 printf '#!/bin/bash\nexit 0\n' > "${WORKDIR}/script/setup-gh-auth.sh"
-printf '#!/bin/bash\nexit 0\n' > "${WORKDIR}/script/install-memo.sh"
-chmod +x "${WORKDIR}/script/setup-gh-auth.sh" "${WORKDIR}/script/install-memo.sh"
+chmod +x "${WORKDIR}/script/setup-gh-auth.sh"
 touch "${TMP}/install-home/.bashrc"
 HOME="${TMP}/install-home" OSTYPE=darwin bash "${WORKDIR}/install.sh" > "${TMP}/install.log"
 [ ! -e "${BREW_LOG}" ]
